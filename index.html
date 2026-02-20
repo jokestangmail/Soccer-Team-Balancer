@@ -1,0 +1,1482 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Pickup Soccer Team Balancer (Offline)</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --panel:#111a2c;
+      --panel2:#0e1730;
+      --text:#e8eefc;
+      --muted:#a9b6d3;
+      --line:#233055;
+      --accent:#7aa2ff;
+      --good:#41d18a;
+      --warn:#ffcc66;
+      --bad:#ff6b6b;
+
+      --red:#ff4d6d;
+      --white:#e8eefc;
+      --black:#0a0f1a;
+      --blue:#4d96ff;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
+      background: radial-gradient(1200px 800px at 20% 0%, #1a2a52 0%, var(--bg) 55%) fixed;
+      color:var(--text);
+    }
+    .app{
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px;
+    }
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .title{
+      display:flex;
+      align-items:flex-start;
+      gap:12px;
+    }
+    .badge{
+      width:12px;height:12px;border-radius:50%;
+      background: conic-gradient(from 0deg, var(--red), var(--white), var(--black), var(--blue));
+      margin-top:10px;
+      box-shadow: 0 0 0 3px rgba(122,162,255,0.18);
+    }
+    h1{
+      margin:0;
+      font-size:18px;
+      letter-spacing:0.2px;
+    }
+    .sub{
+      margin-top:2px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .tabs{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .tabbtn{
+      border:1px solid var(--line);
+      background: rgba(17,26,44,0.55);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:600;
+      font-size:13px;
+      transition: transform .06s ease, background .15s ease, border-color .15s ease;
+    }
+    .tabbtn:hover{ transform: translateY(-1px); border-color:#2e3f71; }
+    .tabbtn.active{ background: rgba(122,162,255,0.18); border-color: rgba(122,162,255,0.55); }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.25fr .95fr;
+      gap:14px;
+    }
+    @media (max-width: 920px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+    .card{
+      background: linear-gradient(180deg, rgba(17,26,44,0.9), rgba(14,23,48,0.9));
+      border:1px solid rgba(35,48,85,0.9);
+      border-radius:16px;
+      box-shadow: 0 10px 28px rgba(0,0,0,0.35);
+      overflow:hidden;
+    }
+    .card .head{
+      padding:14px 14px 10px;
+      border-bottom:1px solid rgba(35,48,85,0.65);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .card .head h2{
+      margin:0;
+      font-size:14px;
+      letter-spacing:.2px;
+    }
+    .head .hint{
+      color:var(--muted);
+      font-size:12px;
+    }
+    .content{ padding:14px; }
+
+    .row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    .row > *{ flex:0 0 auto; }
+
+    .input, .select, textarea{
+      background: rgba(10,15,26,0.65);
+      border:1px solid rgba(35,48,85,0.9);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      outline:none;
+      font-size:13px;
+      min-width: 220px;
+    }
+    .input:focus, .select:focus, textarea:focus{ border-color: rgba(122,162,255,0.65); box-shadow: 0 0 0 3px rgba(122,162,255,0.12); }
+    .select{ min-width: 160px; }
+    .btn{
+      background: rgba(122,162,255,0.2);
+      border:1px solid rgba(122,162,255,0.55);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+      font-size:13px;
+      transition: transform .06s ease, filter .15s ease;
+      user-select:none;
+    }
+    .btn:hover{ transform: translateY(-1px); filter: brightness(1.05); }
+    .btn:active{ transform: translateY(0px); }
+    .btn.secondary{
+      background: rgba(17,26,44,0.55);
+      border-color: rgba(35,48,85,0.9);
+      font-weight:650;
+    }
+    .btn.danger{
+      background: rgba(255,107,107,0.15);
+      border-color: rgba(255,107,107,0.55);
+    }
+    .btn.good{
+      background: rgba(65,209,138,0.14);
+      border-color: rgba(65,209,138,0.55);
+    }
+    .btn:disabled{
+      opacity:.55;
+      cursor:not-allowed;
+      transform:none;
+      filter:none;
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:7px 10px;
+      border-radius:999px;
+      border:1px solid rgba(35,48,85,0.85);
+      background: rgba(10,15,26,0.55);
+      color: var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+    .pill b{ color:var(--text); font-weight:800; }
+    .divider{ height:1px; background: rgba(35,48,85,0.65); margin:12px 0; }
+
+    /* Tables/lists */
+    .list{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      overflow:hidden;
+      border:1px solid rgba(35,48,85,0.65);
+      border-radius:14px;
+      background: rgba(10,15,26,0.35);
+    }
+    .list th, .list td{
+      padding:10px 10px;
+      border-bottom:1px solid rgba(35,48,85,0.55);
+      font-size:13px;
+      vertical-align:top;
+    }
+    .list th{
+      text-align:left;
+      color:var(--muted);
+      font-weight:700;
+      background: rgba(17,26,44,0.55);
+      position:sticky;
+      top:0;
+      z-index:1;
+    }
+    .list tr:last-child td{ border-bottom:none; }
+    .actions{ display:flex; gap:8px; justify-content:flex-end; flex-wrap:wrap;}
+    .small{ font-size:12px; color:var(--muted); }
+    .mono{ font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace; }
+
+    /* Role chips */
+    .chips{ display:flex; gap:6px; flex-wrap:wrap;}
+    .chip{
+      font-size:12px;
+      padding:5px 8px;
+      border-radius:999px;
+      border:1px solid rgba(35,48,85,0.85);
+      color:var(--muted);
+      background: rgba(17,26,44,0.35);
+    }
+    .chip.on{
+      color: var(--text);
+      border-color: rgba(122,162,255,0.55);
+      background: rgba(122,162,255,0.14);
+    }
+
+    /* Modal */
+    .modalBackdrop{
+      position:fixed; inset:0;
+      background: rgba(0,0,0,0.55);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      z-index:999;
+    }
+    .modal{
+      width:min(860px, 100%);
+      max-height: 90vh;
+      overflow:auto;
+      background: linear-gradient(180deg, rgba(17,26,44,0.98), rgba(14,23,48,0.98));
+      border:1px solid rgba(35,48,85,0.9);
+      border-radius:18px;
+      box-shadow: 0 20px 45px rgba(0,0,0,0.55);
+    }
+    .modal .head{ position:sticky; top:0; background: rgba(14,23,48,0.98); z-index:2; }
+    .formGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap:10px;
+    }
+    @media (max-width: 820px){
+      .formGrid{ grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 560px){
+      .formGrid{ grid-template-columns: 1fr; }
+      .input,.select{ min-width:100%; width:100%; }
+    }
+    .field label{
+      display:block;
+      font-size:12px;
+      color:var(--muted);
+      margin: 0 0 6px 2px;
+    }
+    .field .input, .field .select{ width:100%; min-width:unset; }
+    .roleChecks{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      padding:10px 12px;
+      border:1px solid rgba(35,48,85,0.9);
+      border-radius:12px;
+      background: rgba(10,15,26,0.65);
+    }
+    .roleChecks label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:13px;
+      color:var(--text);
+      margin:0;
+    }
+    input[type="checkbox"]{ transform: scale(1.05); }
+
+    /* Game builder */
+    .split{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:14px;
+    }
+    @media (max-width: 920px){
+      .split{ grid-template-columns: 1fr; }
+    }
+    .scroll{
+      max-height: 54vh;
+      overflow:auto;
+      border:1px solid rgba(35,48,85,0.65);
+      border-radius:14px;
+      background: rgba(10,15,26,0.35);
+    }
+    .playerRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:10px 12px;
+      border-bottom:1px solid rgba(35,48,85,0.55);
+    }
+    .playerRow:last-child{ border-bottom:none; }
+    .playerRow .left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 0;
+    }
+    .playerRow .name{
+      font-weight:750;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      white-space:nowrap;
+      max-width: 290px;
+    }
+    .playerRow .meta{
+      color:var(--muted);
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    .results{
+      display:grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap:12px;
+    }
+    @media (max-width: 920px){
+      .results{ grid-template-columns: 1fr; }
+    }
+    .teamCard{
+      border-radius:16px;
+      border:1px solid rgba(35,48,85,0.75);
+      background: rgba(10,15,26,0.35);
+      overflow:hidden;
+    }
+    .teamHead{
+      padding:12px 12px 10px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      border-bottom:1px solid rgba(35,48,85,0.55);
+    }
+    .teamName{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-size:14px;
+      font-weight:900;
+    }
+    .swatch{
+      width:14px; height:14px; border-radius:4px;
+      box-shadow: 0 0 0 2px rgba(255,255,255,0.08);
+      border:1px solid rgba(0,0,0,0.2);
+    }
+    .teamBody{ padding:12px; }
+    .names{
+      margin:0;
+      padding:0 0 0 16px;
+      columns: 2;
+      column-gap: 22px;
+    }
+    @media (max-width: 620px){
+      .names{ columns: 1; }
+    }
+    .names li{ margin: 4px 0; font-size:13px; }
+    .metrics{
+      font-size:12px;
+      color:var(--muted);
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      white-space:nowrap;
+    }
+    .callout{
+      padding:12px;
+      border:1px dashed rgba(122,162,255,0.55);
+      border-radius:14px;
+      background: rgba(122,162,255,0.08);
+      color: var(--muted);
+      font-size:12px;
+      line-height:1.4;
+    }
+
+    .footerNote{
+      margin-top:12px;
+      color:var(--muted);
+      font-size:12px;
+      opacity:.9;
+    }
+    .kbd{
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;
+      font-size:11px;
+      padding:2px 6px;
+      border:1px solid rgba(35,48,85,0.9);
+      border-bottom-color: rgba(35,48,85,0.45);
+      border-radius:8px;
+      background: rgba(10,15,26,0.5);
+      color: var(--text);
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div class="title">
+        <div class="badge" aria-hidden="true"></div>
+        <div>
+          <h1>Pickup Soccer Team Balancer</h1>
+          <div class="sub">Offline • single-file • localStorage • 2 or 4 teams</div>
+        </div>
+      </div>
+      <div class="tabs">
+        <button id="tabPlayers" class="tabbtn active">Players</button>
+        <button id="tabGame" class="tabbtn">Game Builder</button>
+      </div>
+    </div>
+
+    <!-- PLAYERS PAGE -->
+    <section id="pagePlayers">
+      <div class="grid">
+        <div class="card">
+          <div class="head">
+            <div>
+              <h2>Players database</h2>
+              <div class="hint">Add / edit ratings, roles, and export/import JSON</div>
+            </div>
+            <div class="row">
+              <input id="playerSearch" class="input" placeholder="Search by name…" />
+              <button id="btnAddPlayer" class="btn good">+ Add Player</button>
+            </div>
+          </div>
+          <div class="content">
+            <table class="list" aria-label="Players table">
+              <thead>
+                <tr>
+                  <th style="width:34%">Name</th>
+                  <th style="width:28%">Roles</th>
+                  <th style="width:18%">Composite</th>
+                  <th style="width:20%; text-align:right;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="playersTbody"></tbody>
+            </table>
+            <div class="footerNote">
+              Tip: double-click a row to edit. Composite score is computed from ratings (weights are fixed).
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="head">
+            <div>
+              <h2>Data tools</h2>
+              <div class="hint">Everything is stored locally in your browser</div>
+            </div>
+          </div>
+          <div class="content">
+            <div class="callout">
+              <b>Persistence:</b> your player list is saved in <span class="mono">localStorage</span> (no server). Use Export as a backup.
+            </div>
+            <div class="divider"></div>
+
+            <div class="row" style="justify-content:space-between;">
+              <span class="pill">Players saved: <b id="countPlayers">0</b></span>
+              <span class="pill">Storage key: <span class="mono">ps_balancer_players_v1</span></span>
+            </div>
+
+            <div class="divider"></div>
+            <div class="row">
+              <button id="btnExport" class="btn secondary">Export JSON</button>
+              <button id="btnImport" class="btn secondary">Import JSON</button>
+              <button id="btnReset" class="btn danger">Reset to Preload</button>
+            </div>
+            <div class="small" style="margin-top:8px;">
+              Import replaces your current list. Export downloads a <span class="mono">.json</span> file.
+            </div>
+            <input id="importFile" type="file" accept="application/json" style="display:none" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- GAME PAGE -->
+    <section id="pageGame" style="display:none">
+      <div class="card">
+        <div class="head">
+          <div>
+            <h2>Game builder</h2>
+            <div class="hint">Select tonight’s players, choose 1 or 2 games, generate balanced teams</div>
+          </div>
+          <div class="row">
+            <select id="numGames" class="select" title="Number of games">
+              <option value="1">1 game (2 teams)</option>
+              <option value="2">2 games (4 teams)</option>
+            </select>
+            <span class="pill">Selected: <b id="selectedCount">0</b></span>
+            <button id="btnClearSelection" class="btn secondary">Clear selection</button>
+            <button id="btnGenerate" class="btn good">Generate Teams</button>
+            <button id="btnRegenerate" class="btn" disabled>Regenerate</button>
+          </div>
+        </div>
+
+        <div class="content">
+          <div class="split">
+            <div>
+              <div class="row" style="justify-content:space-between; margin-bottom:10px;">
+                <span class="pill">Tonight’s players checklist</span>
+                <input id="gameSearch" class="input" placeholder="Filter by name…" style="min-width:240px" />
+              </div>
+              <div id="playerChecklist" class="scroll" aria-label="Player checklist"></div>
+              <div class="small" style="margin-top:10px;">
+                Shortcut: select all players with <span class="kbd">Ctrl</span> + click on checkboxes (browser dependent).
+              </div>
+            </div>
+
+            <div>
+              <div class="row" style="justify-content:space-between; margin-bottom:10px;">
+                <span class="pill">Results</span>
+                <span id="balanceSummary" class="pill" style="display:none"></span>
+              </div>
+
+              <div id="resultsPanel">
+                <div class="callout">
+                  Select players and click <b>Generate Teams</b>. Use <b>Regenerate</b> to re-run optimization and get a different balanced solution (not just a shuffle).
+                </div>
+              </div>
+
+              <div class="footerNote">
+                Algorithm notes: primary objective is minimizing the standard deviation of <b>average strength per player</b> across teams; secondary objective penalizes role imbalances (forward-only / defense-only) using soft constraints.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- MODAL -->
+  <div id="modalBackdrop" class="modalBackdrop" role="dialog" aria-modal="true" aria-hidden="true">
+    <div class="modal">
+      <div class="head">
+        <div>
+          <h2 id="modalTitle">Add Player</h2>
+          <div class="hint">Roles are soft constraints; ratings drive composite score</div>
+        </div>
+        <div class="row">
+          <button id="btnModalCancel" class="btn secondary">Cancel</button>
+          <button id="btnModalSave" class="btn good">Save</button>
+        </div>
+      </div>
+      <div class="content">
+        <div class="formGrid">
+          <div class="field" style="grid-column: 1 / -1;">
+            <label>Name</label>
+            <input id="fName" class="input" placeholder="e.g., Alex" />
+          </div>
+
+          <div class="field" style="grid-column: 1 / -1;">
+            <label>Roles</label>
+            <div class="roleChecks">
+              <label><input type="checkbox" id="rF"> Forward</label>
+              <label><input type="checkbox" id="rM"> Mid</label>
+              <label><input type="checkbox" id="rD"> Defense</label>
+            </div>
+          </div>
+
+          <div class="field"><label>Overall (1–10)</label><input id="fOverall" class="input" type="number" min="1" max="10" step="1"></div>
+          <div class="field"><label>Passing (1–10)</label><input id="fPassing" class="input" type="number" min="1" max="10" step="1"></div>
+          <div class="field"><label>Dribbling (1–10)</label><input id="fDribbling" class="input" type="number" min="1" max="10" step="1"></div>
+
+          <div class="field"><label>Finishing (1–10)</label><input id="fFinishing" class="input" type="number" min="1" max="10" step="1"></div>
+          <div class="field"><label>Defense (1–10)</label><input id="fDefense" class="input" type="number" min="1" max="10" step="1"></div>
+          <div class="field"><label>Speed (1–10)</label><input id="fSpeed" class="input" type="number" min="1" max="10" step="1"></div>
+
+          <div class="field"><label>Stamina (1–10)</label><input id="fStamina" class="input" type="number" min="1" max="10" step="1"></div>
+          <div class="field"><label>Clutch (1–5)</label><input id="fClutch" class="input" type="number" min="1" max="5" step="1"></div>
+          <div class="field"><label>Consistency (1–5)</label><input id="fConsistency" class="input" type="number" min="1" max="5" step="1"></div>
+
+          <div class="field"><label>Leadership (1–5)</label><input id="fLeadership" class="input" type="number" min="1" max="5" step="1"></div>
+          <div class="field" style="grid-column: span 2;">
+            <label class="small">Composite score uses fixed weights:</label>
+            <div class="small mono" style="line-height:1.5">
+              score = (overall*3.0) + ((pass+drib+finish+def)*1.5) + ((speed+stamina)*1.2) + (clutch*1.2) + (consistency*1.0) + (leadership*1.0)
+            </div>
+          </div>
+        </div>
+        <div class="divider"></div>
+        <div class="small">
+          If you don’t know exact ratings yet, keep defaults — you can refine over time. Roles can include 1–3 boxes.
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+/**
+ * Pickup Soccer Team Balancer
+ * Single-file offline app (no dependencies).
+ *
+ * CORE BALANCING APPROACH
+ * 1) Composite strength score from ratings (fixed weights).
+ * 2) Soft positional balance penalties using role checkboxes:
+ *    - Forward-only vs Defense-only distribution is discouraged.
+ *    - Hybrids (e.g., Forward+Mid) contribute partially to each role.
+ * 3) Optimization:
+ *    - For <=20 selected players: multiple randomized restarts + swap hill-climbing
+ *    - For 21–40: greedy seeded assignment + swap optimization + fewer restarts
+ *
+ * Objective to MINIMIZE:
+ *   objective = primaryStdDev(avgStrengthPerPlayer) + lambda * rolePenalty
+ *
+ * Note: For uneven team sizes, we normalize by team size:
+ *   avgStrength = teamTotalScore / teamSize
+ * This satisfies the requirement that smaller teams can be slightly stronger per player.
+ */
+
+(() => {
+  const STORAGE_KEY = "ps_balancer_players_v1";
+  const SELECTION_KEY = "ps_balancer_selection_v1";
+  const state = {
+    players: [],
+    selection: new Set(),
+    lastSolution: null,
+    lastSeed: 1,
+  };
+
+  // ---------- Utilities ----------
+  const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
+  const uid = () => (crypto?.randomUUID ? crypto.randomUUID() : "id_" + Math.random().toString(16).slice(2) + Date.now());
+  const normName = (s) => (s || "").trim();
+  const lower = (s) => (s || "").toLowerCase();
+
+  function downloadText(filename, text, mime="application/json"){
+    const blob = new Blob([text], {type:mime});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function safeParseJSON(text){
+    try { return JSON.parse(text); } catch { return null; }
+  }
+
+  // Deterministic RNG (Mulberry32) for repeatable "Regenerate" with changing seed
+  function mulberry32(seed){
+    let t = seed >>> 0;
+    return function(){
+      t += 0x6D2B79F5;
+      let x = Math.imul(t ^ (t >>> 15), 1 | t);
+      x ^= x + Math.imul(x ^ (x >>> 7), 61 | x);
+      return ((x ^ (x >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function shuffleInPlace(arr, rnd=Math.random){
+    for(let i=arr.length-1;i>0;i--){
+      const j = Math.floor(rnd()*(i+1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  // ---------- Data Model ----------
+  function defaultRatings(){
+    // Reasonable defaults: "solid pickup player"
+    return {
+      overall: 7,
+      passing: 6,
+      dribbling: 6,
+      finishing: 6,
+      defense: 6,
+      speed: 6,
+      stamina: 6,
+      clutch: 3,
+      consistency: 3,
+      leadership: 3,
+    };
+  }
+
+  function computeScore(p){
+    const r = p.ratings;
+    return (
+      (r.overall * 3.0) +
+      ((r.passing + r.dribbling + r.finishing + r.defense) * 1.5) +
+      ((r.speed + r.stamina) * 1.2) +
+      (r.clutch * 1.2) +
+      (r.consistency * 1.0) +
+      (r.leadership * 1.0)
+    );
+  }
+
+  function roleVector(p){
+    // Soft role contributions: If player has multiple roles, split weight across them.
+    const roles = p.roles;
+    const keys = ["F","M","D"].filter(k => roles[k]);
+    const denom = keys.length || 1;
+    return {
+      F: roles.F ? (1/denom) : 0,
+      M: roles.M ? (1/denom) : 0,
+      D: roles.D ? (1/denom) : 0,
+      forwardOnly: roles.F && !roles.M && !roles.D ? 1 : 0,
+      defenseOnly: roles.D && !roles.F && !roles.M ? 1 : 0,
+    };
+  }
+
+  function sanitizePlayer(raw){
+    // Ensure structure is stable even after import.
+    const name = normName(raw?.name || "");
+    const roles = raw?.roles || {};
+    const ratings = raw?.ratings || {};
+    const p = {
+      id: raw?.id || uid(),
+      name,
+      roles: { F: !!roles.F, M: !!roles.M, D: !!roles.D },
+      ratings: {
+        overall: clamp(Number(ratings.overall ?? 7) || 7, 1, 10),
+        passing: clamp(Number(ratings.passing ?? 6) || 6, 1, 10),
+        dribbling: clamp(Number(ratings.dribbling ?? 6) || 6, 1, 10),
+        finishing: clamp(Number(ratings.finishing ?? 6) || 6, 1, 10),
+        defense: clamp(Number(ratings.defense ?? 6) || 6, 1, 10),
+        speed: clamp(Number(ratings.speed ?? 6) || 6, 1, 10),
+        stamina: clamp(Number(ratings.stamina ?? 6) || 6, 1, 10),
+        clutch: clamp(Number(ratings.clutch ?? 3) || 3, 1, 5),
+        consistency: clamp(Number(ratings.consistency ?? 3) || 3, 1, 5),
+        leadership: clamp(Number(ratings.leadership ?? 3) || 3, 1, 5),
+      }
+    };
+    if(!p.roles.F && !p.roles.M && !p.roles.D){
+      // Default role if none selected: Mid (neutral)
+      p.roles.M = true;
+    }
+    return p;
+  }
+
+  function preloadPlayers(){
+    const names = ["Adnan","Tomek","Mike","Guido","Achkan","Tuto","Carlos","Max C","Kiaan","Matt","Danny","Kadir","Mateo","Hugo","Ciro","Orson","Luismi","Marcelo","Arya","Brandon","Mario","Juan","Max K","Roger","Andy","Devrim","Conrad","Alex"];
+    // Reasonable, slightly varied defaults so early balances aren't identical.
+    // Users can edit later.
+    return names.map((name, idx) => {
+      const r = defaultRatings();
+      // gentle variation
+      const bump = (idx % 7) - 3;      // -3..+3
+      const bump2 = ((idx*3) % 5) - 2; // -2..+2
+      r.overall = clamp(7 + (bump>=2?1:0) + (bump<=-2?-1:0), 1, 10);
+      r.passing = clamp(6 + (bump2>0?1:0), 1, 10);
+      r.dribbling = clamp(6 + (bump2<0?1:0), 1, 10);
+      r.finishing = clamp(6 + (bump==3?1:0), 1, 10);
+      r.defense = clamp(6 + (bump==-3?1:0), 1, 10);
+      r.speed = clamp(6 + (idx%4==0?1:0), 1, 10);
+      r.stamina = clamp(6 + (idx%5==0?1:0), 1, 10);
+      r.clutch = clamp(3 + (idx%6==0?1:0), 1, 5);
+      r.consistency = clamp(3 + (idx%8==0?1:0), 1, 5);
+      r.leadership = clamp(3 + (idx%9==0?1:0), 1, 5);
+
+      // role defaults: mostly Mid + another; some specialist F-only/D-only
+      const roles = {F:false, M:true, D:false};
+      if(idx%6===0){ roles.F=true; }
+      if(idx%7===0){ roles.D=true; }
+      if(idx%10===0){ roles.M=false; roles.D=true; } // occasional D-only
+      if(idx%11===0){ roles.M=false; roles.F=true; } // occasional F-only
+      if(!roles.F && !roles.M && !roles.D) roles.M=true;
+
+      return sanitizePlayer({ id: uid(), name, roles, ratings:r });
+    });
+  }
+
+  function loadPlayers(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw){
+      state.players = preloadPlayers();
+      savePlayers();
+      return;
+    }
+    const parsed = safeParseJSON(raw);
+    if(!Array.isArray(parsed)){
+      state.players = preloadPlayers();
+      savePlayers();
+      return;
+    }
+    const sanitized = parsed.map(sanitizePlayer).filter(p => p.name);
+    // de-dupe by id
+    const seen = new Set();
+    state.players = sanitized.filter(p => { if(seen.has(p.id)) return false; seen.add(p.id); return true; });
+  }
+
+  function savePlayers(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.players));
+    el.countPlayers.textContent = String(state.players.length);
+  }
+
+  function loadSelection(){
+    const raw = localStorage.getItem(SELECTION_KEY);
+    const parsed = safeParseJSON(raw);
+    if(Array.isArray(parsed)){
+      state.selection = new Set(parsed.filter(id => state.players.some(p => p.id === id)));
+    } else {
+      state.selection = new Set();
+    }
+  }
+  function saveSelection(){
+    localStorage.setItem(SELECTION_KEY, JSON.stringify(Array.from(state.selection)));
+  }
+
+  // ---------- DOM ----------
+  const el = {
+    tabPlayers: document.getElementById("tabPlayers"),
+    tabGame: document.getElementById("tabGame"),
+    pagePlayers: document.getElementById("pagePlayers"),
+    pageGame: document.getElementById("pageGame"),
+
+    playerSearch: document.getElementById("playerSearch"),
+    playersTbody: document.getElementById("playersTbody"),
+    btnAddPlayer: document.getElementById("btnAddPlayer"),
+    countPlayers: document.getElementById("countPlayers"),
+    btnExport: document.getElementById("btnExport"),
+    btnImport: document.getElementById("btnImport"),
+    btnReset: document.getElementById("btnReset"),
+    importFile: document.getElementById("importFile"),
+
+    numGames: document.getElementById("numGames"),
+    selectedCount: document.getElementById("selectedCount"),
+    btnClearSelection: document.getElementById("btnClearSelection"),
+    btnGenerate: document.getElementById("btnGenerate"),
+    btnRegenerate: document.getElementById("btnRegenerate"),
+    gameSearch: document.getElementById("gameSearch"),
+    playerChecklist: document.getElementById("playerChecklist"),
+    resultsPanel: document.getElementById("resultsPanel"),
+    balanceSummary: document.getElementById("balanceSummary"),
+
+    modalBackdrop: document.getElementById("modalBackdrop"),
+    modalTitle: document.getElementById("modalTitle"),
+    btnModalCancel: document.getElementById("btnModalCancel"),
+    btnModalSave: document.getElementById("btnModalSave"),
+
+    fName: document.getElementById("fName"),
+    rF: document.getElementById("rF"),
+    rM: document.getElementById("rM"),
+    rD: document.getElementById("rD"),
+    fOverall: document.getElementById("fOverall"),
+    fPassing: document.getElementById("fPassing"),
+    fDribbling: document.getElementById("fDribbling"),
+    fFinishing: document.getElementById("fFinishing"),
+    fDefense: document.getElementById("fDefense"),
+    fSpeed: document.getElementById("fSpeed"),
+    fStamina: document.getElementById("fStamina"),
+    fClutch: document.getElementById("fClutch"),
+    fConsistency: document.getElementById("fConsistency"),
+    fLeadership: document.getElementById("fLeadership"),
+  };
+
+  // ---------- Tabs ----------
+  function showTab(which){
+    const isPlayers = which === "players";
+    el.pagePlayers.style.display = isPlayers ? "" : "none";
+    el.pageGame.style.display = isPlayers ? "none" : "";
+    el.tabPlayers.classList.toggle("active", isPlayers);
+    el.tabGame.classList.toggle("active", !isPlayers);
+    if(!isPlayers){
+      renderChecklist();
+      renderSelectionCount();
+    }
+  }
+
+  // ---------- Players table ----------
+  function roleChipsHTML(p){
+    const roles = p.roles;
+    const chip = (label, on) => `<span class="chip ${on ? "on":""}">${label}</span>`;
+    return `<div class="chips">${chip("F", roles.F)}${chip("M", roles.M)}${chip("D", roles.D)}</div>`;
+  }
+
+  function renderPlayersTable(){
+    const q = lower(el.playerSearch.value);
+    const rows = state.players
+      .slice()
+      .sort((a,b)=> a.name.localeCompare(b.name))
+      .filter(p => !q || lower(p.name).includes(q))
+      .map(p => {
+        const score = computeScore(p).toFixed(1);
+        return `
+          <tr data-id="${p.id}" title="Double-click to edit">
+            <td><b>${escapeHTML(p.name)}</b><div class="small">overall ${p.ratings.overall} • tech ${p.ratings.passing}/${p.ratings.dribbling}/${p.ratings.finishing}/${p.ratings.defense}</div></td>
+            <td>${roleChipsHTML(p)}</td>
+            <td class="mono">${score}</td>
+            <td>
+              <div class="actions">
+                <button class="btn secondary" data-act="edit" data-id="${p.id}">Edit</button>
+                <button class="btn danger" data-act="del" data-id="${p.id}">Delete</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join("");
+    el.playersTbody.innerHTML = rows || `<tr><td colspan="4" class="small">No players found.</td></tr>`;
+  }
+
+  function escapeHTML(str){
+    return String(str).replace(/[&<>"']/g, s => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[s]));
+  }
+
+  // ---------- Modal (Add/Edit) ----------
+  let modalMode = "add"; // add | edit
+  let editingId = null;
+
+  function openModal(mode, player=null){
+    modalMode = mode;
+    editingId = player?.id ?? null;
+    el.modalTitle.textContent = mode === "add" ? "Add Player" : "Edit Player";
+
+    const p = player ? sanitizePlayer(player) : sanitizePlayer({name:"", roles:{M:true}, ratings: defaultRatings()});
+    el.fName.value = p.name;
+
+    el.rF.checked = !!p.roles.F;
+    el.rM.checked = !!p.roles.M;
+    el.rD.checked = !!p.roles.D;
+
+    el.fOverall.value = p.ratings.overall;
+    el.fPassing.value = p.ratings.passing;
+    el.fDribbling.value = p.ratings.dribbling;
+    el.fFinishing.value = p.ratings.finishing;
+    el.fDefense.value = p.ratings.defense;
+    el.fSpeed.value = p.ratings.speed;
+    el.fStamina.value = p.ratings.stamina;
+    el.fClutch.value = p.ratings.clutch;
+    el.fConsistency.value = p.ratings.consistency;
+    el.fLeadership.value = p.ratings.leadership;
+
+    el.modalBackdrop.style.display = "flex";
+    el.modalBackdrop.setAttribute("aria-hidden","false");
+    setTimeout(() => el.fName.focus(), 10);
+  }
+
+  function closeModal(){
+    el.modalBackdrop.style.display = "none";
+    el.modalBackdrop.setAttribute("aria-hidden","true");
+    editingId = null;
+  }
+
+  function readModalPlayer(){
+    const name = normName(el.fName.value);
+    const roles = { F: el.rF.checked, M: el.rM.checked, D: el.rD.checked };
+    const ratings = {
+      overall: clamp(Number(el.fOverall.value)||7, 1, 10),
+      passing: clamp(Number(el.fPassing.value)||6, 1, 10),
+      dribbling: clamp(Number(el.fDribbling.value)||6, 1, 10),
+      finishing: clamp(Number(el.fFinishing.value)||6, 1, 10),
+      defense: clamp(Number(el.fDefense.value)||6, 1, 10),
+      speed: clamp(Number(el.fSpeed.value)||6, 1, 10),
+      stamina: clamp(Number(el.fStamina.value)||6, 1, 10),
+      clutch: clamp(Number(el.fClutch.value)||3, 1, 5),
+      consistency: clamp(Number(el.fConsistency.value)||3, 1, 5),
+      leadership: clamp(Number(el.fLeadership.value)||3, 1, 5),
+    };
+    return sanitizePlayer({ id: editingId || uid(), name, roles, ratings });
+  }
+
+  // ---------- Import/Export ----------
+  function exportJSON(){
+    const sorted = state.players.slice().sort((a,b)=>a.name.localeCompare(b.name));
+    const payload = JSON.stringify(sorted, null, 2);
+    const ts = new Date().toISOString().slice(0,10);
+    downloadText(`players_export_${ts}.json`, payload, "application/json");
+  }
+
+  function importJSONFromFile(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      const parsed = safeParseJSON(String(reader.result || ""));
+      if(!Array.isArray(parsed)){
+        alert("Import failed: file is not a JSON array.");
+        return;
+      }
+      const sanitized = parsed.map(sanitizePlayer).filter(p => p.name);
+      // De-dupe by name (keep first occurrence) to be user-friendly
+      const byName = new Map();
+      for(const p of sanitized){
+        const k = lower(p.name);
+        if(!byName.has(k)) byName.set(k, p);
+      }
+      state.players = Array.from(byName.values()).sort((a,b)=>a.name.localeCompare(b.name));
+      savePlayers();
+      // selection might include stale ids
+      loadSelection();
+      saveSelection();
+      renderAll();
+      alert("Import successful.");
+    };
+    reader.readAsText(file);
+  }
+
+  // ---------- Checklist (Game builder) ----------
+  function renderChecklist(){
+    const q = lower(el.gameSearch.value);
+    const players = state.players.slice().sort((a,b)=>a.name.localeCompare(b.name))
+      .filter(p => !q || lower(p.name).includes(q));
+
+    const html = players.map(p => {
+      const checked = state.selection.has(p.id);
+      const score = computeScore(p);
+      const rv = roleVector(p);
+      const roleTxt = [
+        rv.forwardOnly ? "F-only" : (p.roles.F ? "F" : null),
+        p.roles.M ? "M" : null,
+        rv.defenseOnly ? "D-only" : (p.roles.D ? "D" : null)
+      ].filter(Boolean).join(" ");
+      return `
+        <div class="playerRow">
+          <div class="left">
+            <input type="checkbox" data-id="${p.id}" ${checked ? "checked":""} />
+            <div style="min-width:0;">
+              <div class="name">${escapeHTML(p.name)}</div>
+              <div class="meta">score ${score.toFixed(1)} • ${roleTxt || "—"}</div>
+            </div>
+          </div>
+          <div class="chips" aria-hidden="true">
+            <span class="chip ${p.roles.F ? "on":""}">F</span>
+            <span class="chip ${p.roles.M ? "on":""}">M</span>
+            <span class="chip ${p.roles.D ? "on":""}">D</span>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    el.playerChecklist.innerHTML = html || `<div class="playerRow"><div class="small">No matching players.</div></div>`;
+  }
+
+  function renderSelectionCount(){
+    el.selectedCount.textContent = String(state.selection.size);
+    el.btnGenerate.disabled = state.selection.size < 2;
+    el.btnRegenerate.disabled = !state.lastSolution;
+  }
+
+  // ---------- Balancing algorithm ----------
+  function getTeamNames(teamCount){
+    return teamCount === 2 ? ["Red","White"] : ["Red","White","Black","Blue"];
+  }
+  function teamSwatch(name){
+    if(name==="Red") return "var(--red)";
+    if(name==="White") return "var(--white)";
+    if(name==="Black") return "var(--black)";
+    if(name==="Blue") return "var(--blue)";
+    return "var(--accent)";
+  }
+
+  function computeStdDev(vals){
+    const n = vals.length;
+    if(n<=1) return 0;
+    const mean = vals.reduce((a,b)=>a+b,0)/n;
+    const varr = vals.reduce((s,v)=> s + (v-mean)*(v-mean), 0)/n;
+    return Math.sqrt(varr);
+  }
+
+  function computeObjective(teams){
+    // teams: array of arrays of player objects
+    const totals = teams.map(t => t.reduce((s,p)=> s + p._score, 0));
+    const sizes = teams.map(t => t.length);
+    const avgs = teams.map((_,i)=> totals[i] / Math.max(1, sizes[i]));
+    const primary = computeStdDev(avgs);
+
+    // Soft role penalty:
+    //  - Encourage even distribution of forward-only and defense-only players.
+    //  - Also encourage balanced role "mass" (hybrids count partially).
+    let forwardOnly = [], defenseOnly = [], roleF = [], roleD = [];
+    for(const t of teams){
+      let fo=0, do_=0, rf=0, rd=0;
+      for(const p of t){
+        const rv = p._roleVec;
+        fo += rv.forwardOnly;
+        do_ += rv.defenseOnly;
+        rf += rv.F;
+        rd += rv.D;
+      }
+      forwardOnly.push(fo);
+      defenseOnly.push(do_);
+      roleF.push(rf);
+      roleD.push(rd);
+    }
+    const foStd = computeStdDev(forwardOnly);
+    const doStd = computeStdDev(defenseOnly);
+    const rfStd = computeStdDev(roleF);
+    const rdStd = computeStdDev(roleD);
+
+    // Scale penalties so they matter but remain secondary.
+    const rolePenalty = (foStd*1.3) + (doStd*1.3) + (rfStd*0.6) + (rdStd*0.6);
+
+    // Lambda: weight role penalty vs primary stddev (avg strength).
+    const lambda = 0.55;
+    return {
+      objective: primary + lambda * rolePenalty,
+      primary,
+      rolePenalty
+    };
+  }
+
+  function makeTeamSizeTargets(nPlayers, teamCount){
+    const base = Math.floor(nPlayers / teamCount);
+    const rem = nPlayers % teamCount;
+    // First 'rem' teams get +1
+    return Array.from({length:teamCount}, (_,i)=> base + (i < rem ? 1 : 0));
+  }
+
+  function greedySeed(players, teamCount, rnd){
+    // Sort by score descending; break ties randomly
+    const arr = players.slice();
+    arr.sort((a,b)=>{
+      if(b._score !== a._score) return b._score - a._score;
+      return rnd() < 0.5 ? -1 : 1;
+    });
+
+    const targets = makeTeamSizeTargets(arr.length, teamCount);
+    const teams = Array.from({length:teamCount}, ()=>[]);
+    const totals = Array.from({length:teamCount}, ()=>0);
+
+    for(const p of arr){
+      // assign to the team that yields lowest projected average strength while respecting capacity
+      let bestIdx = -1;
+      let bestVal = Infinity;
+      for(let i=0;i<teamCount;i++){
+        if(teams[i].length >= targets[i]) continue;
+        const projectedTotal = totals[i] + p._score;
+        const projectedSize = teams[i].length + 1;
+        const projectedAvg = projectedTotal / projectedSize;
+        // prefer team with lowest projectedAvg; small jitter to diversify
+        const val = projectedAvg + (rnd()*0.0005);
+        if(val < bestVal){
+          bestVal = val;
+          bestIdx = i;
+        }
+      }
+      if(bestIdx<0){
+        // should not happen, but fallback
+        bestIdx = teams.findIndex((t,i)=> t.length < targets[i]);
+        if(bestIdx<0) bestIdx = 0;
+      }
+      teams[bestIdx].push(p);
+      totals[bestIdx] += p._score;
+    }
+    return teams;
+  }
+
+  function randomSeed(players, teamCount, rnd){
+    // Random assignment respecting size targets
+    const targets = makeTeamSizeTargets(players.length, teamCount);
+    const teams = Array.from({length:teamCount}, ()=>[]);
+    const order = shuffleInPlace(players.slice(), rnd);
+    const counts = Array.from({length:teamCount}, ()=>0);
+
+    for(const p of order){
+      let options = [];
+      for(let i=0;i<teamCount;i++) if(counts[i] < targets[i]) options.push(i);
+      const idx = options[Math.floor(rnd()*options.length)];
+      teams[idx].push(p);
+      counts[idx]++;
+    }
+    return teams;
+  }
+
+  function trySwap(teams, rnd){
+    // pick two distinct teams, swap two players if it improves objective
+    const tCount = teams.length;
+    let a = Math.floor(rnd()*tCount);
+    let b = Math.floor(rnd()*tCount);
+    if(a===b) b = (b+1) % tCount;
+
+    if(teams[a].length===0 || teams[b].length===0) return false;
+
+    const ia = Math.floor(rnd()*teams[a].length);
+    const ib = Math.floor(rnd()*teams[b].length);
+    const pa = teams[a][ia];
+    const pb = teams[b][ib];
+
+    // perform swap
+    teams[a][ia] = pb;
+    teams[b][ib] = pa;
+
+    return true;
+  }
+
+  function hillClimb(teams, rnd, attempts=2000){
+    // Greedy improvement: accept swap only if objective decreases.
+    // Occasional "temperature" allows small uphill move to avoid local minima.
+    let best = cloneTeams(teams);
+    let bestEval = computeObjective(best);
+
+    let cur = cloneTeams(best);
+    let curEval = bestEval;
+
+    // Temperature schedule: starts small, decays.
+    let temp = 0.06;
+
+    for(let k=0;k<attempts;k++){
+      const candidate = cloneTeams(cur);
+      if(!trySwap(candidate, rnd)) continue;
+      const eval2 = computeObjective(candidate);
+
+      const delta = eval2.objective - curEval.objective;
+      const accept = delta < 0 || (rnd() < Math.exp(-delta / Math.max(1e-6,temp)));
+      if(accept){
+        cur = candidate;
+        curEval = eval2;
+        if(curEval.objective < bestEval.objective){
+          best = cloneTeams(cur);
+          bestEval = curEval;
+        }
+      }
+      temp *= 0.9992;
+    }
+    return { teams: best, eval: bestEval };
+  }
+
+  function cloneTeams(teams){
+    return teams.map(t => t.slice());
+  }
+
+  function optimizeTeams(selectedPlayers, teamCount, seed){
+    // Precompute score & role vectors once.
+    const players = selectedPlayers.map(p => ({
+      ...p,
+      _score: computeScore(p),
+      _roleVec: roleVector(p),
+    }));
+
+    const n = players.length;
+    const rnd = mulberry32(seed);
+
+    // Configure effort based on size
+    const small = n <= 20;
+    const restarts = small ? 28 : (n <= 28 ? 14 : 8);
+    const swapAttempts = small ? 4200 : (n <= 28 ? 3000 : 2400);
+
+    let bestTeams = null;
+    let bestEval = { objective: Infinity };
+
+    for(let r=0;r<restarts;r++){
+      const useGreedy = (r % 2 === 0);
+      const base = useGreedy ? greedySeed(players, teamCount, rnd) : randomSeed(players, teamCount, rnd);
+
+      // Add a bit of randomness: do a few random swaps before hill-climb
+      const pre = cloneTeams(base);
+      for(let i=0;i<Math.min(30, n); i++){
+        trySwap(pre, rnd);
+      }
+
+      const result = hillClimb(pre, rnd, swapAttempts);
+      if(result.eval.objective < bestEval.objective){
+        bestEval = result.eval;
+        bestTeams = result.teams;
+      }
+    }
+
+    // Attach totals and role counts for display
+    const totals = bestTeams.map(t => t.reduce((s,p)=>s+p._score,0));
+    const avgs = bestTeams.map((t,i)=> totals[i] / Math.max(1, t.length));
+    return { teams: bestTeams, totals, avgs, eval: bestEval };
+  }
+
+  // ---------- Results rendering ----------
+  function renderResults(solution){
+    if(!solution){
+      el.resultsPanel.innerHTML = `<div class="callout">Select players and click <b>Generate Teams</b>.</div>`;
+      el.balanceSummary.style.display = "none";
+      return;
+    }
+    const teamCount = solution.teams.length;
+    const names = getTeamNames(teamCount);
+
+    const cards = solution.teams.map((team, i) => {
+      const tname = names[i] || ("Team " + (i+1));
+      const sw = teamSwatch(tname);
+      const total = solution.totals[i];
+      const avg = solution.avgs[i];
+
+      const sortedNames = team.slice().map(p=>p.name).sort((a,b)=>a.localeCompare(b));
+      const lis = sortedNames.map(n => `<li>${escapeHTML(n)}</li>`).join("");
+
+      return `
+        <div class="teamCard">
+          <div class="teamHead">
+            <div class="teamName"><span class="swatch" style="background:${sw}"></span>${tname}</div>
+            <div class="metrics">
+              <span>Total <span class="mono">${total.toFixed(1)}</span></span>
+              <span>Avg <span class="mono">${avg.toFixed(2)}</span></span>
+            </div>
+          </div>
+          <div class="teamBody">
+            <ol class="names">${lis}</ol>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    el.resultsPanel.innerHTML = `<div class="results">${cards}</div>`;
+
+    const diff = Math.max(...solution.avgs) - Math.min(...solution.avgs);
+    const label = diff < 0.45 ? "Excellent" : (diff < 0.8 ? "Good" : "Ok");
+    el.balanceSummary.style.display = "";
+    el.balanceSummary.innerHTML = `Balance: <b>${label}</b> • avg spread <b class="mono">${diff.toFixed(2)}</b> • objective <b class="mono">${solution.eval.objective.toFixed(3)}</b>`;
+  }
+
+  // ---------- Events ----------
+  el.tabPlayers.addEventListener("click", () => showTab("players"));
+  el.tabGame.addEventListener("click", () => showTab("game"));
+
+  el.playerSearch.addEventListener("input", renderPlayersTable);
+
+  el.btnAddPlayer.addEventListener("click", () => openModal("add"));
+  el.btnModalCancel.addEventListener("click", closeModal);
+  el.modalBackdrop.addEventListener("click", (e) => { if(e.target === el.modalBackdrop) closeModal(); });
+  window.addEventListener("keydown", (e) => { if(e.key === "Escape" && el.modalBackdrop.style.display === "flex") closeModal(); });
+
+  el.btnModalSave.addEventListener("click", () => {
+    const p = readModalPlayer();
+    if(!p.name){
+      alert("Name is required.");
+      el.fName.focus();
+      return;
+    }
+    const dup = state.players.find(x => lower(x.name) === lower(p.name) && x.id !== p.id);
+    if(dup){
+      if(!confirm(`A player named "${dup.name}" already exists. Save anyway?`)) return;
+    }
+
+    if(modalMode === "add"){
+      state.players.push(p);
+    } else {
+      const idx = state.players.findIndex(x => x.id === p.id);
+      if(idx >= 0) state.players[idx] = p;
+      else state.players.push(p);
+    }
+    // if selection contains old id, keep it
+    if(state.selection.has(editingId) && editingId !== p.id){
+      state.selection.delete(editingId);
+      state.selection.add(p.id);
+      saveSelection();
+    }
+
+    savePlayers();
+    renderAll();
+    closeModal();
+  });
+
+  el.playersTbody.addEventListener("click", (e) => {
+    const btn = e.target.closest("button");
+    if(!btn) return;
+    const id = btn.getAttribute("data-id");
+    const act = btn.getAttribute("data-act");
+    const p = state.players.find(x => x.id === id);
+    if(!p) return;
+    if(act === "edit"){
+      openModal("edit", p);
+    } else if(act === "del"){
+      const ok = confirm(`Delete ${p.name}? This cannot be undone.`);
+      if(!ok) return;
+      state.players = state.players.filter(x => x.id !== id);
+      state.selection.delete(id);
+      savePlayers();
+      saveSelection();
+      state.lastSolution = null;
+      renderAll();
+    }
+  });
+
+  el.playersTbody.addEventListener("dblclick", (e) => {
+    const tr = e.target.closest("tr[data-id]");
+    if(!tr) return;
+    const id = tr.getAttribute("data-id");
+    const p = state.players.find(x => x.id === id);
+    if(p) openModal("edit", p);
+  });
+
+  el.btnExport.addEventListener("click", exportJSON);
+  el.btnImport.addEventListener("click", () => el.importFile.click());
+  el.importFile.addEventListener("change", (e) => {
+    const f = e.target.files?.[0];
+    if(!f) return;
+    importJSONFromFile(f);
+    el.importFile.value = "";
+  });
+
+  el.btnReset.addEventListener("click", () => {
+    const ok = confirm("Reset player list to the preloaded defaults? This will overwrite your current list.");
+    if(!ok) return;
+    state.players = preloadPlayers();
+    state.selection = new Set();
+    state.lastSolution = null;
+    savePlayers();
+    saveSelection();
+    renderAll();
+    alert("Reset complete.");
+  });
+
+  el.gameSearch.addEventListener("input", renderChecklist);
+
+  el.playerChecklist.addEventListener("change", (e) => {
+    const cb = e.target.closest('input[type="checkbox"][data-id]');
+    if(!cb) return;
+    const id = cb.getAttribute("data-id");
+    if(cb.checked) state.selection.add(id);
+    else state.selection.delete(id);
+    saveSelection();
+    state.lastSolution = null;
+    renderSelectionCount();
+  });
+
+  el.btnClearSelection.addEventListener("click", () => {
+    state.selection.clear();
+    saveSelection();
+    state.lastSolution = null;
+    renderChecklist();
+    renderSelectionCount();
+    renderResults(null);
+  });
+
+  function selectedPlayersList(){
+    const ids = state.selection;
+    return state.players.filter(p => ids.has(p.id));
+  }
+
+  function generate(regenerate=false){
+    const players = selectedPlayersList();
+    const games = Number(el.numGames.value) || 1;
+    const teamCount = games === 1 ? 2 : 4;
+
+    if(players.length < teamCount){
+      alert(`Select at least ${teamCount} players to make ${teamCount} teams.`);
+      return;
+    }
+    // Change seed each run so regenerate yields different high-quality solutions
+    const seed = regenerate ? (state.lastSeed + 1 + Math.floor(Math.random()*1000)) : (Date.now() & 0xffffffff);
+    state.lastSeed = seed;
+
+    const solution = optimizeTeams(players, teamCount, seed);
+    state.lastSolution = solution;
+    renderSelectionCount();
+    renderResults(solution);
+  }
+
+  el.btnGenerate.addEventListener("click", () => generate(false));
+  el.btnRegenerate.addEventListener("click", () => generate(true));
+  el.numGames.addEventListener("change", () => {
+    state.lastSolution = null;
+    renderSelectionCount();
+    renderResults(null);
+  });
+
+  // ---------- Render all ----------
+  function renderAll(){
+    renderPlayersTable();
+    el.countPlayers.textContent = String(state.players.length);
+    renderChecklist();
+    renderSelectionCount();
+    if(state.lastSolution){
+      renderResults(state.lastSolution);
+    }
+  }
+
+  // ---------- Init ----------
+  loadPlayers();
+  loadSelection();
+  savePlayers(); // ensure count updates
+  renderAll();
+})();
+</script>
+</body>
+</html>
