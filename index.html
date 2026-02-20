@@ -523,6 +523,39 @@
       .row{ gap:8px; }
     }
 
+
+    /* Mobile readability tweaks */
+    body{ font-size:16px; }
+    h1{ font-size:18px; }
+    .tabbtn{ font-size:14px; padding:12px 14px; }
+    .input, .select{ font-size:14px; padding:12px 14px; }
+    .small{ font-size:13px; }
+    .playerRow .name{ font-size:15px; }
+    .playerRow .meta{ font-size:13px; }
+
+    /* Alternating row shading for readability */
+    .scroll .playerRow:nth-child(odd){ background: rgba(255,255,255,0.02); }
+    .scroll .playerRow:nth-child(even){ background: rgba(10,15,26,0.10); }
+    .scroll .playerRow:hover{ background: rgba(122,162,255,0.08); }
+
+    .list tbody tr:nth-child(odd){ background: rgba(255,255,255,0.02); }
+    .list tbody tr:nth-child(even){ background: rgba(10,15,26,0.10); }
+    .list tbody tr:hover{ background: rgba(122,162,255,0.08); }
+
+    /* Tiny glanceable strength dot */
+    .lvlDot{
+      width:10px;height:10px;border-radius:999px;
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.15);
+      border: 1px solid rgba(255,255,255,0.10);
+      flex: 0 0 auto;
+    }
+    
+
+    @media (max-width: 560px){
+      .playerCellFlex{ flex-direction:column; align-items:flex-start !important; }
+      .playerScoreBadge{ margin-left:0 !important; margin-top:8px; }
+      .meter{ width:150px; }
+    }
 </style>
 </head>
 <body>
@@ -536,8 +569,8 @@
         </div>
       </div>
       <div class="tabs">
-        <button id="tabPlayers" class="tabbtn">Players</button>
         <button id="tabGame" class="tabbtn active">Game Builder</button>
+        <button id="tabPlayers" class="tabbtn">Players</button>
       </div>
     </div>
 
@@ -1010,7 +1043,7 @@
         const score = computeScore(p).toFixed(1);
         return `
           <tr data-id="${p.id}" title="Double-click to edit">
-            <td><div style="display:flex; align-items:center; gap:10px;"><div><b>${escapeHTML(p.name)}</b><div class="small">overall ${p.ratings.overall} • tech ${p.ratings.passing}/${p.ratings.dribbling}/${p.ratings.finishing}/${p.ratings.defense}</div></div>${playerMeterHTML(p)}</div></td>
+            <td><div class="playerCellFlex" style="display:flex; align-items:center; gap:10px;"><div><b>${escapeHTML(p.name)}</b><div class="small">overall ${p.ratings.overall} • tech ${p.ratings.passing}/${p.ratings.dribbling}/${p.ratings.finishing}/${p.ratings.defense}</div></div>${playerMeterHTML(p)}</div></td>
             <td>${roleChipsHTML(p)}</td>
             <td class="mono">${score}</td>
             <td>
@@ -1165,21 +1198,26 @@
 
   // Small UI helper: produce meter + badges for a player object
   function playerMeterHTML(p){
-    const score = computeScore(p);
-    const maxPossible = 130; // theoretical composite max used for normalization
-    const pct = Math.round(100 * (score / maxPossible));
+    // Composite score 0..~130. We normalize to show a quick meter.
+    const score = (typeof p._score === "number") ? p._score : computeScore(p);
+    const maxPossible = 130; 
+    const pct = Math.max(0, Math.min(100, Math.round(100 * (score / maxPossible))));
     const cls = pct >= 72 ? "meter-strong" : (pct >= 48 ? "meter-mid" : "meter-low");
-    const overall = p.ratings?.overall ?? p.ratings?.overall ?? 7;
+
+    const overall = p.ratings?.overall ?? 7;
     const clutch = p.ratings?.clutch ?? 3;
     const consistency = p.ratings?.consistency ?? 3;
     const leadership = p.ratings?.leadership ?? 3;
-    // compact intangibles average (1-5) scaled for display
     const intAvg = ((clutch + consistency + leadership) / 3).toFixed(1);
+
+    // Dot color mirrors the meter class
+    const dotColor = cls === "meter-strong" ? "rgba(65,209,138,0.95)" : (cls === "meter-mid" ? "rgba(122,162,255,0.95)" : "rgba(255,107,107,0.95)");
+
     return `
       <span class="playerScoreBadge" title="Composite ${score.toFixed(1)}">
-        <span class="levelDot ${pct>=72? "dot-strong": (pct>=48? "dot-mid":"dot-low")}" aria-hidden="true"></span>
+        <span class="lvlDot" style="background:${dotColor}"></span>
         <span class="meter" aria-hidden="true"><span class="meter-fill ${cls}" style="width:${pct}%;"></span></span>
-        <span class="smallStat mono">${score.toFixed(0)}</span>
+        <span class="smallStat mono">${Math.round(score)}</span>
         <span class="intangs" aria-hidden="true">
           <span class="intangDot">O:${overall}</span>
           <span class="intangDot">${intAvg}</span>
@@ -1434,7 +1472,10 @@
         <div class="teamCard">
           <div class="teamHead">
             <div class="teamName"><span class="swatch" style="background:${sw}"></span>${tname}</div>
-            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;"><div class="metrics"><span>Total <span class="mono">${total.toFixed(1)}</span></span><span>Avg <span class="mono">${avg.toFixed(2)}</span></span></div><div>${(function(){const fake={ratings:{overall:avg.toFixed(0),clutch:Math.round(avg)%5||3,consistency:Math.round(avg)%5||3,leadership:Math.round(avg)%5||3}; fake.ratings= {overall: Math.round(avg), clutch: Math.round((avg%5))||3, consistency: Math.round((avg%5))||3, leadership: Math.round((avg%5))||3}; fake.ratings.overall = Math.round((avg/13)+7); return playerMeterHTML({ratings: {overall: Math.round(avg/1.5)||7, clutch:3, consistency:3, leadership:3}, _score: avg}); })()}</div></div>
+            <div class="metrics">
+              <span>Total <span class="mono">${total.toFixed(1)}</span></span>
+              <span>Avg <span class="mono">${avg.toFixed(2)}</span></span>
+            </div>
           </div>
           <div class="teamBody">
             <ol class="names">${lis}</ol>
