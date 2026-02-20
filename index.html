@@ -153,44 +153,44 @@
         
         <div class="formGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
           <div>
-            <div class="fieldLabel">Overall</div>
-            <input class="input" id="mOverall" type="number" min="1" max="10" placeholder="Overall (1–10)">
+            <div class="fieldLabel">Overall (1–10)</div>
+            <input class="input" id="mOverall" type="number" min="1" max="10" placeholder="Overall (1–10)" inputmode="numeric" step="1">
           </div>
           <div>
-            <div class="fieldLabel">Passing</div>
-            <input class="input" id="mPassing" type="number" min="1" max="10" placeholder="Passing (1–10)">
+            <div class="fieldLabel">Passing (1–10)</div>
+            <input class="input" id="mPassing" type="number" min="1" max="10" placeholder="Passing (1–10)" inputmode="numeric" step="1">
           </div>
           <div>
-            <div class="fieldLabel">Dribbling</div>
-            <input class="input" id="mDribbling" type="number" min="1" max="10" placeholder="Dribbling (1–10)">
+            <div class="fieldLabel">Dribbling (1–10)</div>
+            <input class="input" id="mDribbling" type="number" min="1" max="10" placeholder="Dribbling (1–10)" inputmode="numeric" step="1">
           </div>
           <div>
-            <div class="fieldLabel">Finishing</div>
-            <input class="input" id="mFinishing" type="number" min="1" max="10" placeholder="Finishing (1–10)">
+            <div class="fieldLabel">Finishing (1–10)</div>
+            <input class="input" id="mFinishing" type="number" min="1" max="10" placeholder="Finishing (1–10)" inputmode="numeric" step="1">
           </div>
           <div>
-            <div class="fieldLabel">Defense</div>
-            <input class="input" id="mDefense" type="number" min="1" max="10" placeholder="Defense (1–10)">
+            <div class="fieldLabel">Defense (1–10)</div>
+            <input class="input" id="mDefense" type="number" min="1" max="10" placeholder="Defense (1–10)" inputmode="numeric" step="1">
           </div>
           <div>
-            <div class="fieldLabel">Speed</div>
-            <input class="input" id="mSpeed" type="number" min="1" max="10" placeholder="Speed (1–10)">
+            <div class="fieldLabel">Speed (1–10)</div>
+            <input class="input" id="mSpeed" type="number" min="1" max="10" placeholder="Speed (1–10)" inputmode="numeric" step="1">
           </div>
           <div>
-            <div class="fieldLabel">Stamina</div>
-            <input class="input" id="mStamina" type="number" min="1" max="10" placeholder="Stamina (1–10)">
+            <div class="fieldLabel">Stamina (1–10)</div>
+            <input class="input" id="mStamina" type="number" min="1" max="10" placeholder="Stamina (1–10)" inputmode="numeric" step="1">
           </div>
           <div>
-            <div class="fieldLabel">Clutch</div>
-            <input class="input" id="mClutch" type="number" min="1" max="5" placeholder="Clutch (1–5)">
+            <div class="fieldLabel">Clutch (1–5)</div>
+            <input class="input" id="mClutch" type="number" min="1" max="5" placeholder="Clutch (1–5)" inputmode="numeric" step="1">
           </div>
           <div>
-            <div class="fieldLabel">Consistency</div>
-            <input class="input" id="mConsistency" type="number" min="1" max="5" placeholder="Consistency (1–5)">
+            <div class="fieldLabel">Consistency (1–5)</div>
+            <input class="input" id="mConsistency" type="number" min="1" max="5" placeholder="Consistency (1–5)" inputmode="numeric" step="1">
           </div>
           <div>
-            <div class="fieldLabel">Leadership</div>
-            <input class="input" id="mLeadership" type="number" min="1" max="5" placeholder="Leadership (1–5)">
+            <div class="fieldLabel">Leadership (1–5)</div>
+            <input class="input" id="mLeadership" type="number" min="1" max="5" placeholder="Leadership (1–5)" inputmode="numeric" step="1">
           </div>
         </div>
 
@@ -276,7 +276,52 @@
   function openModal(id){ editingId = id || null; const p = id ? players.find(x=>x.id===id) : null; const data = p ? sanitize(p) : sanitize({id:null, name:'', roles:{M:true}, ratings:defaultRatings()}); $('mTitle').textContent = id ? 'Edit Player' : 'Add Player'; $('mName').value = data.name || ''; $('mF').checked = !!data.roles.F; $('mM').checked = !!data.roles.M; $('mD').checked = !!data.roles.D; $('mOverall').value = data.ratings.overall; $('mPassing').value = data.ratings.passing; $('mDribbling').value = data.ratings.dribbling; $('mFinishing').value = data.ratings.finishing; $('mDefense').value = data.ratings.defense; $('mSpeed').value = data.ratings.speed; $('mStamina').value = data.ratings.stamina; $('mClutch').value = data.ratings.clutch; $('mConsistency').value = data.ratings.consistency; $('mLeadership').value = data.ratings.leadership; $('mDelete').style.display = id ? '' : 'none'; $('modal').style.display = 'flex'; setTimeout(()=> $('mName').focus(),50); }
   function closeModal(){ $('modal').style.display='none'; editingId = null; }
 
-  function upsertFromModal(){ const name = ($('mName').value||'').trim(); if(!name){ alert('Name required'); return; } const roles = {F: $('mF').checked, M: $('mM').checked, D: $('mD').checked}; const ratings = { overall: clamp(Number($('mOverall').value||7),1,10), passing: clamp(Number($('mPassing').value||6),1,10), dribbling: clamp(Number($('mDribbling').value||6),1,10), finishing: clamp(Number($('mFinishing').value||6),1,10), defense: clamp(Number($('mDefense').value||6),1,10), speed: clamp(Number($('mSpeed').value||6),1,10), stamina: clamp(Number($('mStamina').value||6),1,10), clutch: clamp(Number($('mClutch').value||3),1,5), consistency: clamp(Number($('mConsistency').value||3),1,5), leadership: clamp(Number($('mLeadership').value||3),1,5) }; const id = editingId || uid(); const p = sanitize({ id, name, roles, ratings }); const idx = players.findIndex(x=>x.id===id); if(idx>=0) players[idx] = p; else players.push(p); save(); renderPlayersPage(); renderChecklist(); updateSticky(); closeModal(); }
+  
+  function readIntInRange(el, min, max, label){
+    const raw = (el.value || "").trim();
+    const n = Number(raw);
+    if(!Number.isFinite(n) || !Number.isInteger(n)){
+      alert(`${label} must be a whole number between ${min} and ${max}.`);
+      el.focus();
+      return null;
+    }
+    if(n < min || n > max){
+      alert(`${label} must be between ${min} and ${max}.`);
+      el.focus();
+      return null;
+    }
+    return n;
+  }
+
+  function attachRangeGuard(id, min, max){
+    const el = document.getElementById(id);
+    if(!el) return;
+    // Soft guard while typing: don't block typing, but enforce on blur/change.
+    const check = () => {
+      const raw = (el.value || "").trim();
+      if(raw === "") return;
+      const n = Number(raw);
+      if(!Number.isFinite(n)) return;
+      if(n < min) el.value = String(min);
+      if(n > max) el.value = String(max);
+    };
+    el.addEventListener("blur", check);
+    el.addEventListener("change", check);
+  }
+
+  function upsertFromModal(){ const name = ($('mName').value||'').trim(); if(!name){ alert('Name required'); return; } const roles = {F: $('mF').checked, M: $('mM').checked, D: $('mD').checked}; const ratings = {
+      overall: readIntInRange($('mOverall'), 1, 10, "Overall"),
+      passing: readIntInRange($('mPassing'), 1, 10, "Passing"),
+      dribbling: readIntInRange($('mDribbling'), 1, 10, "Dribbling"),
+      finishing: readIntInRange($('mFinishing'), 1, 10, "Finishing"),
+      defense: readIntInRange($('mDefense'), 1, 10, "Defense"),
+      speed: readIntInRange($('mSpeed'), 1, 10, "Speed"),
+      stamina: readIntInRange($('mStamina'), 1, 10, "Stamina"),
+      clutch: readIntInRange($('mClutch'), 1, 5, "Clutch"),
+      consistency: readIntInRange($('mConsistency'), 1, 5, "Consistency"),
+      leadership: readIntInRange($('mLeadership'), 1, 5, "Leadership"),
+    };
+    if(Object.values(ratings).some(v => v === null)) return; const id = editingId || uid(); const p = sanitize({ id, name, roles, ratings }); const idx = players.findIndex(x=>x.id===id); if(idx>=0) players[idx] = p; else players.push(p); save(); renderPlayersPage(); renderChecklist(); updateSticky(); closeModal(); }
 
   function deleteFromModal(){ if(!editingId) return; const p = players.find(x=>x.id===editingId); if(!p) return; if(!confirm('Delete ' + p.name + '?')) return; players = players.filter(x=>x.id !== editingId); selection.delete(editingId); save(); saveSelection(); lastSolution = null; renderResults(null); renderPlayersPage(); renderChecklist(); updateSticky(); closeModal(); }
 
@@ -306,6 +351,18 @@
   document.getElementById('mSave').addEventListener('click', upsertFromModal);
   document.getElementById('mDelete').addEventListener('click', deleteFromModal);
   document.getElementById('modal').addEventListener('click', (e)=>{ if(e.target.id==='modal') closeModal(); });
+
+  
+  attachRangeGuard('mOverall', 1, 10);
+  attachRangeGuard('mPassing', 1, 10);
+  attachRangeGuard('mDribbling', 1, 10);
+  attachRangeGuard('mFinishing', 1, 10);
+  attachRangeGuard('mDefense', 1, 10);
+  attachRangeGuard('mSpeed', 1, 10);
+  attachRangeGuard('mStamina', 1, 10);
+  attachRangeGuard('mClutch', 1, 5);
+  attachRangeGuard('mConsistency', 1, 5);
+  attachRangeGuard('mLeadership', 1, 5);
 
   // init
   load(); loadSelection(); save(); renderChecklist(); renderPlayersPage(); updateSticky();
