@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Pickup Balancer" />
+  <meta name="theme-color" content="#0b1220" />
   <title>Pickup Soccer Team Balancer (Offline)</title>
   <style>
     :root{
@@ -25,6 +29,7 @@
     *{box-sizing:border-box}
     body{
       margin:0;
+      font-size:16px;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji","Segoe UI Emoji";
       background: radial-gradient(1200px 800px at 20% 0%, #1a2a52 0%, var(--bg) 55%) fixed;
       color:var(--text);
@@ -409,7 +414,116 @@
       background: rgba(10,15,26,0.5);
       color: var(--text);
     }
-  </style>
+  
+    /* METER */
+    .meter{
+      width:120px;
+      height:10px;
+      background:linear-gradient(90deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border-radius:8px;
+      border:1px solid rgba(35,48,85,0.8);
+      overflow:hidden;
+      display:inline-block;
+      vertical-align:middle;
+      margin-left:10px;
+    }
+    .meter-fill{
+      height:100%;
+      border-radius:8px;
+      width:0%;
+      transition: width 420ms cubic-bezier(.2,.9,.2,1);
+      box-shadow: inset 0 -6px 12px rgba(0,0,0,0.35);
+    }
+    .meter-strong{ background: linear-gradient(90deg, rgba(122,162,255,0.9), rgba(77,150,255,0.9)); }
+    .meter-mid{ background: linear-gradient(90deg, rgba(65,209,138,0.9), rgba(122,162,255,0.6)); }
+    .meter-low{ background: linear-gradient(90deg, rgba(255,107,107,0.9), rgba(255,172,172,0.5)); }
+
+    .playerScoreBadge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-left:8px;
+    }
+    .smallStat{
+      min-width:38px;
+      text-align:center;
+      font-weight:700;
+      font-size:12px;
+      color:var(--muted);
+      background: rgba(255,255,255,0.02);
+      border-radius:8px;
+      padding:4px 6px;
+      border:1px solid rgba(35,48,85,0.65);
+    }
+    .intangs{ display:inline-flex; gap:6px; margin-left:8px; align-items:center; }
+    .intangDot{
+      min-width:24px;
+      padding:4px 6px;
+      border-radius:8px;
+      font-size:11px;
+      text-align:center;
+      border:1px solid rgba(35,48,85,0.65);
+      color:var(--muted);
+      background: rgba(10,15,26,0.35);
+    }
+
+    /* More touch-friendly */
+    .btn{ padding:12px 14px; }
+    .playerRow { padding:12px 14px; }
+    .list th, .list td{ padding:12px; }
+    .teamBody { padding:14px; }
+    .names li{ font-size:15px; }
+
+
+    /* Readability + mobile-first tweaks */
+    .list tbody tr:nth-child(even){ background: rgba(17,26,44,0.22); }
+    .list tbody tr:hover{ background: rgba(122,162,255,0.08); }
+    .playerRow:nth-child(even){ background: rgba(17,26,44,0.22); }
+    .playerRow:hover{ background: rgba(122,162,255,0.08); }
+
+    .levelDot{
+      width:10px;height:10px;border-radius:50%;
+      display:inline-block;
+      box-shadow: 0 0 0 3px rgba(255,255,255,0.06);
+      border:1px solid rgba(0,0,0,0.25);
+      flex:0 0 auto;
+    }
+    .dot-strong{ background: rgba(77,150,255,0.95); }
+    .dot-mid{ background: rgba(65,209,138,0.95); }
+    .dot-low{ background: rgba(255,107,107,0.95); }
+
+    /* Make tables usable on small screens: convert rows into cards */
+    @media (max-width: 720px){
+      h1{ font-size:17px; }
+      .sub{ font-size:12px; }
+      .tabbtn{ padding:12px 14px; font-size:14px; }
+      .input, .select{ font-size:14px; }
+      .list thead{ display:none; }
+      .list, .list tbody, .list tr, .list td{ display:block; width:100%; }
+      .list tr{
+        border-bottom:1px solid rgba(35,48,85,0.55);
+        padding:10px 10px 12px;
+      }
+      .list td{
+        border-bottom:none;
+        padding:6px 0;
+      }
+      .actions{ justify-content:flex-start; }
+      .meter{ width:92px; height:12px; }
+      .names li{ font-size:16px; }
+      .teamHead{ flex-wrap:wrap; gap:8px; }
+      .teamName{ font-size:16px; }
+    }
+
+    @media (max-width: 420px){
+      .meter{ width:84px; }
+      .playerRow .name{ max-width: 210px; font-size:15px; }
+      .playerRow .meta{ font-size:12px; }
+      .btn{ width:100%; justify-content:center; }
+      .row{ gap:8px; }
+    }
+
+</style>
 </head>
 <body>
   <div class="app">
@@ -422,13 +536,13 @@
         </div>
       </div>
       <div class="tabs">
-        <button id="tabPlayers" class="tabbtn active">Players</button>
-        <button id="tabGame" class="tabbtn">Game Builder</button>
+        <button id="tabPlayers" class="tabbtn">Players</button>
+        <button id="tabGame" class="tabbtn active">Game Builder</button>
       </div>
     </div>
 
     <!-- PLAYERS PAGE -->
-    <section id="pagePlayers">
+    <section id="pagePlayers" style="display:none">
       <div class="grid">
         <div class="card">
           <div class="head">
@@ -493,7 +607,7 @@
     </section>
 
     <!-- GAME PAGE -->
-    <section id="pageGame" style="display:none">
+    <section id="pageGame">
       <div class="card">
         <div class="head">
           <div>
@@ -896,7 +1010,7 @@
         const score = computeScore(p).toFixed(1);
         return `
           <tr data-id="${p.id}" title="Double-click to edit">
-            <td><b>${escapeHTML(p.name)}</b><div class="small">overall ${p.ratings.overall} • tech ${p.ratings.passing}/${p.ratings.dribbling}/${p.ratings.finishing}/${p.ratings.defense}</div></td>
+            <td><div style="display:flex; align-items:center; gap:10px;"><div><b>${escapeHTML(p.name)}</b><div class="small">overall ${p.ratings.overall} • tech ${p.ratings.passing}/${p.ratings.dribbling}/${p.ratings.finishing}/${p.ratings.defense}</div></div>${playerMeterHTML(p)}</div></td>
             <td>${roleChipsHTML(p)}</td>
             <td class="mono">${score}</td>
             <td>
@@ -1027,6 +1141,7 @@
             <div style="min-width:0;">
               <div class="name">${escapeHTML(p.name)}</div>
               <div class="meta">score ${score.toFixed(1)} • ${roleTxt || "—"}</div>
+              ${playerMeterHTML(p)}
             </div>
           </div>
           <div class="chips" aria-hidden="true">
@@ -1047,6 +1162,31 @@
     el.btnRegenerate.disabled = !state.lastSolution;
   }
 
+
+  // Small UI helper: produce meter + badges for a player object
+  function playerMeterHTML(p){
+    const score = computeScore(p);
+    const maxPossible = 130; // theoretical composite max used for normalization
+    const pct = Math.round(100 * (score / maxPossible));
+    const cls = pct >= 72 ? "meter-strong" : (pct >= 48 ? "meter-mid" : "meter-low");
+    const overall = p.ratings?.overall ?? p.ratings?.overall ?? 7;
+    const clutch = p.ratings?.clutch ?? 3;
+    const consistency = p.ratings?.consistency ?? 3;
+    const leadership = p.ratings?.leadership ?? 3;
+    // compact intangibles average (1-5) scaled for display
+    const intAvg = ((clutch + consistency + leadership) / 3).toFixed(1);
+    return `
+      <span class="playerScoreBadge" title="Composite ${score.toFixed(1)}">
+        <span class="levelDot ${pct>=72? "dot-strong": (pct>=48? "dot-mid":"dot-low")}" aria-hidden="true"></span>
+        <span class="meter" aria-hidden="true"><span class="meter-fill ${cls}" style="width:${pct}%;"></span></span>
+        <span class="smallStat mono">${score.toFixed(0)}</span>
+        <span class="intangs" aria-hidden="true">
+          <span class="intangDot">O:${overall}</span>
+          <span class="intangDot">${intAvg}</span>
+        </span>
+      </span>
+    `;
+  }
   // ---------- Balancing algorithm ----------
   function getTeamNames(teamCount){
     return teamCount === 2 ? ["Red","White"] : ["Red","White","Black","Blue"];
@@ -1287,17 +1427,14 @@
       const total = solution.totals[i];
       const avg = solution.avgs[i];
 
-      const sortedNames = team.slice().map(p=>p.name).sort((a,b)=>a.localeCompare(b));
-      const lis = sortedNames.map(n => `<li>${escapeHTML(n)}</li>`).join("");
+      const sorted = team.slice().sort((a,b)=>a.name.localeCompare(b.name));
+      const lis = sorted.map(p => `<li>${escapeHTML(p.name)} ${playerMeterHTML(p)}</li>`).join("");
 
       return `
         <div class="teamCard">
           <div class="teamHead">
             <div class="teamName"><span class="swatch" style="background:${sw}"></span>${tname}</div>
-            <div class="metrics">
-              <span>Total <span class="mono">${total.toFixed(1)}</span></span>
-              <span>Avg <span class="mono">${avg.toFixed(2)}</span></span>
-            </div>
+            <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;"><div class="metrics"><span>Total <span class="mono">${total.toFixed(1)}</span></span><span>Avg <span class="mono">${avg.toFixed(2)}</span></span></div><div>${(function(){const fake={ratings:{overall:avg.toFixed(0),clutch:Math.round(avg)%5||3,consistency:Math.round(avg)%5||3,leadership:Math.round(avg)%5||3}; fake.ratings= {overall: Math.round(avg), clutch: Math.round((avg%5))||3, consistency: Math.round((avg%5))||3, leadership: Math.round((avg%5))||3}; fake.ratings.overall = Math.round((avg/13)+7); return playerMeterHTML({ratings: {overall: Math.round(avg/1.5)||7, clutch:3, consistency:3, leadership:3}, _score: avg}); })()}</div></div>
           </div>
           <div class="teamBody">
             <ol class="names">${lis}</ol>
@@ -1476,6 +1613,7 @@
   loadSelection();
   savePlayers(); // ensure count updates
   renderAll();
+  showTab("game");
 })();
 </script>
 </body>
