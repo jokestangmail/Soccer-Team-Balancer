@@ -1,628 +1,1118 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <meta name="apple-mobile-web-app-title" content="Pickup Balancer" />
-  <meta name="theme-color" content="#0b1220" />
-  <title>Pickup Soccer Team Balancer</title>
-  <style>
-    :root{
-      --bg:#07101b;
-      --panel:#081323;
-      --card:#0b1726;
-      --muted:#a9b6d3;
-      --text:#eef4ff;
-      --accent:#7aa2ff;
-      --good:#41d18a;
-      --warn:#ffcc66;
-      --bad:#ff6b6b;
-      --row1: rgba(255,255,255,0.02);
-      --row2: rgba(255,255,255,0.01);
-      --glass: rgba(255,255,255,0.02);
-      --maxWidth:420px;
-    }
-    *{box-sizing:border-box}
-    html,body{ height:100%; margin:0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: linear-gradient(180deg,#051020 0%, #07101b 60%); color:var(--text); -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale;}
-    .app{
-      max-width: var(--maxWidth);
-      margin: 0 auto;
-      padding: 10px;
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    header.top{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:8px;
-      padding:8px 6px;
-    }
-    .brand{
-      display:flex;
-      gap:10px;
-      align-items:center;
-    }
-    .logo{
-      width:44px; height:44px; border-radius:10px;
-      background: linear-gradient(135deg,var(--accent), #4d96ff);
-      display:flex;align-items:center;justify-content:center;font-weight:800;color:#041229;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
-    }
-    h1{ margin:0; font-size:16px; line-height:1; }
-    .sub{ color:var(--muted); font-size:12px; margin-top:2px; }
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Pickup Balancer" />
+<meta name="theme-color" content="#ffffff" />
+<title>Pickup Balancer</title>
+<style>
+  :root{
+    --ios-blue:#0A84FF;
+    --bg:#ffffff;
+    --card:#F6F7FA;
+    --border:#E6E8EE;
+    --text:#0B0F1A;
+    --muted:#667085;
 
-    main{ flex:1; display:flex; flex-direction:column; gap:10px; }
+    --green:#34C759;
+    --yellow:#FFCC00;
+    --red:#FF3B30;
 
-    /* Bottom nav tabs, phone-first */
-    .tabsMobile{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      justify-content:space-between;
-      background:transparent;
-      padding:6px;
-    }
-    .tabBtn{
-      flex:1;
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:12px;
-      padding:12px;
-      font-weight:700;
-      font-size:15px;
-      color:var(--muted);
-      border:1px solid rgba(255,255,255,0.03);
-      text-align:center;
-      cursor:pointer;
-    }
-    .tabBtn.active{
-      color:var(--text);
-      background: linear-gradient(180deg, rgba(122,162,255,0.12), rgba(122,162,255,0.08));
-      border-color: rgba(122,162,255,0.28);
-      box-shadow: 0 8px 24px rgba(10,20,40,0.45);
-    }
+    --shadow: 0 6px 18px rgba(10, 20, 40, 0.08);
+    --radius:16px;
+    --maxW:440px;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{
+    max-width:var(--maxW);
+    margin:0 auto;
+    min-height:100vh;
+    padding:12px 14px calc(env(safe-area-inset-bottom) + 118px) 14px;
+  }
+  .topbar{
+    display:flex; align-items:flex-start; justify-content:space-between; gap:12px;
+    padding-top: env(safe-area-inset-top);
+    margin-bottom:10px;
+  }
+  .titleBlock{min-width:0}
+  .title{font-weight:900; font-size:22px; letter-spacing:-0.2px; line-height:1.1}
+  .subtitle{color:var(--muted); font-size:13px; margin-top:3px}
+  .pill{
+    flex:0 0 auto;
+    padding:8px 10px;
+    border:1px solid var(--border);
+    border-radius:999px;
+    background:#fff;
+    font-weight:900;
+    font-size:13px;
+    min-width:44px;
+    text-align:center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+  }
 
-    /* Card */
-    .card{
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-      border-radius:14px;
-      padding:10px;
-      border:1px solid rgba(255,255,255,0.03);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.45);
-    }
+  /* Segmented tabs */
+  .segWrap{
+    background: #F0F2F6;
+    border:1px solid #E6E8EE;
+    border-radius:14px;
+    padding:4px;
+    display:flex;
+    gap:4px;
+    margin-bottom:12px;
+  }
+  .seg{
+    flex:1;
+    border:0;
+    border-radius:12px;
+    padding:10px 10px;
+    font-weight:900;
+    font-size:15px;
+    background:transparent;
+    color:var(--muted);
+    cursor:pointer;
+  }
+  .seg.active{
+    background:#fff;
+    color:var(--text);
+    box-shadow: 0 4px 10px rgba(10,20,40,0.06);
+  }
 
-    /* Game builder layout */
-    .gameTop{
-      display:flex;
-      gap:8px;
-      align-items:center;
-      justify-content:space-between;
-    }
-    .controls{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    .select, .search{
-      border-radius:10px;
-      background: transparent;
-      border:1px solid rgba(255,255,255,0.04);
-      color:var(--text);
-      padding:10px 12px;
-      font-size:15px;
-    }
-    .btn{
-      border-radius:10px;
-      padding:10px 12px;
-      background:var(--accent);
-      color:#03122b;
-      font-weight:800;
-      border:none;
-      cursor:pointer;
-      font-size:15px;
-    }
-    .btn.secondary{
-      background: transparent;
-      border:1px solid rgba(255,255,255,0.04);
-      color:var(--text);
-      font-weight:700;
-    }
+  .sectionCard{
+    background:#fff;
+    border:1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding:12px;
+    margin-bottom:12px;
+  }
+  .grid2{display:grid; grid-template-columns: 1fr 1fr; gap:10px}
+  .fieldLabel{font-size:12px; color:var(--muted); font-weight:800; margin:2px 0 6px}
+  .select,.input{
+    width:100%;
+    padding:12px 12px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    background:#fff;
+    font-size:16px;
+    outline:none;
+  }
 
-    .countPill{ font-weight:800; color:var(--muted); font-size:14px; padding:6px 8px; border-radius:10px; background:transparent; border:1px solid rgba(255,255,255,0.02); }
+  /* Player list */
+  .list{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    max-height: 54vh;
+    overflow:auto;
+    -webkit-overflow-scrolling:touch;
+    padding-right:2px;
+  }
+  .row{
+    border:1px solid var(--border);
+    border-radius:16px;
+    background: var(--card);
+    padding:12px 12px;
+    box-shadow: 0 4px 14px rgba(10,20,40,0.05);
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    cursor:pointer;
+    user-select:none;
+    -webkit-tap-highlight-color: rgba(10,132,255,0.15);
+  }
+  .row.alt{background:#fff}
+  .row.selected{
+    background: rgba(10,132,255,0.10);
+    border-color: rgba(10,132,255,0.35);
+  }
+  .left{min-width:0; flex:1}
+  .name{font-size:17px; font-weight:1000; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .meta{font-size:13px; color:var(--muted); margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
 
-    /* Checklist - mobile card list */
-    .checklist{
-      display:flex;
-      flex-direction:column;
-      gap:8px;
-      max-height:56vh;
-      overflow:auto;
-      padding-right:4px;
-    }
-    .playerCard{
-      display:flex;
-      gap:10px;
-      align-items:center;
-      justify-content:space-between;
-      padding:12px;
-      border-radius:12px;
-      background: linear-gradient(180deg, var(--row1), var(--row2));
-      border:1px solid rgba(255,255,255,0.02);
-      transition: transform .06s ease, box-shadow .08s ease;
-    }
-    .playerCard.alt{ background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.008)); }
+  .strength{
+    margin-top:8px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .bar{
+    flex:1;
+    height:14px;
+    border-radius:999px;
+    overflow:hidden;
+    background:#E9EDF5;
+    border:1px solid rgba(10,20,40,0.06);
+  }
+  .fill{height:100%; width:0%}
+  .score{
+    font-weight:1000;
+    font-size:14px;
+    min-width:44px;
+    text-align:right;
+    color:#1f2a44;
+  }
 
-    .playerLeft{ display:flex; gap:10px; align-items:center; min-width:0; }
-    .check{ width:20px; height:20px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); display:inline-flex; align-items:center; justify-content:center; cursor:pointer; background:transparent; }
-    .nameWrap{ min-width:0; }
-    .playerName{ font-size:16px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-    .playerMeta{ color:var(--muted); font-size:13px; margin-top:6px; }
+  /* Results */
+  .teams{display:flex; flex-direction:column; gap:12px}
+  .teamCard{
+    border:1px solid var(--border);
+    border-radius:18px;
+    overflow:hidden;
+    background:#fff;
+    box-shadow: var(--shadow);
+  }
+  .teamHeader{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    padding:10px 12px;
+    color:#fff;
+    font-weight:1000;
+  }
+  .teamHeader .hLeft{display:flex; align-items:center; gap:10px}
+  .teamHeader .hName{font-size:16px; letter-spacing:0.2px}
+  .teamHeader .hStats{font-size:12px; opacity:0.9; text-align:right}
+  .teamBody{padding:10px 12px}
+  .playerLine{display:flex; align-items:center; justify-content:space-between; gap:10px; padding:7px 0; border-bottom:1px solid #F0F2F6}
+  .playerLine:last-child{border-bottom:none}
+  .playerLine .pn{font-weight:900; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width: 75%}
+  .badge{
+    min-width:44px;
+    text-align:center;
+    padding:6px 10px;
+    border-radius:999px;
+    border:1px solid var(--border);
+    background:#fff;
+    font-weight:1000;
+    color:#1f2a44;
+    font-size:13px;
+  }
 
-    /* small strength dot + meter */
-    .strength{
-      display:flex;
-      gap:8px;
-      align-items:center;
-    }
-    .dot{
-      width:12px; height:12px; border-radius:50%; box-shadow:0 4px 8px rgba(0,0,0,0.35); border:1px solid rgba(255,255,255,0.03);
-    }
-    .meter{
-      width:120px; height:10px; border-radius:999px; background: linear-gradient(90deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)); overflow:hidden; border:1px solid rgba(255,255,255,0.02);
-    }
-    .meter-fill{ height:100%; width:0%; transition: width .36s cubic-bezier(.2,.9,.2,1); }
-    .scoreBadge{ font-weight:800; min-width:42px; text-align:center; background: rgba(255,255,255,0.02); padding:6px; border-radius:8px; font-size:13px; color:var(--muted); border:1px solid rgba(255,255,255,0.02); }
+  /* Team colors */
+  .c-red{background:#EB5757}
+  .c-black{background:#111111}
+  .c-blue{background:#2F80ED}
+  .c-white{background:#F0F2F7; color:#111111}
+  .c-white .hStats{opacity:0.75}
+  .shirt svg{display:block}
+  .c-white .shirt svg{filter: drop-shadow(0 1px 1px rgba(0,0,0,0.25));}
 
-    /* Results */
-    .resultsGrid{ display:flex; flex-direction:column; gap:8px; }
-    .teamCard{
-      display:flex; flex-direction:column; gap:8px;
-      padding:10px; border-radius:12px;
-      border:1px solid rgba(255,255,255,0.03);
-      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-    }
-    .teamHead{ display:flex; justify-content:space-between; align-items:center; gap:8px; }
-    .teamName{ font-weight:900; font-size:16px; }
-    .teamList{ display:flex; flex-direction:column; gap:6px; margin-top:6px; }
-    .teamNameSmall{ font-size:13px; color:var(--muted); font-weight:700; }
+  /* Sticky bottom actions */
+  .sticky{
+    position:fixed;
+    left:0; right:0; bottom:0;
+    padding:10px 14px calc(env(safe-area-inset-bottom) + 12px) 14px;
+    background: rgba(255,255,255,0.92);
+    border-top:1px solid var(--border);
+    backdrop-filter: blur(12px);
+  }
+  .stickyInner{
+    max-width:var(--maxW);
+    margin:0 auto;
+  }
+  .stickyTop{
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+    margin-bottom:10px;
+    color:var(--muted);
+    font-weight:800;
+    font-size:13px;
+  }
+  .btn{
+    width:100%;
+    padding:16px 16px;
+    border-radius:16px;
+    font-size:17px;
+    font-weight:1000;
+    border:0;
+    cursor:pointer;
+  }
+  .btn.primary{background: var(--ios-blue); color:#fff;}
+  .btn.primary:disabled{opacity:0.45; cursor:not-allowed;}
+  .btnRow2{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .btn.secondary{
+    background:#fff;
+    border:1px solid var(--border);
+    color:var(--text);
+  }
+  .btn.outline{
+    background:#fff;
+    border:1px solid rgba(10,132,255,0.35);
+    color: var(--ios-blue);
+  }
 
-    /* Players page */
-    .playersGrid{ display:flex; flex-direction:column; gap:8px; max-height:65vh; overflow:auto; padding-right:4px; }
-    .playerRowBig{ display:flex; gap:10px; align-items:center; justify-content:space-between; padding:12px; border-radius:12px; background: linear-gradient(180deg,var(--row2),var(--row1)); border:1px solid rgba(255,255,255,0.02); }
-    .roleChips{ display:flex; gap:6px; margin-left:6px; }
-    .chip{ font-size:12px; padding:6px 8px; border-radius:999px; background: rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.02); color:var(--muted); font-weight:700; }
+  /* Players page controls */
+  .smallBtnRow{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .smallBtn{padding:12px 12px; border-radius:14px; font-weight:1000; font-size:15px; border:1px solid var(--border); background:#fff; cursor:pointer}
+  .smallBtn.primary{border-color: rgba(10,132,255,0.35); color: var(--ios-blue);}
+  .note{font-size:12px; color:var(--muted); text-align:center; margin-top:8px}
 
-    footer{ display:flex; gap:8px; justify-content:center; padding:8px 0; }
-    .hint{ font-size:13px; color:var(--muted); text-align:center; }
-
-    /* responsive tweaks for larger phones */
-    @media(min-width:420px){
-      :root{ --maxWidth:420px; }
-    }
-    @media(min-width:520px){
-      :root{ --maxWidth:520px; }
-      .meter{ width:160px; }
-    }
-  </style>
+  /* Modal sheet */
+  .modal{display:none; position:fixed; inset:0; background:rgba(0,0,0,0.35); padding:14px; align-items:flex-end; justify-content:center;}
+  .sheet{
+    width:100%;
+    max-width:var(--maxW);
+    background:#fff;
+    border-radius:22px;
+    border:1px solid var(--border);
+    box-shadow: 0 18px 60px rgba(0,0,0,0.18);
+    padding:14px;
+    margin-bottom: env(safe-area-inset-bottom);
+  }
+  .sheetHeader{display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px}
+  .sheetHeader .shTitle{font-weight:1000; font-size:16px}
+  .sheetHeader .shBtns{display:flex; gap:10px}
+  .chipBtn{padding:10px 12px; border-radius:999px; font-weight:1000; border:1px solid var(--border); background:#fff; cursor:pointer}
+  .chipBtn.primary{border-color: rgba(10,132,255,0.35); color: var(--ios-blue);}
+  .formGrid{display:grid; grid-template-columns:1fr 1fr; gap:10px}
+  .roles{display:flex; gap:16px; align-items:center}
+  .roles label{font-weight:900; color:#1f2a44}
+  .danger{color:#D92D20; border-color: rgba(217,45,32,0.25)}
+</style>
 </head>
 <body>
-  <div class="app" role="application">
-    <header class="top">
-      <div class="brand">
-        <div class="logo">PB</div>
-        <div>
-          <h1>Pickup Balancer</h1>
-          <div class="sub">Quick teams — local only</div>
-        </div>
-      </div>
-      <div class="countPill" id="countPlayers">0</div>
-    </header>
 
-    <main id="mainApp">
-      <!-- Game builder (default) -->
-      <section id="pageGame" class="card" aria-hidden="false">
-        <div class="gameTop">
-          <div style="display:flex;flex-direction:column;">
-            <div style="display:flex;gap:8px;align-items:center;">
-              <select id="numGames" class="select" aria-label="Number of games">
-                <option value="1">1 game — 2 teams</option>
-                <option value="2">2 games — 4 teams</option>
-              </select>
-              <input id="gameSearch" class="search" placeholder="Filter players…" aria-label="Filter players" />
-            </div>
-            <div style="margin-top:8px; color:var(--muted); font-size:13px;">Select players below and tap Generate</div>
-          </div>
-
-          <div class="controls" style="flex-direction:column; align-items:flex-end;">
-            <div style="display:flex;gap:8px; align-items:center;">
-              <button id="btnClearSelection" class="btn secondary">Clear</button>
-              <button id="btnGenerate" class="btn">Generate</button>
-            </div>
-            <div style="margin-top:8px; font-size:13px; color:var(--muted);">Selected: <b id="selectedCount">0</b></div>
-          </div>
-        </div>
-
-        <div style="height:8px"></div>
-
-        <div class="checklist card" id="playerChecklist" aria-label="Player list">
-          <!-- injected player cards -->
-        </div>
-
-        <div style="height:12px"></div>
-
-        <div class="card" id="resultsPanel" aria-live="polite">
-          <div class="hint">No teams generated yet. Tap Generate.</div>
-        </div>
-      </section>
-
-      <!-- Players management -->
-      <section id="pagePlayers" class="card" aria-hidden="true" style="display:none;">
-        <div style="display:flex;justify-content:space-between;align-items:center;">
-          <div style="display:flex;flex-direction:column;">
-            <div style="font-weight:900;font-size:16px;">Players</div>
-            <div class="sub">Tap a player to edit</div>
-          </div>
-          <div style="display:flex;gap:8px;align-items:center;">
-            <input id="playerSearch" class="search" placeholder="Search…" />
-            <button id="btnAddPlayer" class="btn">Add</button>
-          </div>
-        </div>
-
-        <div style="height:8px"></div>
-
-        <div class="playersGrid" id="playersGrid">
-          <!-- injected players -->
-        </div>
-
-        <div style="height:8px"></div>
-
-        <div style="display:flex;gap:8px;justify-content:space-between;align-items:center;">
-          <div class="hint">Data stored locally in your browser</div>
-          <div style="display:flex;gap:8px;">
-            <button id="btnExport" class="btn secondary">Export</button>
-            <button id="btnImport" class="btn secondary">Import</button>
-            <button id="btnReset" class="btn secondary">Reset</button>
-            <input id="importFile" type="file" accept="application/json" style="display:none" />
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <footer>
-      <div class="tabsMobile">
-        <button id="tabGame" class="tabBtn active" aria-pressed="true">Game</button>
-        <button id="tabPlayers" class="tabBtn" aria-pressed="false">Players</button>
-      </div>
-    </footer>
+<div class="app">
+  <div class="topbar">
+    <div class="titleBlock">
+      <div class="title">Pickup Balancer</div>
+      <div class="subtitle">Quick teams • local only</div>
+    </div>
+    <div class="pill" id="dbCount">0</div>
   </div>
 
-  <!-- Modal for add/edit -->
-  <div id="modalBackdrop" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; padding:12px;">
-    <div style="width:100%; max-width:420px; background:var(--card); border-radius:12px; padding:12px; border:1px solid rgba(255,255,255,0.03);">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-        <div style="font-weight:900;">Player</div>
-        <div style="display:flex;gap:8px;">
-          <button id="modalCancel" class="btn secondary">Cancel</button>
-          <button id="modalSave" class="btn">Save</button>
+  <div class="segWrap">
+    <button class="seg active" id="tabGame" type="button">Game</button>
+    <button class="seg" id="tabPlayers" type="button">Players</button>
+  </div>
+
+  <!-- Game page -->
+  <div id="pageGame">
+    <div class="sectionCard">
+      <div class="grid2">
+        <div>
+          <div class="fieldLabel">Game</div>
+          <select class="select" id="numGames">
+            <option value="1">1 game — 2 teams</option>
+            <option value="2">2 games — 4 teams</option>
+          </select>
+        </div>
+        <div>
+          <div class="fieldLabel">Search</div>
+          <input class="input" id="gameSearch" placeholder="Search players…" />
         </div>
       </div>
-      <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-        <div style="grid-column:1 / -1;">
-          <label style="font-size:13px; color:var(--muted)">Name</label>
-          <input id="mName" class="search" placeholder="Name" />
+    </div>
+
+    <div class="sectionCard">
+      <div class="list" id="checklist"></div>
+    </div>
+
+    <div id="results"></div>
+  </div>
+
+  <!-- Players page -->
+  <div id="pagePlayers" style="display:none;">
+    <div class="sectionCard">
+      <div class="grid2">
+        <div>
+          <div class="fieldLabel">Search</div>
+          <input class="input" id="playerSearch" placeholder="Search players…" />
         </div>
-        <div style="grid-column:1 / -1;">
-          <label style="font-size:13px; color:var(--muted)">Roles</label>
-          <div style="display:flex;gap:8px;">
-            <label style="font-weight:700;"><input type="checkbox" id="mF" /> F</label>
-            <label style="font-weight:700;"><input type="checkbox" id="mM" /> M</label>
-            <label style="font-weight:700;"><input type="checkbox" id="mD" /> D</label>
+        <div>
+          <div class="fieldLabel">Actions</div>
+          <div class="smallBtnRow">
+            <button class="smallBtn primary" id="btnAdd" type="button">Add</button>
+            <button class="smallBtn" id="btnReset" type="button">Reset</button>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div><label class="sub">Overall</label><input id="mOverall" type="number" min="1" max="10" class="search" /></div>
-        <div><label class="sub">Passing</label><input id="mPassing" type="number" min="1" max="10" class="search" /></div>
-        <div><label class="sub">Dribbling</label><input id="mDribbling" type="number" min="1" max="10" class="search" /></div>
-        <div><label class="sub">Finishing</label><input id="mFinishing" type="number" min="1" max="10" class="search" /></div>
-        <div><label class="sub">Defense</label><input id="mDefense" type="number" min="1" max="10" class="search" /></div>
-        <div><label class="sub">Speed</label><input id="mSpeed" type="number" min="1" max="10" class="search" /></div>
-        <div><label class="sub">Stamina</label><input id="mStamina" type="number" min="1" max="10" class="search" /></div>
-        <div><label class="sub">Clutch (1-5)</label><input id="mClutch" type="number" min="1" max="5" class="search" /></div>
-        <div><label class="sub">Consistency (1-5)</label><input id="mConsistency" type="number" min="1" max="5" class="search" /></div>
-        <div><label class="sub">Leadership (1-5)</label><input id="mLeadership" type="number" min="1" max="5" class="search" /></div>
+    <div class="sectionCard">
+      <div class="list" id="playersList"></div>
+    </div>
+
+    <div class="sectionCard">
+      <div class="smallBtnRow">
+        <button class="smallBtn" id="btnExport" type="button">Export JSON</button>
+        <button class="smallBtn" id="btnImport" type="button">Import JSON</button>
+      </div>
+      <input id="importFile" type="file" accept="application/json" style="display:none" />
+      <div class="note">Saved locally in your browser (localStorage)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Sticky actions -->
+<div class="sticky" id="sticky">
+  <div class="stickyInner">
+    <div class="stickyTop">
+      <div><span id="selCount">0</span> selected</div>
+      <div id="objNote"></div>
+    </div>
+
+    <div id="stickyActions">
+      <button class="btn primary" id="btnGenerate" type="button" disabled>Generate Teams</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal sheet -->
+<div class="modal" id="modal">
+  <div class="sheet" role="dialog" aria-modal="true">
+    <div class="sheetHeader">
+      <div class="shTitle" id="mTitle">Player</div>
+      <div class="shBtns">
+        <button class="chipBtn" id="mCancel" type="button">Cancel</button>
+        <button class="chipBtn primary" id="mSave" type="button">Save</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="fieldLabel">Name</div>
+      <input class="input" id="mName" placeholder="Name" />
+
+      <div style="margin-top:10px">
+        <div class="fieldLabel">Roles</div>
+        <div class="roles">
+          <label><input type="checkbox" id="mF"> F</label>
+          <label><input type="checkbox" id="mM"> M</label>
+          <label><input type="checkbox" id="mD"> D</label>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <div class="fieldLabel">Ratings</div>
+        <div class="formGrid">
+          <div><input class="input" id="mOverall" type="number" min="1" max="10" placeholder="Overall (1–10)"></div>
+          <div><input class="input" id="mPassing" type="number" min="1" max="10" placeholder="Passing (1–10)"></div>
+          <div><input class="input" id="mDribbling" type="number" min="1" max="10" placeholder="Dribbling (1–10)"></div>
+          <div><input class="input" id="mFinishing" type="number" min="1" max="10" placeholder="Finishing (1–10)"></div>
+          <div><input class="input" id="mDefense" type="number" min="1" max="10" placeholder="Defense (1–10)"></div>
+          <div><input class="input" id="mSpeed" type="number" min="1" max="10" placeholder="Speed (1–10)"></div>
+          <div><input class="input" id="mStamina" type="number" min="1" max="10" placeholder="Stamina (1–10)"></div>
+          <div><input class="input" id="mClutch" type="number" min="1" max="5" placeholder="Clutch (1–5)"></div>
+          <div><input class="input" id="mConsistency" type="number" min="1" max="5" placeholder="Consistency (1–5)"></div>
+          <div><input class="input" id="mLeadership" type="number" min="1" max="5" placeholder="Leadership (1–5)"></div>
+        </div>
+      </div>
+
+      <div style="margin-top:10px">
+        <button class="chipBtn danger" id="mDelete" type="button" style="width:100%;">Delete player</button>
       </div>
     </div>
   </div>
+</div>
 
 <script>
-/* Mobile-first Pickup Balancer - JS (single-file)
-   Adjusted for mobile: larger fonts, single column, tappable cards.
-   Keeps balancing algorithm and behavior unchanged, only UI layout modified.
-*/
-
 (() => {
-  const STORAGE_KEY = "ps_balancer_players_v1";
-  const SELECTION_KEY = "ps_balancer_selection_v1";
-  const state = { players: [], selection: new Set(), lastSolution: null, editingId:null, lastSeed:1 };
+  const STORAGE_KEY = "ps_balancer_players_v3";
+  const SELECTION_KEY = "ps_balancer_selection_v3";
 
-  // util
-  const clamp=(n,lo,hi)=>Math.max(lo,Math.min(hi,n));
-  const uid=()=> (crypto?.randomUUID?crypto.randomUUID(): 'id'+Math.random().toString(16).slice(2));
-  const lower=s=> (s||"").toLowerCase().trim();
+  const state = { players: [], selection: new Set(), lastSolution: null, editingId: null };
 
-  // compute score (same formula)
-  function computeScore(p){
-    const r = p.ratings;
-    return (r.overall*3.0) + ((r.passing + r.dribbling + r.finishing + r.defense)*1.5) + ((r.speed + r.stamina)*1.2) + (r.clutch*1.2) + (r.consistency*1.0) + (r.leadership*1.0);
-  }
+  const $ = (id) => document.getElementById(id);
+  const lower = (s) => (s || "").trim().toLowerCase();
+  const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
+  const uid = () => (crypto?.randomUUID ? crypto.randomUUID() : ("id_" + Math.random().toString(16).slice(2) + Date.now()));
 
-  function roleVector(p){
-    const roles=p.roles; const keys=["F","M","D"].filter(k=>roles[k]); const denom=keys.length||1;
-    return {F: roles.F?1/denom:0, M: roles.M?1/denom:0, D: roles.D?1/denom:0, forwardOnly: roles.F && !roles.M && !roles.D?1:0, defenseOnly: roles.D && !roles.F && !roles.M?1:0};
+  function defaultRatings(){
+    return { overall:7, passing:6, dribbling:6, finishing:6, defense:6, speed:6, stamina:6, clutch:3, consistency:3, leadership:3 };
   }
 
   function sanitizePlayer(raw){
-    const name = (raw?.name||"").trim();
-    const roles = raw?.roles||{};
-    const ratings = raw?.ratings||{};
-    const p = { id: raw?.id||uid(), name, roles:{F:!!roles.F, M:!!roles.M, D:!!roles.D}, ratings: { overall: clamp(Number(ratings.overall||7),1,10), passing: clamp(Number(ratings.passing||6),1,10), dribbling: clamp(Number(ratings.dribbling||6),1,10), finishing: clamp(Number(ratings.finishing||6),1,10), defense: clamp(Number(ratings.defense||6),1,10), speed: clamp(Number(ratings.speed||6),1,10), stamina: clamp(Number(ratings.stamina||6),1,10), clutch: clamp(Number(ratings.clutch||3),1,5), consistency: clamp(Number(ratings.consistency||3),1,5), leadership: clamp(Number(ratings.leadership||3),1,5) } };
-    if(!p.roles.F && !p.roles.M && !p.roles.D) p.roles.M=true;
+    const name = (raw?.name || "").trim();
+    const roles = raw?.roles || {};
+    const ratings = raw?.ratings || {};
+    const p = {
+      id: raw?.id || uid(),
+      name,
+      roles: { F: !!roles.F, M: !!roles.M, D: !!roles.D },
+      ratings: {
+        overall: clamp(Number(ratings.overall ?? 7) || 7, 1, 10),
+        passing: clamp(Number(ratings.passing ?? 6) || 6, 1, 10),
+        dribbling: clamp(Number(ratings.dribbling ?? 6) || 6, 1, 10),
+        finishing: clamp(Number(ratings.finishing ?? 6) || 6, 1, 10),
+        defense: clamp(Number(ratings.defense ?? 6) || 6, 1, 10),
+        speed: clamp(Number(ratings.speed ?? 6) || 6, 1, 10),
+        stamina: clamp(Number(ratings.stamina ?? 6) || 6, 1, 10),
+        clutch: clamp(Number(ratings.clutch ?? 3) || 3, 1, 5),
+        consistency: clamp(Number(ratings.consistency ?? 3) || 3, 1, 5),
+        leadership: clamp(Number(ratings.leadership ?? 3) || 3, 1, 5),
+      }
+    };
+    if(!p.roles.F && !p.roles.M && !p.roles.D) p.roles.M = true;
     return p;
   }
 
-  function preload(){
+  function preloadPlayers(){
     const names = ["Adnan","Tomek","Mike","Guido","Achkan","Tuto","Carlos","Max C","Kiaan","Matt","Danny","Kadir","Mateo","Hugo","Ciro","Orson","Luismi","Marcelo","Arya","Brandon","Mario","Juan","Max K","Roger","Andy","Devrim","Conrad","Alex"];
-    return names.map((name,idx)=>{
-      const r = { overall:7, passing:6, dribbling:6, finishing:6, defense:6, speed:6, stamina:6, clutch:3, consistency:3, leadership:3 };
-      r.overall = clamp(7 + ((idx%5)-2),1,10);
-      r.passing = clamp(6 + ((idx%3)-1),1,10);
-      r.dribbling = clamp(6 + ((idx%4)-1),1,10);
-      const roles = {F:false,M:true,D:false};
+    return names.map((name, idx) => {
+      const r = defaultRatings();
+      const bump = (idx % 7) - 3;
+      const bump2 = ((idx*3) % 5) - 2;
+      r.overall = clamp(7 + (bump>=2?1:0) + (bump<=-2?-1:0), 1, 10);
+      r.passing = clamp(6 + (bump2>0?1:0), 1, 10);
+      r.dribbling = clamp(6 + (bump2<0?1:0), 1, 10);
+      r.finishing = clamp(6 + (bump==3?1:0), 1, 10);
+      r.defense = clamp(6 + (bump==-3?1:0), 1, 10);
+      r.speed = clamp(6 + (idx%4==0?1:0), 1, 10);
+      r.stamina = clamp(6 + (idx%5==0?1:0), 1, 10);
+      r.clutch = clamp(3 + (idx%6==0?1:0), 1, 5);
+      r.consistency = clamp(3 + (idx%8==0?1:0), 1, 5);
+      r.leadership = clamp(3 + (idx%9==0?1:0), 1, 5);
+      const roles = {F:false, M:true, D:false};
       if(idx%6===0) roles.F=true;
       if(idx%7===0) roles.D=true;
       if(idx%10===0){ roles.M=false; roles.D=true; }
       if(idx%11===0){ roles.M=false; roles.F=true; }
-      return sanitizePlayer({ id: uid(), name, roles, ratings: r });
+      return sanitizePlayer({ id: uid(), name, roles, ratings:r });
     });
   }
 
-  function load(){
+  function loadPlayers(){
     const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw){ state.players = preload(); savePlayers(); return; }
-    try{ const parsed = JSON.parse(raw); if(Array.isArray(parsed)) state.players = parsed.map(sanitizePlayer); else state.players = preload(); } catch(e){ state.players = preload(); }
-    const selRaw = localStorage.getItem(SELECTION_KEY); try{ const s = JSON.parse(selRaw)||[]; state.selection = new Set(s.filter(id => state.players.some(p=>p.id===id))); }catch(e){ state.selection = new Set(); }
-    savePlayers();
+    if(!raw){
+      state.players = preloadPlayers();
+      savePlayers();
+      return;
+    }
+    try{
+      const parsed = JSON.parse(raw);
+      state.players = Array.isArray(parsed) ? parsed.map(sanitizePlayer) : preloadPlayers();
+    }catch{
+      state.players = preloadPlayers();
+    }
   }
-  function savePlayers(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state.players)); document.getElementById('countPlayers').textContent = String(state.players.length); }
+  function savePlayers(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state.players));
+    $("dbCount").textContent = String(state.players.length);
+  }
 
-  // DOM refs
-  const refs = {
-    tabGame: document.getElementById('tabGame'),
-    tabPlayers: document.getElementById('tabPlayers'),
-    pageGame: document.getElementById('pageGame'),
-    pagePlayers: document.getElementById('pagePlayers'),
-    playerChecklist: document.getElementById('playerChecklist'),
-    playerSearch: document.getElementById('playerSearch'),
-    gameSearch: document.getElementById('gameSearch'),
-    selectedCount: document.getElementById('selectedCount'),
-    btnGenerate: document.getElementById('btnGenerate'),
-    btnClearSelection: document.getElementById('btnClearSelection'),
-    resultsPanel: document.getElementById('resultsPanel'),
-    playersGrid: document.getElementById('playersGrid'),
-    btnAddPlayer: document.getElementById('btnAddPlayer'),
-    btnExport: document.getElementById('btnExport'),
-    btnImport: document.getElementById('btnImport'),
-    btnReset: document.getElementById('btnReset'),
-    importFile: document.getElementById('importFile'),
-    numGames: document.getElementById('numGames'),
-    modalBackdrop: document.getElementById('modalBackdrop'),
-    modal elements: null
-  };
+  function loadSelection(){
+    const raw = localStorage.getItem(SELECTION_KEY);
+    try{
+      const parsed = JSON.parse(raw || "[]");
+      if(Array.isArray(parsed)){
+        state.selection = new Set(parsed.filter(id => state.players.some(p => p.id === id)));
+      }
+    }catch{}
+  }
+  function saveSelection(){
+    localStorage.setItem(SELECTION_KEY, JSON.stringify(Array.from(state.selection)));
+  }
 
-  // UI helpers - meter + dot
-  function meterHTML(p){
-    const score = computeScore(p);
+  // Composite score
+  function computeScore(p){
+    const r = p.ratings;
+    return (r.overall*3.0) +
+      ((r.passing+r.dribbling+r.finishing+r.defense)*1.5) +
+      ((r.speed+r.stamina)*1.2) +
+      (r.clutch*1.2) +
+      (r.consistency*1.0) +
+      (r.leadership*1.0);
+  }
+  function roleVector(p){
+    const roles = p.roles;
+    const keys = ["F","M","D"].filter(k => roles[k]);
+    const denom = keys.length || 1;
+    return {
+      F: roles.F ? 1/denom : 0,
+      M: roles.M ? 1/denom : 0,
+      D: roles.D ? 1/denom : 0,
+      forwardOnly: roles.F && !roles.M && !roles.D ? 1 : 0,
+      defenseOnly: roles.D && !roles.F && !roles.M ? 1 : 0
+    };
+  }
+  function strengthPct(score){
     const maxPossible = 130;
-    const pct = Math.round(100 * (score / maxPossible));
-    const cls = pct >= 70 ? 'good' : (pct >= 48 ? 'mid' : 'low');
-    const color = pct >= 70 ? 'linear-gradient(90deg,#7ee1b8,#4dd2ff)' : (pct>=48 ? 'linear-gradient(90deg,#ffd66b,#7aa2ff)' : 'linear-gradient(90deg,#ff8b8b,#ffb3b3)');
-    return { score, pct, color };
+    return Math.max(0, Math.min(100, Math.round(100 * (score / maxPossible))));
+  }
+  function strengthColor(pct){
+    if(pct >= 70) return getComputedStyle(document.documentElement).getPropertyValue("--green").trim();
+    if(pct >= 48) return getComputedStyle(document.documentElement).getPropertyValue("--yellow").trim();
+    return getComputedStyle(document.documentElement).getPropertyValue("--red").trim();
   }
 
-  // Render checklist (player cards)
-  function renderChecklist(){
-    const q = lower(document.getElementById('gameSearch').value);
-    const list = state.players.slice().sort((a,b)=>a.name.localeCompare(b.name)).filter(p => !q || lower(p.name).includes(q));
-    const container = document.getElementById('playerChecklist');
-    container.innerHTML = '';
-    list.forEach((p, idx) => {
-      const checked = state.selection.has(p.id);
-      const div = document.createElement('div');
-      div.className = 'playerCard ' + (idx%2? 'alt':'') ;
-      // left: checkbox + name/meta
-      const left = document.createElement('div'); left.className='playerLeft';
-      const ch = document.createElement('input'); ch.type='checkbox'; ch.checked = checked; ch.style.width='22px'; ch.style.height='22px';
-      ch.onchange = (e)=>{ if(e.target.checked) state.selection.add(p.id); else state.selection.delete(p.id); saveSelection(); renderSelection(); };
-      left.appendChild(ch);
-      const nw = document.createElement('div'); nw.className='nameWrap';
-      const nm = document.createElement('div'); nm.className='playerName'; nm.textContent = p.name;
-      const meta = document.createElement('div'); meta.className='playerMeta'; meta.textContent = `Overall ${p.ratings.overall} • ${p.roles.F? 'F':''}${p.roles.M? 'M':''}${p.roles.D? 'D':''}`;
-      nw.appendChild(nm); nw.appendChild(meta);
-      left.appendChild(nw);
+  // Objective and optimizer
+  function computeStdDev(vals){
+    const n = vals.length;
+    if(n<=1) return 0;
+    const mean = vals.reduce((a,b)=>a+b,0)/n;
+    const v = vals.reduce((s,x)=> s + (x-mean)*(x-mean), 0)/n;
+    return Math.sqrt(v);
+  }
+  function computeObjective(teams){
+    const totals = teams.map(t => t.reduce((s,p)=> s + p._score, 0));
+    const sizes  = teams.map(t => t.length);
+    const avgs   = teams.map((_,i)=> totals[i] / Math.max(1, sizes[i]));
+    const primary = computeStdDev(avgs);
 
-      // right: meter + badge
-      const right = document.createElement('div'); right.className='strength';
-      const dot = document.createElement('div'); dot.className='dot'; const m = meterHTML(p);
-      if(m.pct>=70) dot.style.background='linear-gradient(90deg,#7ee1b8,#4dd2ff)'; else if(m.pct>=48) dot.style.background='linear-gradient(90deg,#ffd66b,#7aa2ff)'; else dot.style.background='linear-gradient(90deg,#ff8b8b,#ffb3b3)';
-      const meter = document.createElement('div'); meter.className='meter'; const fill = document.createElement('div'); fill.className='meter-fill'; fill.style.width = m.pct + '%'; fill.style.background = m.color; meter.appendChild(fill);
-      const badge = document.createElement('div'); badge.className='scoreBadge'; badge.textContent = Math.round(m.score);
-      right.appendChild(dot); right.appendChild(meter); right.appendChild(badge);
+    const forwardOnly=[], defenseOnly=[], roleF=[], roleD=[];
+    for(const t of teams){
+      let fo=0, do_=0, rf=0, rd=0;
+      for(const p of t){
+        const rv = p._roleVec;
+        fo += rv.forwardOnly;
+        do_ += rv.defenseOnly;
+        rf += rv.F;
+        rd += rv.D;
+      }
+      forwardOnly.push(fo);
+      defenseOnly.push(do_);
+      roleF.push(rf);
+      roleD.push(rd);
+    }
+    const rolePenalty =
+      (computeStdDev(forwardOnly) * 1.3) +
+      (computeStdDev(defenseOnly) * 1.3) +
+      (computeStdDev(roleF) * 0.6) +
+      (computeStdDev(roleD) * 0.6);
 
-      div.appendChild(left); div.appendChild(right);
-      container.appendChild(div);
-    });
-    renderSelection();
+    const lambda = 0.55;
+    return { objective: primary + lambda*rolePenalty, primary, rolePenalty };
+  }
+  function makeTeamSizeTargets(nPlayers, teamCount){
+    const base = Math.floor(nPlayers / teamCount);
+    const rem = nPlayers % teamCount;
+    return Array.from({length:teamCount}, (_,i)=> base + (i<rem ? 1 : 0));
+  }
+  function greedySeed(players, teamCount){
+    const arr = players.slice().sort((a,b)=> b._score - a._score);
+    const targets = makeTeamSizeTargets(arr.length, teamCount);
+    const teams = Array.from({length:teamCount}, ()=>[]);
+    const totals = Array.from({length:teamCount}, ()=>0);
+    for(const p of arr){
+      let best=-1, bestVal=Infinity;
+      for(let i=0;i<teamCount;i++){
+        if(teams[i].length >= targets[i]) continue;
+        const projectedAvg = (totals[i] + p._score) / (teams[i].length + 1);
+        if(projectedAvg < bestVal){
+          bestVal = projectedAvg;
+          best = i;
+        }
+      }
+      if(best < 0) best = 0;
+      teams[best].push(p);
+      totals[best] += p._score;
+    }
+    return teams;
+  }
+  function randomSeed(players, teamCount){
+    const targets = makeTeamSizeTargets(players.length, teamCount);
+    const teams = Array.from({length:teamCount}, ()=>[]);
+    const counts = Array.from({length:teamCount}, ()=>0);
+    const order = players.slice().sort(()=>Math.random()-0.5);
+    for(const p of order){
+      const opts=[];
+      for(let i=0;i<teamCount;i++) if(counts[i] < targets[i]) opts.push(i);
+      const idx = opts[Math.floor(Math.random()*opts.length)];
+      teams[idx].push(p);
+      counts[idx]++;
+    }
+    return teams;
+  }
+  function cloneTeams(teams){ return teams.map(t => t.slice()); }
+  function trySwap(teams){
+    const tCount = teams.length;
+    let a = Math.floor(Math.random()*tCount);
+    let b = Math.floor(Math.random()*tCount);
+    if(a===b) b = (b+1)%tCount;
+    if(teams[a].length===0 || teams[b].length===0) return false;
+    const ia = Math.floor(Math.random()*teams[a].length);
+    const ib = Math.floor(Math.random()*teams[b].length);
+    const pa = teams[a][ia], pb = teams[b][ib];
+    teams[a][ia] = pb;
+    teams[b][ib] = pa;
+    return true;
+  }
+  function hillClimb(teams, attempts){
+    let best = cloneTeams(teams);
+    let bestEval = computeObjective(best);
+    let cur = cloneTeams(best);
+    let curEval = bestEval;
+    let temp = 0.06;
+    for(let k=0;k<attempts;k++){
+      const cand = cloneTeams(cur);
+      if(!trySwap(cand)) continue;
+      const ev = computeObjective(cand);
+      const delta = ev.objective - curEval.objective;
+      const accept = delta < 0 || (Math.random() < Math.exp(-delta / Math.max(1e-6,temp)));
+      if(accept){
+        cur = cand;
+        curEval = ev;
+        if(curEval.objective < bestEval.objective){
+          best = cloneTeams(cur);
+          bestEval = curEval;
+        }
+      }
+      temp *= 0.9992;
+    }
+    return { teams: best, eval: bestEval };
+  }
+  function optimize(selectedPlayers, teamCount){
+    const players = selectedPlayers.map(p => ({...p, _score: computeScore(p), _roleVec: roleVector(p)}));
+    const n = players.length;
+    const small = n <= 20;
+    const restarts = small ? 22 : (n<=28 ? 12 : 8);
+    const attempts = small ? 3800 : (n<=28 ? 2800 : 2200);
+    let bestTeams=null, bestEval={objective:Infinity};
+    for(let r=0;r<restarts;r++){
+      const base = (r%2===0) ? greedySeed(players, teamCount) : randomSeed(players, teamCount);
+      for(let i=0;i<Math.min(30,n);i++) trySwap(base);
+      const res = hillClimb(base, attempts);
+      if(res.eval.objective < bestEval.objective){
+        bestEval = res.eval;
+        bestTeams = res.teams;
+      }
+    }
+    const totals = bestTeams.map(t => t.reduce((s,p)=> s+p._score,0));
+    const avgs = bestTeams.map((t,i)=> totals[i] / Math.max(1,t.length));
+    return { teams: bestTeams, totals, avgs, eval: bestEval };
   }
 
-  function renderSelection(){
-    document.getElementById('selectedCount').textContent = String(state.selection.size);
-    refs.btnGenerate.disabled = state.selection.size < 2;
+  function teamClass(name){
+    const n = name.toLowerCase();
+    if(n==="red") return "c-red";
+    if(n==="white") return "c-white";
+    if(n==="black") return "c-black";
+    if(n==="blue") return "c-blue";
+    return "c-blue";
+  }
+  function shirtIcon(){
+    return `
+      <span class="shirt" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 3l-1.5 2h-5L8 3 3 6l2.5 4L7 9v12h10V9l1.5 1L21 6l-5-3z"/>
+        </svg>
+      </span>`;
   }
 
-  // Players page render
-  function renderPlayersList(){
-    const q = lower(document.getElementById('playerSearch').value);
-    const cont = document.getElementById('playersGrid');
-    cont.innerHTML='';
-    state.players.slice().sort((a,b)=>a.name.localeCompare(b.name)).filter(p=>!q||lower(p.name).includes(q)).forEach((p, idx)=>{
-      const row = document.createElement('div'); row.className='playerRowBig';
-      const left = document.createElement('div'); left.style.display='flex'; left.style.gap='10px'; left.style.alignItems='center';
-      const avatar = document.createElement('div'); avatar.style.width='44px'; avatar.style.height='44px'; avatar.style.borderRadius='9px'; avatar.style.display='flex'; avatar.style.alignItems='center'; avatar.style.justifyContent='center'; avatar.style.fontWeight='800'; avatar.style.fontSize='16px'; avatar.style.background='linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))'; avatar.textContent = p.name.split(' ').map(s=>s[0]).slice(0,2).join('').toUpperCase();
-      const nm = document.createElement('div'); nm.style.minWidth='0'; const nameEl = document.createElement('div'); nameEl.style.fontWeight='900'; nameEl.style.fontSize='16px'; nameEl.textContent = p.name; const meta = document.createElement('div'); meta.style.fontSize='13px'; meta.style.color='var(--muted)'; meta.textContent = `Overall ${p.ratings.overall}`;
-      nm.appendChild(nameEl); nm.appendChild(meta);
-      left.appendChild(avatar); left.appendChild(nm);
-      const right = document.createElement('div'); right.style.display='flex'; right.style.flexDirection='column'; right.style.alignItems='flex-end';
-      const m = meterHTML(p); const dot = document.createElement('div'); dot.className='dot'; dot.style.marginBottom='6px'; dot.style.width='14px'; dot.style.height='14px'; dot.style.borderRadius='6px'; dot.style.background = m.color;
-      const badge = document.createElement('div'); badge.className='scoreBadge'; badge.textContent = Math.round(m.score);
-      right.appendChild(dot); right.appendChild(badge);
-      row.appendChild(left); row.appendChild(right);
-      row.onclick = ()=> openEditModal(p);
-      cont.appendChild(row);
-    });
-  }
-
-  // modal for add/edit
-  let editBuffer = null;
-  function openAddModal(){ editBuffer = { id: null, name:'', roles:{F:false,M:true,D:false}, ratings:{overall:7,passing:6,dribbling:6,finishing:6,defense:6,speed:6,stamina:6,clutch:3,consistency:3,leadership:3} }; showModal(); }
-  function openEditModal(p){ editBuffer = JSON.parse(JSON.stringify(p)); showModal(); }
-  function showModal(){
-    const mb = document.getElementById('modalBackdrop');
-    mb.style.display='flex';
-    // populate
-    document.getElementById('mName').value = editBuffer.name||'';
-    document.getElementById('mF').checked = !!editBuffer.roles.F;
-    document.getElementById('mM').checked = !!editBuffer.roles.M;
-    document.getElementById('mD').checked = !!editBuffer.roles.D;
-    document.getElementById('mOverall').value = editBuffer.ratings.overall;
-    document.getElementById('mPassing').value = editBuffer.ratings.passing;
-    document.getElementById('mDribbling').value = editBuffer.ratings.dribbling;
-    document.getElementById('mFinishing').value = editBuffer.ratings.finishing;
-    document.getElementById('mDefense').value = editBuffer.ratings.defense;
-    document.getElementById('mSpeed').value = editBuffer.ratings.speed;
-    document.getElementById('mStamina').value = editBuffer.ratings.stamina;
-    document.getElementById('mClutch').value = editBuffer.ratings.clutch;
-    document.getElementById('mConsistency').value = editBuffer.ratings.consistency;
-    document.getElementById('mLeadership').value = editBuffer.ratings.leadership;
-  }
-  function hideModal(){ document.getElementById('modalBackdrop').style.display='none'; editBuffer=null; }
-
-  document.getElementById('modalCancel').addEventListener('click', ()=>{ hideModal(); });
-  document.getElementById('modalSave').addEventListener('click', ()=>{
-    const buf = editBuffer || {};
-    buf.name = document.getElementById('mName').value.trim();
-    buf.roles = { F: document.getElementById('mF').checked, M: document.getElementById('mM').checked, D: document.getElementById('mD').checked };
-    buf.ratings = { overall: clamp(Number(document.getElementById('mOverall').value||7),1,10), passing: clamp(Number(document.getElementById('mPassing').value||6),1,10), dribbling: clamp(Number(document.getElementById('mDribbling').value||6),1,10), finishing: clamp(Number(document.getElementById('mFinishing').value||6),1,10), defense: clamp(Number(document.getElementById('mDefense').value||6),1,10), speed: clamp(Number(document.getElementById('mSpeed').value||6),1,10), stamina: clamp(Number(document.getElementById('mStamina').value||6),1,10), clutch: clamp(Number(document.getElementById('mClutch').value||3),1,5), consistency: clamp(Number(document.getElementById('mConsistency').value||3),1,5), leadership: clamp(Number(document.getElementById('mLeadership').value||3),1,5) };
-    if(!buf.name){ alert('Name required'); return; }
-    if(!buf.id){ buf.id = uid(); state.players.push(sanitizePlayer(buf)); } else { const i = state.players.findIndex(x=>x.id===buf.id); if(i>=0) state.players[i] = sanitizePlayer(buf); else state.players.push(sanitizePlayer(buf)); }
-    savePlayers(); hideModal(); renderPlayersList(); renderChecklist();
-  });
-
-  // import/export/reset
-  document.getElementById('btnExport').addEventListener('click', ()=>{ const data = JSON.stringify(state.players,null,2); const blob = new Blob([data],{type:'application/json'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='players_export.json'; document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url); });
-  document.getElementById('btnImport').addEventListener('click', ()=> document.getElementById('importFile').click());
-  document.getElementById('importFile').addEventListener('change', (e)=>{
-    const f = e.target.files[0]; if(!f) return; const reader = new FileReader(); reader.onload=()=>{ try{ const arr = JSON.parse(reader.result); if(!Array.isArray(arr)){ alert('Import must be JSON array'); return; } state.players = arr.map(sanitizePlayer); savePlayers(); renderPlayersList(); renderChecklist(); alert('Import OK'); }catch(err){ alert('Import failed'); } }; reader.readAsText(f);
-  });
-  document.getElementById('btnReset').addEventListener('click', ()=>{ if(!confirm('Reset to preloaded players?')) return; state.players = preload(); savePlayers(); renderPlayersList(); renderChecklist(); });
-
-  // selection persistence
-  function saveSelection(){ localStorage.setItem(SELECTION_KEY, JSON.stringify(Array.from(state.selection))); }
-  function savePlayers(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state.players)); document.getElementById('countPlayers').textContent = String(state.players.length); }
-
-  // balancing functions (kept similar to original) - simplified inclusion
-  function computeStdDev(vals){ const n=vals.length; if(n<=1) return 0; const mean = vals.reduce((a,b)=>a+b,0)/n; const varr = vals.reduce((s,v)=> s + (v-mean)*(v-mean), 0)/n; return Math.sqrt(varr); }
-  function computeObjective(teams){ const totals = teams.map(t => t.reduce((s,p)=> s + p._score, 0)); const sizes = teams.map(t=>t.length); const avgs = teams.map((_,i)=> totals[i]/Math.max(1,sizes[i])); const primary = computeStdDev(avgs); let forwardOnly=[], defenseOnly=[], roleF=[], roleD=[]; for(const t of teams){ let fo=0, do_=0, rf=0, rd=0; for(const p of t){ const rv = p._roleVec; fo+=rv.forwardOnly; do_+=rv.defenseOnly; rf+=rv.F; rd+=rv.D; } forwardOnly.push(fo); defenseOnly.push(do_); roleF.push(rf); roleD.push(rd); } const foStd=computeStdDev(forwardOnly); const doStd=computeStdDev(defenseOnly); const rfStd=computeStdDev(roleF); const rdStd=computeStdDev(roleD); const rolePenalty = (foStd*1.3)+(doStd*1.3)+(rfStd*0.6)+(rdStd*0.6); const lambda=0.55; return {objective: primary + lambda*rolePenalty, primary, rolePenalty}; }
-  function makeTeamSizeTargets(nPlayers, teamCount){ const base = Math.floor(nPlayers / teamCount); const rem = nPlayers % teamCount; return Array.from({length:teamCount}, (_,i)=> base + (i<rem ? 1:0)); }
-  function greedySeed(players, teamCount, rnd){ const arr = players.slice(); arr.sort((a,b)=> b._score - a._score); const targets = makeTeamSizeTargets(arr.length, teamCount); const teams = Array.from({length:teamCount}, ()=>[]); const totals = Array.from({length:teamCount}, ()=>0); for(const p of arr){ let bestIdx=-1; let bestVal=Infinity; for(let i=0;i<teamCount;i++){ if(teams[i].length>=targets[i]) continue; const projectedTotal=totals[i]+p._score; const projectedSize=teams[i].length+1; const projectedAvg = projectedTotal/projectedSize; const val = projectedAvg + (Math.random()*0.0005); if(val<bestVal){ bestVal=val; bestIdx=i; } } if(bestIdx<0) bestIdx=0; teams[bestIdx].push(p); totals[bestIdx]+=p._score; } return teams; }
-  function randomSeed(players, teamCount){ const targets = makeTeamSizeTargets(players.length, teamCount); const teams = Array.from({length:teamCount}, ()=>[]); const order = players.slice().sort(()=>Math.random()-0.5); const counts = Array.from({length:teamCount}, ()=>0); for(const p of order){ let options=[]; for(let i=0;i<teamCount;i++) if(counts[i]<targets[i]) options.push(i); const idx = options[Math.floor(Math.random()*options.length)]; teams[idx].push(p); counts[idx]++; } return teams; }
-  function cloneTeams(teams){ return teams.map(t=>t.slice()); }
-  function trySwap(teams){ const tCount=teams.length; let a=Math.floor(Math.random()*tCount); let b=Math.floor(Math.random()*tCount); if(a===b) b=(b+1)%tCount; if(teams[a].length===0 || teams[b].length===0) return false; const ia=Math.floor(Math.random()*teams[a].length); const ib=Math.floor(Math.random()*teams[b].length); const pa=teams[a][ia]; const pb=teams[b][ib]; teams[a][ia]=pb; teams[b][ib]=pa; return true; }
-  function hillClimb(teams, attempts=2000){ let best=cloneTeams(teams); let bestEval=computeObjective(best); let cur=cloneTeams(best); let curEval=bestEval; let temp=0.06; for(let k=0;k<attempts;k++){ const candidate=cloneTeams(cur); if(!trySwap(candidate)) continue; const eval2 = computeObjective(candidate); const delta = eval2.objective - curEval.objective; const accept = delta<0 || (Math.random() < Math.exp(-delta/Math.max(1e-6,temp))); if(accept){ cur = candidate; curEval = eval2; if(curEval.objective < bestEval.objective){ best = cloneTeams(cur); bestEval = curEval; } } temp *= 0.9992; } return {teams:best, eval:bestEval}; }
-  function optimizeTeams(selectedPlayers, teamCount, seed){ const players = selectedPlayers.map(p=>({...p, _score: computeScore(p), _roleVec: roleVector(p)})); const n = players.length; const small = n<=20; const restarts = small?28:(n<=28?14:8); const swapAttempts = small?4200:(n<=28?3000:2400); let bestTeams=null; let bestEval={objective:Infinity}; for(let r=0;r<restarts;r++){ const base = (r%2===0)?greedySeed(players,teamCount):randomSeed(players,teamCount); for(let i=0;i<Math.min(30,n);i++) trySwap(base); const result = hillClimb(base, swapAttempts); if(result.eval.objective < bestEval.objective){ bestEval = result.eval; bestTeams = result.teams; } } const totals = bestTeams.map(t=>t.reduce((s,p)=>s+p._score,0)); const avgs = bestTeams.map((t,i)=> totals[i]/Math.max(1,t.length)); return {teams: bestTeams, totals, avgs, eval: bestEval}; }
-
-  // render results
   function renderResults(solution){
-    const panel = document.getElementById('resultsPanel'); panel.innerHTML='';
-    if(!solution){ panel.innerHTML = '<div class="hint">No teams generated yet. Tap Generate.</div>'; return; }
-    const names = (solution.teams.length===2)?['Red','White']:['Red','White','Black','Blue'];
-    const container = document.createElement('div'); container.className='resultsGrid';
-    solution.teams.forEach((team,i)=>{
-      const tcard = document.createElement('div'); tcard.className='teamCard';
-      const head = document.createElement('div'); head.className='teamHead';
-      const left = document.createElement('div'); left.innerHTML = `<div class="teamName">${names[i]}</div><div class="teamNameSmall">Players ${team.length}</div>`;
-      const right = document.createElement('div'); right.style.textAlign='right'; right.innerHTML = `<div style="font-weight:800;">Total ${solution.totals[i].toFixed(0)}</div><div style="color:var(--muted);font-size:13px;">Avg ${solution.avgs[i].toFixed(2)}</div>`;
-      head.appendChild(left); head.appendChild(right);
-      tcard.appendChild(head);
-      const list = document.createElement('div'); list.className='teamList';
-      team.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(p=>{
-        const row = document.createElement('div'); row.style.display='flex'; row.style.justifyContent='space-between'; row.style.alignItems='center'; row.style.padding='6px 0';
-        const nm = document.createElement('div'); nm.style.fontWeight='800'; nm.textContent = p.name;
-        const m = meterHTML(p); const badge = document.createElement('div'); badge.className='scoreBadge'; badge.textContent = Math.round(m.score);
-        row.appendChild(nm); row.appendChild(badge);
-        list.appendChild(row);
+    const wrap = $("results");
+    wrap.innerHTML = "";
+    if(!solution) return;
+
+    const names = solution.teams.length===2 ? ["Red","White"] : ["Red","White","Black","Blue"];
+    const teamsDiv = document.createElement("div");
+    teamsDiv.className = "teams";
+
+    solution.teams.forEach((team, i) => {
+      const teamName = names[i];
+      const t = document.createElement("div");
+      t.className = "teamCard";
+
+      const header = document.createElement("div");
+      header.className = "teamHeader " + teamClass(teamName);
+
+      const left = document.createElement("div");
+      left.className = "hLeft";
+      left.innerHTML = shirtIcon() + `<div class="hName">${teamName.toUpperCase()}</div>`;
+
+      const right = document.createElement("div");
+      right.className = "hStats";
+      right.innerHTML = `Total ${solution.totals[i].toFixed(0)}<br/>Avg ${solution.avgs[i].toFixed(2)}`;
+
+      header.appendChild(left);
+      header.appendChild(right);
+
+      const body = document.createElement("div");
+      body.className = "teamBody";
+
+      team.slice().sort((a,b)=>a.name.localeCompare(b.name)).forEach(p => {
+        const line = document.createElement("div");
+        line.className = "playerLine";
+        const nm = document.createElement("div");
+        nm.className = "pn";
+        nm.textContent = p.name;
+
+        const badge = document.createElement("div");
+        badge.className = "badge";
+        badge.textContent = Math.round(p._score).toString();
+
+        line.appendChild(nm);
+        line.appendChild(badge);
+        body.appendChild(line);
       });
-      tcard.appendChild(list);
-      container.appendChild(tcard);
+
+      t.appendChild(header);
+      t.appendChild(body);
+      teamsDiv.appendChild(t);
     });
-    panel.appendChild(container);
+
+    wrap.appendChild(teamsDiv);
   }
 
-  // generate / regenerate
-  document.getElementById('btnGenerate').addEventListener('click', ()=>{
-    const players = state.players.filter(p=>state.selection.has(p.id));
-    const games = Number(document.getElementById('numGames').value)||1;
-    const teamCount = games===1?2:4;
-    if(players.length < teamCount){ alert('Select at least ' + teamCount + ' players.'); return; }
-    const seed = Date.now() & 0xffffffff;
-    const solution = optimizeTeams(players, teamCount, seed);
-    state.lastSolution = solution;
-    renderResults(solution);
+  function renderChecklist(){
+    const q = lower($("gameSearch").value);
+    const list = state.players
+      .slice()
+      .sort((a,b)=> a.name.localeCompare(b.name))
+      .filter(p => !q || lower(p.name).includes(q));
+
+    const wrap = $("checklist");
+    wrap.innerHTML = "";
+
+    list.forEach((p, idx) => {
+      const sc = computeScore(p);
+      const pct = strengthPct(sc);
+      const color = strengthColor(pct);
+
+      const row = document.createElement("div");
+      row.className = "row " + (idx%2===1 ? "alt" : "");
+      if(state.selection.has(p.id)) row.classList.add("selected");
+
+      row.addEventListener("click", () => {
+        if(state.selection.has(p.id)) state.selection.delete(p.id);
+        else state.selection.add(p.id);
+        saveSelection();
+        state.lastSolution = null;
+        renderResults(null);
+        renderChecklist();
+        updateSticky();
+      });
+
+      const left = document.createElement("div");
+      left.className = "left";
+
+      const name = document.createElement("div");
+      name.className = "name";
+      name.textContent = p.name;
+
+      const roles = `${p.roles.F ? "F" : ""}${p.roles.M ? "M" : ""}${p.roles.D ? "D" : ""}` || "—";
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = `Overall ${p.ratings.overall} • ${roles}`;
+
+      const strength = document.createElement("div");
+      strength.className = "strength";
+
+      const bar = document.createElement("div");
+      bar.className = "bar";
+
+      const fill = document.createElement("div");
+      fill.className = "fill";
+      fill.style.width = pct + "%";
+      fill.style.background = color;
+      bar.appendChild(fill);
+
+      const score = document.createElement("div");
+      score.className = "score";
+      score.textContent = Math.round(sc).toString();
+
+      strength.appendChild(bar);
+      strength.appendChild(score);
+
+      left.appendChild(name);
+      left.appendChild(meta);
+      left.appendChild(strength);
+
+      row.appendChild(left);
+      wrap.appendChild(row);
+    });
+  }
+
+  function renderPlayersPage(){
+    const q = lower($("playerSearch").value);
+    const list = state.players.slice().sort((a,b)=>a.name.localeCompare(b.name)).filter(p => !q || lower(p.name).includes(q));
+    const wrap = $("playersList");
+    wrap.innerHTML = "";
+
+    list.forEach((p, idx) => {
+      const sc = computeScore(p);
+      const pct = strengthPct(sc);
+      const color = strengthColor(pct);
+
+      const row = document.createElement("div");
+      row.className = "row " + (idx%2===1 ? "alt" : "");
+      row.addEventListener("click", () => openModal(p.id));
+
+      const left = document.createElement("div");
+      left.className = "left";
+
+      const name = document.createElement("div");
+      name.className = "name";
+      name.textContent = p.name;
+
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = `Overall ${p.ratings.overall}`;
+
+      const strength = document.createElement("div");
+      strength.className = "strength";
+
+      const bar = document.createElement("div");
+      bar.className = "bar";
+      const fill = document.createElement("div");
+      fill.className = "fill";
+      fill.style.width = pct + "%";
+      fill.style.background = color;
+      bar.appendChild(fill);
+
+      const score = document.createElement("div");
+      score.className = "score";
+      score.textContent = Math.round(sc).toString();
+
+      strength.appendChild(bar);
+      strength.appendChild(score);
+
+      left.appendChild(name);
+      left.appendChild(meta);
+      left.appendChild(strength);
+
+      row.appendChild(left);
+      wrap.appendChild(row);
+    });
+  }
+
+  function updateSticky(){
+    $("selCount").textContent = String(state.selection.size);
+    const canGenerate = state.selection.size >= 2;
+
+    if(state.lastSolution){
+      const e = state.lastSolution.eval;
+      $("objNote").textContent = `Balance ${e.primary.toFixed(3)} • Roles ${e.rolePenalty.toFixed(3)}`;
+    }else{
+      $("objNote").textContent = "";
+    }
+
+    const box = $("stickyActions");
+    box.innerHTML = "";
+
+    if(state.lastSolution){
+      const row = document.createElement("div");
+      row.className = "btnRow2";
+
+      const regen = document.createElement("button");
+      regen.className = "btn outline";
+      regen.type = "button";
+      regen.textContent = "Regenerate";
+      regen.addEventListener("click", () => runGenerate(true));
+
+      const clear = document.createElement("button");
+      clear.className = "btn secondary";
+      clear.type = "button";
+      clear.textContent = "Clear";
+      clear.addEventListener("click", clearSelection);
+
+      row.appendChild(regen);
+      row.appendChild(clear);
+      box.appendChild(row);
+    }else{
+      const gen = document.createElement("button");
+      gen.className = "btn primary";
+      gen.type = "button";
+      gen.textContent = "Generate Teams";
+      gen.disabled = !canGenerate;
+      gen.addEventListener("click", () => runGenerate(false));
+      box.appendChild(gen);
+    }
+  }
+
+  function clearSelection(){
+    state.selection.clear();
+    saveSelection();
+    state.lastSolution = null;
+    renderResults(null);
+    renderChecklist();
+    updateSticky();
+  }
+
+  function runGenerate(isRegen){
+    const selected = state.players.filter(p => state.selection.has(p.id));
+    const games = Number($("numGames").value) || 1;
+    const teamCount = (games===1) ? 2 : 4;
+    if(selected.length < teamCount){
+      alert(`Select at least ${teamCount} players.`);
+      return;
+    }
+    const sol = optimize(selected, teamCount);
+    state.lastSolution = sol;
+    renderResults(sol);
+    updateSticky();
+    setTimeout(()=> $("results").scrollIntoView({behavior:"smooth", block:"start"}), 60);
+  }
+
+  function showPage(which){
+    const isGame = which === "game";
+    $("pageGame").style.display = isGame ? "" : "none";
+    $("pagePlayers").style.display = isGame ? "none" : "";
+    $("tabGame").classList.toggle("active", isGame);
+    $("tabPlayers").classList.toggle("active", !isGame);
+  }
+
+  // Modal
+  function openModal(id){
+    state.editingId = id || null;
+    const p = id ? state.players.find(x => x.id===id) : null;
+    const data = p ? sanitizePlayer(p) : sanitizePlayer({ id:null, name:"", roles:{M:true}, ratings: defaultRatings() });
+
+    $("mTitle").textContent = id ? "Edit Player" : "Add Player";
+    $("mName").value = data.name || "";
+    $("mF").checked = !!data.roles.F;
+    $("mM").checked = !!data.roles.M;
+    $("mD").checked = !!data.roles.D;
+
+    $("mOverall").value = data.ratings.overall;
+    $("mPassing").value = data.ratings.passing;
+    $("mDribbling").value = data.ratings.dribbling;
+    $("mFinishing").value = data.ratings.finishing;
+    $("mDefense").value = data.ratings.defense;
+    $("mSpeed").value = data.ratings.speed;
+    $("mStamina").value = data.ratings.stamina;
+    $("mClutch").value = data.ratings.clutch;
+    $("mConsistency").value = data.ratings.consistency;
+    $("mLeadership").value = data.ratings.leadership;
+
+    $("mDelete").style.display = id ? "" : "none";
+
+    $("modal").style.display = "flex";
+    setTimeout(()=> $("mName").focus(), 50);
+  }
+  function closeModal(){ $("modal").style.display="none"; state.editingId=null; }
+
+  function upsertFromModal(){
+    const name = ($("mName").value || "").trim();
+    if(!name){ alert("Name required"); return; }
+
+    const roles = { F: $("mF").checked, M: $("mM").checked, D: $("mD").checked };
+    const ratings = {
+      overall: clamp(Number($("mOverall").value||7), 1, 10),
+      passing: clamp(Number($("mPassing").value||6), 1, 10),
+      dribbling: clamp(Number($("mDribbling").value||6), 1, 10),
+      finishing: clamp(Number($("mFinishing").value||6), 1, 10),
+      defense: clamp(Number($("mDefense").value||6), 1, 10),
+      speed: clamp(Number($("mSpeed").value||6), 1, 10),
+      stamina: clamp(Number($("mStamina").value||6), 1, 10),
+      clutch: clamp(Number($("mClutch").value||3), 1, 5),
+      consistency: clamp(Number($("mConsistency").value||3), 1, 5),
+      leadership: clamp(Number($("mLeadership").value||3), 1, 5),
+    };
+
+    const id = state.editingId || uid();
+    const p = sanitizePlayer({ id, name, roles, ratings });
+
+    const idx = state.players.findIndex(x => x.id===id);
+    if(idx>=0) state.players[idx] = p;
+    else state.players.push(p);
+
+    savePlayers();
+    renderPlayersPage();
+    renderChecklist();
+    updateSticky();
+    closeModal();
+  }
+
+  function deleteFromModal(){
+    if(!state.editingId) return;
+    const p = state.players.find(x => x.id === state.editingId);
+    if(!p) return;
+    if(!confirm(`Delete ${p.name}?`)) return;
+
+    state.players = state.players.filter(x => x.id !== state.editingId);
+    state.selection.delete(state.editingId);
+    savePlayers();
+    saveSelection();
+    state.lastSolution = null;
+    renderResults(null);
+    renderPlayersPage();
+    renderChecklist();
+    updateSticky();
+    closeModal();
+  }
+
+  function exportJSON(){
+    const blob = new Blob([JSON.stringify(state.players, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "pickup_balancer_players.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+  function importJSONFile(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const parsed = JSON.parse(String(reader.result || ""));
+        if(!Array.isArray(parsed)) throw new Error("bad");
+        state.players = parsed.map(sanitizePlayer).filter(p => p.name);
+        savePlayers();
+        loadSelection();
+        saveSelection();
+        state.lastSolution = null;
+        renderResults(null);
+        renderPlayersPage();
+        renderChecklist();
+        updateSticky();
+        alert("Import successful");
+      }catch{
+        alert("Import failed: file must be a JSON array of players");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  // Wire up
+  $("tabGame").addEventListener("click", () => showPage("game"));
+  $("tabPlayers").addEventListener("click", () => showPage("players"));
+  $("gameSearch").addEventListener("input", renderChecklist);
+  $("playerSearch").addEventListener("input", renderPlayersPage);
+  $("numGames").addEventListener("change", () => {
+    state.lastSolution = null;
+    renderResults(null);
+    updateSticky();
   });
 
-  document.getElementById('btnClearSelection').addEventListener('click', ()=>{ state.selection.clear(); saveSelection(); renderChecklist(); renderResults(null); });
+  $("btnAdd").addEventListener("click", () => openModal(null));
+  $("btnReset").addEventListener("click", () => {
+    if(!confirm("Reset players to preload defaults?")) return;
+    state.players = preloadPlayers();
+    state.selection.clear();
+    savePlayers();
+    saveSelection();
+    state.lastSolution = null;
+    renderResults(null);
+    renderPlayersPage();
+    renderChecklist();
+    updateSticky();
+  });
 
-  // make tabs work and default to game
-  function showTab(tab){
-    const isGame = tab==='game';
-    document.getElementById('pageGame').style.display = isGame? 'block':'none';
-    document.getElementById('pagePlayers').style.display = isGame? 'none':'block';
-    document.getElementById('tabGame').classList.toggle('active', isGame); document.getElementById('tabPlayers').classList.toggle('active', !isGame);
-  }
-  document.getElementById('tabGame').addEventListener('click', ()=> showTab('game'));
-  document.getElementById('tabPlayers').addEventListener('click', ()=> showTab('players'));
+  $("btnExport").addEventListener("click", exportJSON);
+  $("btnImport").addEventListener("click", () => $("importFile").click());
+  $("importFile").addEventListener("change", (e) => {
+    const f = e.target.files?.[0];
+    if(f) importJSONFile(f);
+    $("importFile").value = "";
+  });
 
-  // search handlers
-  document.getElementById('gameSearch').addEventListener('input', renderChecklist);
-  document.getElementById('playerSearch').addEventListener('input', renderPlayersList);
+  $("mCancel").addEventListener("click", closeModal);
+  $("mSave").addEventListener("click", upsertFromModal);
+  $("mDelete").addEventListener("click", deleteFromModal);
+  $("modal").addEventListener("click", (e) => { if(e.target.id === "modal") closeModal(); });
 
-  // checklist item selection handling - delegated by re-rendering on change via checkbox events created in renderChecklist
-  function saveSelection(){ localStorage.setItem(SELECTION_KEY, JSON.stringify(Array.from(state.selection))); }
-
-  // init
-  load();
+  // Init
+  loadPlayers();
+  loadSelection();
+  savePlayers();
+  showPage("game");
   renderChecklist();
-  renderPlayersList();
-  showTab('game');
-
-  // expose some functions for testing
-  window._pb = { state, renderChecklist, renderPlayersList, renderResults };
+  renderPlayersPage();
+  updateSticky();
 })();
-
 </script>
+
 </body>
 </html>
