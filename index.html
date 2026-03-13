@@ -228,7 +228,7 @@ select,input[type="text"]{
   margin-top:12px;
 }
 .teamHeader{
-  padding:12px 12px;
+  padding:16px 14px;
   color:#fff;
   display:flex;
   align-items:center;
@@ -236,13 +236,13 @@ select,input[type="text"]{
   gap:10px;
   font-weight:900;
 }
-.teamTitle{display:flex; align-items:center; gap:10px}
+.teamTitle{display:flex; align-items:center; gap:10px; font-size:18px; font-weight:900}
 .shirt{
-  width:22px;height:18px;border-radius:4px 4px 8px 8px;
-  background:rgba(255,255,255,0.25);
-  border:1px solid rgba(255,255,255,0.35);
+  width:24px;height:18px;border-radius:6px 6px 10px 10px;
+  background:rgba(255,255,255,0.18);
+  border:1px solid rgba(255,255,255,0.42);
 }
-.teamMeta{font-size:12px; opacity:0.92; text-align:right; line-height:1.2}
+.teamMeta{font-size:12px; opacity:0.96; text-align:right; line-height:1.3; font-weight:900}
 
 .c-red{background:#EB5757}
 .c-white{background:#E5E7EB; color:#111}
@@ -273,7 +273,7 @@ select,input[type="text"]{
   grid-template-columns: 42px 42px 42px;
   column-gap:8px;
   align-items:center;
-  justify-content:start; /* not right-justified */
+  justify-content:end;
   flex:0 0 auto;
 }
 .roleDot{
@@ -359,6 +359,12 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
 }
 
 </style>
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="apple-touch-icon.svg" />
+<meta name="theme-color" content="#ef4444" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Soccer Team Balancer" />
 </head>
 <body>
 <div class="app">
@@ -454,18 +460,19 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
     <div class="card" style="margin-top:12px; box-shadow:none;">
       <div class="small" style="margin-bottom:8px; font-weight:900; color:var(--text)">Ratings</div>
       <div class="modalGrid">
-        <div class="field"><label>Overall (1–10)</label><input id="rOverall" type="number" min="1" max="10"></div>
+        <div class="field"><label>Overall Skill (1–10)</label><input id="rOverallSkill" type="number" min="1" max="10"></div>
         <div class="field"><label>Passing (1–10)</label><input id="rPassing" type="number" min="1" max="10"></div>
+        <div class="field"><label>Shooting (1–10)</label><input id="rShooting" type="number" min="1" max="10"></div>
         <div class="field"><label>Dribbling (1–10)</label><input id="rDribbling" type="number" min="1" max="10"></div>
-        <div class="field"><label>Finishing (1–10)</label><input id="rFinishing" type="number" min="1" max="10"></div>
-        <div class="field"><label>Defense (1–10)</label><input id="rDefense" type="number" min="1" max="10"></div>
         <div class="field"><label>Speed (1–10)</label><input id="rSpeed" type="number" min="1" max="10"></div>
-        <div class="field"><label>Stamina (1–10)</label><input id="rStamina" type="number" min="1" max="10"></div>
-        <div class="field"><label>Clutch (1–5)</label><input id="rClutch" type="number" min="1" max="5"></div>
-        <div class="field"><label>Consistency (1–5)</label><input id="rConsistency" type="number" min="1" max="5"></div>
-        <div class="field"><label>Leadership (1–5)</label><input id="rLeadership" type="number" min="1" max="5"></div>
+        <div class="field"><label>Vision (1–10)</label><input id="rVision" type="number" min="1" max="10"></div>
+        <div class="field"><label>off the ball (1–10)</label><input id="rOffTheBall" type="number" min="1" max="10"></div>
+        <div class="field"><label>Defending (1–10)</label><input id="rDefending" type="number" min="1" max="10"></div>
+        <div class="field"><label>WorkRate (1–10)</label><input id="rWorkRate" type="number" min="1" max="10"></div>
+        <div class="field"><label>Mental (1–10)</label><input id="rMental" type="number" min="1" max="10"></div>
+        <div class="field"><label>Fitness (1–10)</label><input id="rFitness" type="number" min="1" max="10"></div>
       </div>
-      <div class="small">Invalid values are blocked (out of range).</div>
+      <div class="small">These inputs now match your spreadsheet columns.</div>
     </div>
 
     <div class="modalActions">
@@ -494,19 +501,19 @@ function clampInt(v, lo, hi){
 }
 
 function defaultRatings(){
-  // reasonable defaults
-  const overall = clampInt(6 + Math.random()*2, 1, 10);
+  const overallSkill = clampInt(6 + Math.random()*2, 1, 10);
   return {
-    overall,
-    passing: clampInt(overall + (Math.random()*2-1),1,10),
-    dribbling: clampInt(overall + (Math.random()*2-1),1,10),
-    finishing: clampInt(overall + (Math.random()*2-1),1,10),
-    defense: clampInt(overall + (Math.random()*2-1),1,10),
-    speed: clampInt(overall + (Math.random()*2-1),1,10),
-    stamina: clampInt(overall + (Math.random()*2-1),1,10),
-    clutch: clampInt(3 + (Math.random()*2-1),1,5),
-    consistency: clampInt(3 + (Math.random()*2-1),1,5),
-    leadership: clampInt(3 + (Math.random()*2-1),1,5),
+    overallSkill,
+    passing: clampInt(overallSkill + (Math.random()*2-1),1,10),
+    shooting: clampInt(overallSkill + (Math.random()*2-1),1,10),
+    dribbling: clampInt(overallSkill + (Math.random()*2-1),1,10),
+    speed: clampInt(overallSkill + (Math.random()*2-1),1,10),
+    vision: clampInt(overallSkill + (Math.random()*2-1),1,10),
+    offTheBall: clampInt(overallSkill + (Math.random()*2-1),1,10),
+    defending: clampInt(overallSkill + (Math.random()*2-1),1,10),
+    workRate: clampInt(overallSkill + (Math.random()*2-1),1,10),
+    mental: clampInt(overallSkill + (Math.random()*2-1),1,10),
+    fitness: clampInt(overallSkill + (Math.random()*2-1),1,10),
   };
 }
 
@@ -546,16 +553,17 @@ function load(){
           name: (p.name||'').toString(),
           roles: {F:!!p.roles?.F, M:!!p.roles?.M, D:!!p.roles?.D},
           ratings: {
-            overall: clampInt(p.ratings?.overall ?? 6,1,10),
+            overallSkill: clampInt(p.ratings?.overallSkill ?? p.ratings?.overall ?? 6,1,10),
             passing: clampInt(p.ratings?.passing ?? 6,1,10),
+            shooting: clampInt(p.ratings?.shooting ?? p.ratings?.finishing ?? 6,1,10),
             dribbling: clampInt(p.ratings?.dribbling ?? 6,1,10),
-            finishing: clampInt(p.ratings?.finishing ?? 6,1,10),
-            defense: clampInt(p.ratings?.defense ?? 6,1,10),
             speed: clampInt(p.ratings?.speed ?? 6,1,10),
-            stamina: clampInt(p.ratings?.stamina ?? 6,1,10),
-            clutch: clampInt(p.ratings?.clutch ?? 3,1,5),
-            consistency: clampInt(p.ratings?.consistency ?? 3,1,5),
-            leadership: clampInt(p.ratings?.leadership ?? 3,1,5),
+            vision: clampInt(p.ratings?.vision ?? 6,1,10),
+            offTheBall: clampInt(p.ratings?.offTheBall ?? 6,1,10),
+            defending: clampInt(p.ratings?.defending ?? p.ratings?.defense ?? 6,1,10),
+            workRate: clampInt(p.ratings?.workRate ?? p.ratings?.stamina ?? 6,1,10),
+            mental: clampInt(p.ratings?.mental ?? p.ratings?.clutch ?? 6,1,10),
+            fitness: clampInt(p.ratings?.fitness ?? p.ratings?.consistency ?? 6,1,10),
           }
         }));
       } else {
@@ -591,20 +599,22 @@ function displayName(p){ return (p && p.name && String(p.name).trim()) ? String(
    ========================= */
 function computeScore(p){
   const r = p.ratings;
-  // fixed weights (no UI tuning)
-  return (r.overall*3.0) +
-    ((r.passing + r.dribbling + r.finishing + r.defense)*1.5) +
-    ((r.speed + r.stamina)*1.2) +
-    (r.clutch*1.2) +
-    (r.consistency*1.0) +
-    (r.leadership*1.0);
+  return (r.overallSkill * 3.0) +
+    (r.passing * 1.2) +
+    (r.shooting * 1.2) +
+    (r.dribbling * 1.15) +
+    (r.speed * 1.0) +
+    (r.vision * 1.0) +
+    (r.offTheBall * 0.95) +
+    (r.defending * 1.15) +
+    (r.workRate * 0.9) +
+    (r.mental * 0.85) +
+    (r.fitness * 0.9);
 }
 
 function strengthPct(score){
-  // normalize to 0-100 range using expected bounds
-  // min: overall1 etc -> ~ (1*3)+(4*1.5)+(2*1.2)+(1.2+1+1)=3+6+2.4+3.2=14.6
-  // max: overall10 etc -> 30+60+24+ (6+5+5)=130
-  const min=14.6, max=130;
+  const min = 13.3;
+  const max = 133;
   const pct = ((score-min)/(max-min))*100;
   return Math.max(0, Math.min(100, pct));
 }
@@ -910,7 +920,7 @@ function renderChecklist(){
 
     const meta = document.createElement('div');
     meta.className='meta';
-    meta.textContent = `Overall ${p.ratings.overall}`;
+    meta.textContent = `Overall ${p.ratings.overallSkill}`;
 
     const chips = document.createElement('div');
     chips.className='roleChips';
@@ -960,7 +970,7 @@ function renderPlayersPage(){
 
     const meta = document.createElement('div');
     meta.className='meta';
-    meta.textContent = `Overall ${p.ratings.overall}`;
+    meta.textContent = `Overall ${p.ratings.overallSkill}`;
 
     const chips = document.createElement('div');
     chips.className='roleChips';
@@ -1151,16 +1161,17 @@ function setRoleButtons(roles){
 }
 
 function setRatingFields(r){
-  $('rOverall').value = r.overall;
+  $('rOverallSkill').value = r.overallSkill;
   $('rPassing').value = r.passing;
+  $('rShooting').value = r.shooting;
   $('rDribbling').value = r.dribbling;
-  $('rFinishing').value = r.finishing;
-  $('rDefense').value = r.defense;
   $('rSpeed').value = r.speed;
-  $('rStamina').value = r.stamina;
-  $('rClutch').value = r.clutch;
-  $('rConsistency').value = r.consistency;
-  $('rLeadership').value = r.leadership;
+  $('rVision').value = r.vision;
+  $('rOffTheBall').value = r.offTheBall;
+  $('rDefending').value = r.defending;
+  $('rWorkRate').value = r.workRate;
+  $('rMental').value = r.mental;
+  $('rFitness').value = r.fitness;
 }
 
 function readRolesFromButtons(){
@@ -1176,18 +1187,18 @@ function readRolesFromButtons(){
 
 function readRatings(){
   const r = {
-    overall: clampInt($('rOverall').value,1,10),
+    overallSkill: clampInt($('rOverallSkill').value,1,10),
     passing: clampInt($('rPassing').value,1,10),
+    shooting: clampInt($('rShooting').value,1,10),
     dribbling: clampInt($('rDribbling').value,1,10),
-    finishing: clampInt($('rFinishing').value,1,10),
-    defense: clampInt($('rDefense').value,1,10),
     speed: clampInt($('rSpeed').value,1,10),
-    stamina: clampInt($('rStamina').value,1,10),
-    clutch: clampInt($('rClutch').value,1,5),
-    consistency: clampInt($('rConsistency').value,1,5),
-    leadership: clampInt($('rLeadership').value,1,5),
+    vision: clampInt($('rVision').value,1,10),
+    offTheBall: clampInt($('rOffTheBall').value,1,10),
+    defending: clampInt($('rDefending').value,1,10),
+    workRate: clampInt($('rWorkRate').value,1,10),
+    mental: clampInt($('rMental').value,1,10),
+    fitness: clampInt($('rFitness').value,1,10),
   };
-  // reflect clamped values back into inputs (validation)
   setRatingFields(r);
   return r;
 }
@@ -1287,17 +1298,20 @@ function importExcel(){
         if(!name) continue;
         const roles = parsePositionString(row[idx.position]);
         if(!roles.F && !roles.M && !roles.D) roles.M = true;
-        const overall = clampInt(row[idx.overall],1,10);
-        const passing = clampInt(row[idx.passing],1,10);
-        const dribbling = clampInt(row[idx.dribbling],1,10);
-        const finishing = clampInt(row[idx.shooting],1,10);
-        const defense = clampInt(row[idx.defending],1,10);
-        const speed = clampInt(row[idx.speed],1,10);
-        const stamina = clampInt((Number(row[idx.fitness]) + Number(row[idx.workrate] || 0))/2,1,10);
-        const clutch = clampInt((Number(row[idx.mental]) + Number(row[idx.vision] || 0))/4,1,5);
-        const consistency = clampInt((Number(row[idx.workrate]) + Number(row[idx.offtheball] || 0))/4,1,5);
-        const leadership = clampInt((Number(row[idx.mental]) + Number(row[idx.vision] || 0))/4,1,5);
-        imported.push({id: uid(), name, roles, ratings: {overall, passing, dribbling, finishing, defense, speed, stamina, clutch, consistency, leadership}});
+        const ratings = {
+          overallSkill: clampInt(row[idx.overall],1,10),
+          passing: clampInt(row[idx.passing],1,10),
+          shooting: clampInt(row[idx.shooting],1,10),
+          dribbling: clampInt(row[idx.dribbling],1,10),
+          speed: clampInt(row[idx.speed],1,10),
+          vision: clampInt(row[idx.vision],1,10),
+          offTheBall: clampInt(row[idx.offtheball],1,10),
+          defending: clampInt(row[idx.defending],1,10),
+          workRate: clampInt(row[idx.workrate],1,10),
+          mental: clampInt(row[idx.mental],1,10),
+          fitness: clampInt(row[idx.fitness],1,10),
+        };
+        imported.push({id: uid(), name, roles, ratings});
       }
       if(!imported.length) throw new Error('No valid players found.');
       players = imported;
