@@ -228,7 +228,7 @@ select,input[type="text"]{
   margin-top:12px;
 }
 .teamHeader{
-  padding:16px 14px;
+  padding:12px 12px;
   color:#fff;
   display:flex;
   align-items:center;
@@ -236,13 +236,13 @@ select,input[type="text"]{
   gap:10px;
   font-weight:900;
 }
-.teamTitle{display:flex; align-items:center; gap:10px; font-size:18px; font-weight:900}
+.teamTitle{display:flex; align-items:center; gap:10px}
 .shirt{
-  width:24px;height:18px;border-radius:6px 6px 10px 10px;
-  background:rgba(255,255,255,0.18);
-  border:1px solid rgba(255,255,255,0.42);
+  width:22px;height:18px;border-radius:4px 4px 8px 8px;
+  background:rgba(255,255,255,0.25);
+  border:1px solid rgba(255,255,255,0.35);
 }
-.teamMeta{font-size:12px; opacity:0.96; text-align:right; line-height:1.3; font-weight:900}
+.teamMeta{font-size:12px; opacity:0.92; text-align:right; line-height:1.2}
 
 .c-red{background:#EB5757}
 .c-white{background:#E5E7EB; color:#111}
@@ -271,9 +271,9 @@ select,input[type="text"]{
 .roleGrid{
   display:grid;
   grid-template-columns: 42px 42px 42px;
-  column-gap:8px;
+  column-gap:14px;
   align-items:center;
-  justify-content:end;
+  justify-content:start; /* not right-justified */
   flex:0 0 auto;
 }
 .roleDot{
@@ -290,6 +290,16 @@ select,input[type="text"]{
 .dotM{background:#DCFCE7;color:#166534}
 .dotD{background:#DBEAFE;color:#1D4ED8}
 .dotOff{visibility:hidden}
+
+.captainTag{display:inline-flex;align-items:center;justify-content:center;margin-left:6px;width:18px;height:18px;border-radius:999px;background:#FEF3C7;color:#92400E;font-size:11px;font-weight:900;border:1px solid #FCD34D;vertical-align:1px}
+.roleMetaRow{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.roleChecks{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.checkItem{display:flex;align-items:center;gap:10px;padding:11px 12px;border:1px solid var(--border);border-radius:14px;background:#fff;font-weight:800}
+.checkItem input{width:18px;height:18px;margin:0}
+.captainPill{display:inline-flex;align-items:center;gap:6px;padding:5px 10px;border-radius:999px;background:#FEF3C7;color:#92400E;border:1px solid #FCD34D;font-size:11px;font-weight:900}
+.playerNameWrap{display:flex;align-items:center;gap:6px;min-width:0}
+.playerCaptain{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:999px;background:#FEF3C7;color:#92400E;font-size:12px;font-weight:900;border:1px solid #FCD34D;flex:0 0 auto}
+
 
 /* Modal */
 .modalBackdrop{
@@ -328,16 +338,17 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
   border:1px solid var(--border);
   font-weight:800;
 }
-.roleChecks{display:grid;grid-template-columns:1fr;gap:10px;margin-top:6px}
-.roleCheck{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;font-weight:900;background:#fff}
-.roleCheck input{width:18px;height:18px;margin:0}
-.roleCheck.roleF{background:#FFF5F5}
-.roleCheck.roleM{background:#F1FFF5}
-.roleCheck.roleD{background:#F4F8FF}
-.roleKey{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:999px;font-size:12px;font-weight:900;border:1px solid rgba(0,0,0,0.10)}
-.roleKeyF{background:#FEE2E2;color:#991B1B}
-.roleKeyM{background:#DCFCE7;color:#166534}
-.roleKeyD{background:#DBEAFE;color:#1D4ED8}
+.roleToggle{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
+.roleToggle button{
+  border:1px solid var(--border);
+  background:#fff;
+  padding:10px 12px;
+  border-radius:999px;
+  font-weight:900;
+}
+.roleToggle button.onF{background:#FEE2E2;color:#991B1B;border-color:#FECACA}
+.roleToggle button.onM{background:#DCFCE7;color:#166534;border-color:#BBF7D0}
+.roleToggle button.onD{background:#DBEAFE;color:#1D4ED8;border-color:#BFDBFE}
 .modalActions{display:flex; gap:10px; margin-top:12px}
 .modalActions .primary{flex:1}
 .modalActions .secondary{flex:1}
@@ -359,12 +370,12 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
 }
 
 </style>
-<link rel="manifest" href="manifest.json" />
-<link rel="apple-touch-icon" href="apple-touch-icon.svg" />
-<meta name="theme-color" content="#ef4444" />
-<meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
-<meta name="apple-mobile-web-app-title" content="Soccer Team Balancer" />
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.svg">
+<meta name="theme-color" content="#ef4444">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Team Balancer">
 </head>
 <body>
 <div class="app">
@@ -421,7 +432,6 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
         <button class="secondary" onclick="openModal(null)">Add Player</button>
         <button class="primary" onclick="importExcel()">Import Excel</button>
       </div>
-      <div class="small" style="margin-top:8px;">Expected Excel columns: Name, Overall Skill, Passing, Shooting, Dribbling, Speed, Vision, off the ball, Defending, WorkRate, Mental, Fitness, Position</div>
       <div id="playersList" style="margin-top:12px;"></div>
     </div>
   </div>
@@ -448,13 +458,14 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
     </div>
 
     <div class="field" style="margin-top:10px;">
-      <label>Positions</label>
+      <label>Position</label>
       <div class="roleChecks">
-        <label class="roleCheck roleF"><input type="checkbox" id="chkF"><span class="roleKey roleKeyF">F</span><span>Forward</span></label>
-        <label class="roleCheck roleM"><input type="checkbox" id="chkM"><span class="roleKey roleKeyM">M</span><span>Mid</span></label>
-        <label class="roleCheck roleD"><input type="checkbox" id="chkD"><span class="roleKey roleKeyD">D</span><span>Defense</span></label>
+        <label class="checkItem"><input id="posF" type="checkbox"> Forward</label>
+        <label class="checkItem"><input id="posM" type="checkbox"> Mid</label>
+        <label class="checkItem"><input id="posD" type="checkbox"> Defense</label>
+        <label class="checkItem"><input id="isCaptain" type="checkbox"> Captain</label>
       </div>
-      <div class="small">Select one or more positions.</div>
+      <div class="small">Select any positions the player can play.</div>
     </div>
 
     <div class="card" style="margin-top:12px; box-shadow:none;">
@@ -472,7 +483,7 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
         <div class="field"><label>Mental (1–10)</label><input id="rMental" type="number" min="1" max="10"></div>
         <div class="field"><label>Fitness (1–10)</label><input id="rFitness" type="number" min="1" max="10"></div>
       </div>
-      <div class="small">These inputs now match your spreadsheet columns.</div>
+      <div class="small">Uses your spreadsheet columns plus Position and Captain.</div>
     </div>
 
     <div class="modalActions">
@@ -485,98 +496,92 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 /* =========================
-   Storage + Preload
+   Storage + Data Model
    ========================= */
-const LS_PLAYERS = 'tb_players_v1';
-const LS_SELECTION = 'tb_selection_v1';
-
-const PRELOAD_NAMES = ["Adnan","Tomek","Mike","Guido","Achkan","Tuto","Carlos","Max C","Kiaan","Matt","Danny","Kadir","Mateo","Hugo","Ciro","Orson","Luismi","Marcelo","Arya","Brandon","Mario","Juan","Max K","Roger","Andy","Devrim","Conrad","Alex"];
-
-function uid(){ return (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2); }
-
-function clampInt(v, lo, hi){
-  const n = Number(v);
-  if(!Number.isFinite(n)) return lo;
-  return Math.max(lo, Math.min(hi, Math.round(n)));
-}
-
-function defaultRatings(){
-  const overallSkill = clampInt(6 + Math.random()*2, 1, 10);
-  return {
-    overallSkill,
-    passing: clampInt(overallSkill + (Math.random()*2-1),1,10),
-    shooting: clampInt(overallSkill + (Math.random()*2-1),1,10),
-    dribbling: clampInt(overallSkill + (Math.random()*2-1),1,10),
-    speed: clampInt(overallSkill + (Math.random()*2-1),1,10),
-    vision: clampInt(overallSkill + (Math.random()*2-1),1,10),
-    offTheBall: clampInt(overallSkill + (Math.random()*2-1),1,10),
-    defending: clampInt(overallSkill + (Math.random()*2-1),1,10),
-    workRate: clampInt(overallSkill + (Math.random()*2-1),1,10),
-    mental: clampInt(overallSkill + (Math.random()*2-1),1,10),
-    fitness: clampInt(overallSkill + (Math.random()*2-1),1,10),
-  };
-}
-
-function preloadPlayers(){
-  // Make roles a bit more distinct (so the role-balancing feature is easy to test)
-  // We'll rotate patterns across players.
-  const patterns = [
-    {F:true,M:true,D:false},
-    {F:true,M:false,D:true},
-    {F:false,M:true,D:true},
-    {F:true,M:false,D:false},
-    {F:false,M:true,D:false},
-    {F:false,M:false,D:true},
-    {F:true,M:true,D:true},
-  ];
-  return PRELOAD_NAMES.map((name, i) => ({
-    id: uid(),
-    name,
-    roles: {...patterns[i % patterns.length]},
-    ratings: defaultRatings(),
-  }));
-}
+const LS_PLAYERS = 'tb_players_v4';
+const LS_SELECTION = 'tb_selection_v4';
+const RATING_FIELDS = [
+  ['overallSkill','Overall Skill'],
+  ['passing','Passing'],
+  ['shooting','Shooting'],
+  ['dribbling','Dribbling'],
+  ['speed','Speed'],
+  ['vision','Vision'],
+  ['offTheBall','off the ball'],
+  ['defending','Defending'],
+  ['workRate','WorkRate'],
+  ['mental','Mental'],
+  ['fitness','Fitness'],
+];
+const EXCEL_HEADERS = ['Name','Position','Captain','Overall Skill','Passing','Shooting','Dribbling','Speed','Vision','off the ball','Defending','WorkRate','Mental','Fitness'];
 
 let players = [];
 let selection = new Set();
 let currentEditId = null;
-let lastSolution = null; // for regenerate variety
+let lastSolution = null;
 
+function $(id){ return document.getElementById(id); }
+function uid(){ return Math.random().toString(36).slice(2,10); }
+function clampInt(v,min,max){
+  const n = Math.round(Number(v));
+  if(!Number.isFinite(n)) return min;
+  return Math.max(min, Math.min(max, n));
+}
+function displayName(p){ return (p && p.name && String(p.name).trim()) ? String(p.name).trim() : '(No name)'; }
+function defaultRatings(){
+  return {
+    overallSkill: 5, passing: 5, shooting: 5, dribbling: 5, speed: 5,
+    vision: 5, offTheBall: 5, defending: 5, workRate: 5, mental: 5, fitness: 5,
+  };
+}
+function parseBoolish(v){
+  if(v===true || v===1) return true;
+  const s = String(v ?? '').trim().toLowerCase();
+  return ['y','yes','true','1','captain','c','x'].includes(s);
+}
+function parsePositions(v){
+  const s = String(v ?? '').toUpperCase().replace(/[^FMD]/g,'');
+  const roles = {F:false,M:false,D:false};
+  for(const ch of s){ if(ch==='F'||ch==='M'||ch==='D') roles[ch] = true; }
+  if(!roles.F && !roles.M && !roles.D) roles.M = true;
+  return roles;
+}
+function positionString(roles){
+  return (roles?.F?'F':'') + (roles?.M?'M':'') + (roles?.D?'D':'');
+}
+function normalizePlayer(p){
+  const old = p.ratings || {};
+  const ratings = {
+    overallSkill: clampInt(old.overallSkill ?? old.overall ?? p.overallSkill ?? 5,1,10),
+    passing: clampInt(old.passing ?? p.passing ?? 5,1,10),
+    shooting: clampInt(old.shooting ?? old.finishing ?? p.shooting ?? 5,1,10),
+    dribbling: clampInt(old.dribbling ?? p.dribbling ?? 5,1,10),
+    speed: clampInt(old.speed ?? p.speed ?? 5,1,10),
+    vision: clampInt(old.vision ?? p.vision ?? 5,1,10),
+    offTheBall: clampInt(old.offTheBall ?? old.off_the_ball ?? p.offTheBall ?? p['off the ball'] ?? 5,1,10),
+    defending: clampInt(old.defending ?? old.defense ?? p.defending ?? 5,1,10),
+    workRate: clampInt(old.workRate ?? old.stamina ?? p.workRate ?? 5,1,10),
+    mental: clampInt(old.mental ?? old.clutch ?? p.mental ?? 5,1,10),
+    fitness: clampInt(old.fitness ?? old.consistency ?? p.fitness ?? 5,1,10),
+  };
+  const roles = p.roles ? {F:!!p.roles.F,M:!!p.roles.M,D:!!p.roles.D} : parsePositions(p.position);
+  return {
+    id: p.id || uid(),
+    name: String(p.name || '').trim(),
+    roles,
+    captain: !!p.captain,
+    ratings,
+  };
+}
 function load(){
-  const raw = localStorage.getItem(LS_PLAYERS);
+  const raw = localStorage.getItem(LS_PLAYERS) || localStorage.getItem('tb_players_v1');
   if(raw){
     try{
       const arr = JSON.parse(raw);
-      if(Array.isArray(arr) && arr.length){
-        players = arr.map(p=>({
-          id: p.id || uid(),
-          name: (p.name||'').toString(),
-          roles: {F:!!p.roles?.F, M:!!p.roles?.M, D:!!p.roles?.D},
-          ratings: {
-            overallSkill: clampInt(p.ratings?.overallSkill ?? p.ratings?.overall ?? 6,1,10),
-            passing: clampInt(p.ratings?.passing ?? 6,1,10),
-            shooting: clampInt(p.ratings?.shooting ?? p.ratings?.finishing ?? 6,1,10),
-            dribbling: clampInt(p.ratings?.dribbling ?? 6,1,10),
-            speed: clampInt(p.ratings?.speed ?? 6,1,10),
-            vision: clampInt(p.ratings?.vision ?? 6,1,10),
-            offTheBall: clampInt(p.ratings?.offTheBall ?? 6,1,10),
-            defending: clampInt(p.ratings?.defending ?? p.ratings?.defense ?? 6,1,10),
-            workRate: clampInt(p.ratings?.workRate ?? p.ratings?.stamina ?? 6,1,10),
-            mental: clampInt(p.ratings?.mental ?? p.ratings?.clutch ?? 6,1,10),
-            fitness: clampInt(p.ratings?.fitness ?? p.ratings?.consistency ?? 6,1,10),
-          }
-        }));
-      } else {
-        players = preloadPlayers();
-      }
-    }catch(e){
-      players = preloadPlayers();
-    }
-  } else {
-    players = preloadPlayers();
+      if(Array.isArray(arr)) players = arr.map(normalizePlayer).filter(p=>p.name);
+    }catch(e){}
   }
-
-  const selRaw = localStorage.getItem(LS_SELECTION);
+  const selRaw = localStorage.getItem(LS_SELECTION) || localStorage.getItem('tb_selection_v1');
   if(selRaw){
     try{
       const ids = JSON.parse(selRaw);
@@ -585,58 +590,42 @@ function load(){
   }
   save();
 }
-
 function save(){
   localStorage.setItem(LS_PLAYERS, JSON.stringify(players));
   localStorage.setItem(LS_SELECTION, JSON.stringify([...selection]));
 }
-
-function $(id){ return document.getElementById(id); }
-function displayName(p){ return (p && p.name && String(p.name).trim()) ? String(p.name).trim() : '(No name)'; }
 
 /* =========================
    Scoring + Optimization
    ========================= */
 function computeScore(p){
   const r = p.ratings;
-  return (r.overallSkill * 3.0) +
-    (r.passing * 1.2) +
-    (r.shooting * 1.2) +
-    (r.dribbling * 1.15) +
-    (r.speed * 1.0) +
-    (r.vision * 1.0) +
-    (r.offTheBall * 0.95) +
-    (r.defending * 1.15) +
-    (r.workRate * 0.9) +
-    (r.mental * 0.85) +
-    (r.fitness * 0.9);
+  return (r.overallSkill*3.4) +
+    (r.passing*1.35) +
+    (r.shooting*1.25) +
+    (r.dribbling*1.25) +
+    (r.speed*1.0) +
+    (r.vision*1.15) +
+    (r.offTheBall*0.95) +
+    (r.defending*1.2) +
+    (r.workRate*1.0) +
+    (r.mental*1.0) +
+    (r.fitness*0.9);
 }
-
 function strengthPct(score){
-  const min = 13.3;
-  const max = 133;
-  const pct = ((score-min)/(max-min))*100;
-  return Math.max(0, Math.min(100, pct));
+  const min = 13.4, max = 143.5;
+  return Math.max(0, Math.min(100, ((score-min)/(max-min))*100));
 }
 function strengthColor(pct){
-  // green to orange to red-ish (keep subtle)
-  if(pct>=75) return "#34C759";
-  if(pct>=55) return "#FF9F0A";
-  return "#FF453A";
+  if(pct>=75) return '#34C759';
+  if(pct>=55) return '#FF9F0A';
+  return '#FF453A';
 }
-
 function std(arr){
-  const n=arr.length;
-  if(n<=1) return 0;
+  const n=arr.length; if(n<=1) return 0;
   const mean = arr.reduce((s,x)=>s+x,0)/n;
-  const v = arr.reduce((s,x)=>s+(x-mean)*(x-mean),0)/n;
-  return Math.sqrt(v);
+  return Math.sqrt(arr.reduce((s,x)=>s+(x-mean)*(x-mean),0)/n);
 }
-
-/* Role logic
-   - Soft positional balance: penalize spread in role distribution
-   - Strict coverage: if pool has >= teamCount for a role, enforce at least one per team
-*/
 function roleCap(p){ const r=p.roles||{}; return {F:!!r.F, M:!!r.M, D:!!r.D}; }
 function teamHasRole(team, role){ return team.some(p=>roleCap(p)[role]); }
 function teamRoleCounts(team){
@@ -644,101 +633,86 @@ function teamRoleCounts(team){
   for(const p of team){ const c=roleCap(p); if(c.F)F++; if(c.M)M++; if(c.D)D++; }
   return {F,M,D};
 }
-
-function computeObjective(teams, globalRoleCounts, lambdaRole){
+function teamCaptainCount(team){ return team.reduce((s,p)=>s + (p.captain?1:0), 0); }
+function computeObjective(teams, globalRoleCounts, teamCount){
   const totals = teams.map(t=>t.reduce((s,p)=>s+p._score,0));
   const avgs = teams.map((t,i)=>totals[i]/Math.max(1,t.length));
   const primary = std(avgs);
 
-  // capability spread
   const caps = teams.map(teamRoleCounts);
-  const meanF = caps.reduce((s,x)=>s+x.F,0)/teams.length;
-  const meanM = caps.reduce((s,x)=>s+x.M,0)/teams.length;
-  const meanD = caps.reduce((s,x)=>s+x.D,0)/teams.length;
-  const spread = (k,mean)=> caps.reduce((s,x)=>s+Math.abs(x[k]-mean),0)/teams.length;
-  const capImbalance = spread('F',meanF) + 0.9*spread('M',meanM) + spread('D',meanD);
+  const spread = (k)=>{
+    const mean = caps.reduce((s,x)=>s+x[k],0)/teams.length;
+    return caps.reduce((s,x)=>s+Math.abs(x[k]-mean),0)/teams.length;
+  };
+  const rolePenalty = spread('F') + 0.9*spread('M') + spread('D');
 
-  // missing role penalty when pool allows it
-  const k = teams.length;
-  let missing = 0;
-  if((globalRoleCounts.F||0) >= k) missing += caps.reduce((s,x)=>s+(x.F<=0?1:0),0);
-  if((globalRoleCounts.M||0) >= k) missing += caps.reduce((s,x)=>s+(x.M<=0?1:0),0)*0.8;
-  if((globalRoleCounts.D||0) >= k) missing += caps.reduce((s,x)=>s+(x.D<=0?1:0),0);
+  let missingRoles = 0;
+  if((globalRoleCounts.F||0) >= teamCount) missingRoles += caps.reduce((s,x)=>s+(x.F<=0?1:0),0);
+  if((globalRoleCounts.M||0) >= teamCount) missingRoles += caps.reduce((s,x)=>s+(x.M<=0?1:0),0)*0.8;
+  if((globalRoleCounts.D||0) >= teamCount) missingRoles += caps.reduce((s,x)=>s+(x.D<=0?1:0),0);
 
-  const rolePenalty = (capImbalance*0.55) + (missing*2.5);
-  const objective = primary + (lambdaRole||0)*rolePenalty;
-  return {objective, primary, rolePenalty};
+  const captainCounts = teams.map(teamCaptainCount);
+  const captainSpread = std(captainCounts) * 2.1;
+  let captainMissing = 0;
+  if((globalRoleCounts.C||0) >= teamCount) captainMissing += captainCounts.filter(x=>x===0).length * 2.2;
+  if(teamCount===2) captainMissing += captainCounts.filter(x=>x>1).length * 1.6;
+
+  const objective = primary + (rolePenalty*0.9) + (missingRoles*2.6) + captainSpread + captainMissing;
+  return {objective, primary};
 }
-
 function cloneTeams(teams){ return teams.map(t=>t.slice()); }
-
-function enforceMinRolesStrict(teams, globalRoleCounts, lambdaRole){
+function teamConstraintsSatisfied(team, required){
+  for(const key of required){
+    if(key==='C' && teamCaptainCount(team)<1) return false;
+    if(key!=='C' && !teamHasRole(team,key)) return false;
+  }
+  return true;
+}
+function enforceCoverageStrict(teams, globalCounts){
   const k = teams.length;
   const required = [];
-  if((globalRoleCounts.F||0) >= k) required.push('F');
-  if((globalRoleCounts.M||0) >= k) required.push('M');
-  if((globalRoleCounts.D||0) >= k) required.push('D');
-  if(required.length===0) return teams;
+  if((globalCounts.F||0) >= k) required.push('F');
+  if((globalCounts.M||0) >= k) required.push('M');
+  if((globalCounts.D||0) >= k) required.push('D');
+  if((globalCounts.C||0) >= k) required.push('C');
+  if(!required.length) return teams;
 
-  function okTeam(team){ return required.every(r=>teamHasRole(team,r)); }
-
-  // Iterate until all required are satisfied or we get stuck
-  for(let pass=0; pass<12; pass++){
-    let changed=false;
-    for(const role of required){
+  for(let pass=0; pass<16; pass++){
+    let changed = false;
+    for(const req of required){
       for(let recv=0; recv<teams.length; recv++){
-        if(teamHasRole(teams[recv], role)) continue;
-
-        let best=null;
-
+        if(teamConstraintsSatisfied(teams[recv], [req])) continue;
+        let best = null;
         for(let donor=0; donor<teams.length; donor++){
           if(donor===recv) continue;
           const donorTeam = teams[donor];
-          if(teamRoleCounts(donorTeam)[role] < 2) continue;
-
           const recvTeam = teams[recv];
-
-          for(let a=0;a<donorTeam.length;a++){
+          if(req==='C' && teamCaptainCount(donorTeam) < 2) continue;
+          if(req!=='C' && teamRoleCounts(donorTeam)[req] < 2) continue;
+          for(let a=0; a<donorTeam.length; a++){
             const give = donorTeam[a];
-            if(!roleCap(give)[role]) continue;
-
-            const donorMinus = donorTeam.filter((_,x)=>x!==a);
-            if(!okTeam(donorMinus)) continue;
-
-            for(let b=0;b<recvTeam.length;b++){
+            const qualifies = req==='C' ? !!give.captain : !!roleCap(give)[req];
+            if(!qualifies) continue;
+            for(let b=0; b<recvTeam.length; b++){
               const take = recvTeam[b];
-              const donorAfter = donorMinus.concat([take]);
-              const recvAfter = recvTeam.filter((_,x)=>x!==b).concat([give]);
-              if(!okTeam(donorAfter)) continue;
-              if(!okTeam(recvAfter)) continue;
-
-              const before = computeObjective(teams, globalRoleCounts, lambdaRole).objective;
-
-              // swap in place for eval
-              const tmp = recvTeam[b];
-              recvTeam[b]=give;
-              donorTeam[a]=take;
-              const after = computeObjective(teams, globalRoleCounts, lambdaRole).objective;
-              // revert
-              donorTeam[a]=give;
-              recvTeam[b]=tmp;
-
+              const cand = cloneTeams(teams);
+              cand[donor][a] = take;
+              cand[recv][b] = give;
+              if(!teamConstraintsSatisfied(cand[donor], required)) continue;
+              const before = computeObjective(teams, globalCounts, k).objective;
+              const after = computeObjective(cand, globalCounts, k).objective;
               const delta = after - before;
-              if(best===null || delta < best.delta){
-                best={donor,recv,a,b,delta};
-              }
+              if(best===null || delta < best.delta) best = {donor,recv,a,b,delta};
             }
           }
         }
-
         if(best){
           const donorTeam = teams[best.donor];
           const recvTeam = teams[best.recv];
           const give = donorTeam[best.a];
-          const take = recvTeam[best.b];
-          donorTeam[best.a]=take;
-          recvTeam[best.b]=give;
-          changed=true;
+          donorTeam[best.a] = recvTeam[best.b];
+          recvTeam[best.b] = give;
+          changed = true;
         }
       }
     }
@@ -746,112 +720,67 @@ function enforceMinRolesStrict(teams, globalRoleCounts, lambdaRole){
   }
   return teams;
 }
-
-// Seeding
-function greedySeed(arr, teamCount, rand){
+function greedySeed(arr, teamCount){
   const teams = Array.from({length:teamCount},()=>[]);
   const totals = Array.from({length:teamCount},()=>0);
-  const sizes  = Array.from({length:teamCount},()=>0);
-
-  const sorted = arr.slice().sort((a,b)=>b._score-a._score);
+  const captainCounts = Array.from({length:teamCount},()=>0);
+  const sorted = arr.slice().sort((a,b)=>{
+    const capDiff = Number(b.captain)-Number(a.captain);
+    return capDiff || (b._score-a._score);
+  });
   for(const p of sorted){
-    // pick team with lowest normalized avg so far (tot/size), tie-breaker by size
     let best=0, bestVal=Infinity;
     for(let i=0;i<teamCount;i++){
-      const val = totals[i]/Math.max(1,sizes[i]);
-      const tie = sizes[i]*0.0001;
-      const v = val + tie;
+      const avg = totals[i]/Math.max(1,teams[i].length);
+      const v = avg + (captainCounts[i]*5) + (teams[i].length*0.0001);
       if(v<bestVal){ bestVal=v; best=i; }
     }
     teams[best].push(p);
     totals[best]+=p._score;
-    sizes[best]++;
+    if(p.captain) captainCounts[best]++;
   }
   return teams;
 }
 function randomSeed(arr, teamCount, rand){
   const teams = Array.from({length:teamCount},()=>[]);
   const pool = arr.slice();
-  for(let i=pool.length-1;i>0;i--){
-    const j = Math.floor(rand()* (i+1));
-    [pool[i],pool[j]]=[pool[j],pool[i]];
-  }
-  for(let i=0;i<pool.length;i++){
-    teams[i%teamCount].push(pool[i]);
-  }
+  for(let i=pool.length-1;i>0;i--){ const j=Math.floor(rand()*(i+1)); [pool[i],pool[j]]=[pool[j],pool[i]]; }
+  for(let i=0;i<pool.length;i++) teams[i%teamCount].push(pool[i]);
   return teams;
 }
-
 function optimize(selected, teamCount, seed){
-  // deterministic-ish RNG for regenerate variety
   let s = seed || Math.floor(Math.random()*1e9);
   const rand = ()=> (s = (s*1664525 + 1013904223) >>> 0) / 4294967296;
-
   const arr = selected.map(p=>({ ...p, _score: computeScore(p) }));
-  const n = arr.length;
-  const small = n<=20;
-  const restarts = small?24:(n<=28?14:9);
-  const attempts = small?4200:(n<=28?3000:2400);
-
-  const globalRoleCounts = {
+  const globalCounts = {
     F: arr.filter(p=>p.roles?.F).length,
     M: arr.filter(p=>p.roles?.M).length,
     D: arr.filter(p=>p.roles?.D).length,
+    C: arr.filter(p=>p.captain).length,
   };
-  const lambdaRole = 0.95;
-
-  let bestTeams=null;
-  let bestEval={objective:Infinity};
-
+  const restarts = arr.length<=20 ? 24 : 14;
+  const attempts = arr.length<=20 ? 4200 : 2800;
+  let bestTeams = null, bestEval = {objective: Infinity};
   for(let r=0;r<restarts;r++){
-    const base = (r%2===0) ? greedySeed(arr, teamCount, rand) : randomSeed(arr, teamCount, rand);
-
-    // strict coverage if possible
-    enforceMinRolesStrict(base, globalRoleCounts, lambdaRole);
-
-    let cur = base;
-    let curEval = computeObjective(cur, globalRoleCounts, lambdaRole);
-    if(curEval.objective < bestEval.objective){ bestEval=curEval; bestTeams=cloneTeams(cur); }
-
-    // swap hillclimb
+    let cur = (r%2===0) ? greedySeed(arr, teamCount) : randomSeed(arr, teamCount, rand);
+    enforceCoverageStrict(cur, globalCounts);
+    let curEval = computeObjective(cur, globalCounts, teamCount);
+    if(curEval.objective < bestEval.objective){ bestEval = curEval; bestTeams = cloneTeams(cur); }
     for(let t=0;t<attempts;t++){
-      // pick 2 distinct teams with players
-      let a = Math.floor(rand()*teamCount);
-      let b = Math.floor(rand()*teamCount);
-      if(a===b) continue;
-      if(cur[a].length===0 || cur[b].length===0) continue;
-
-      const ia = Math.floor(rand()*cur[a].length);
-      const ib = Math.floor(rand()*cur[b].length);
-
+      let a = Math.floor(rand()*teamCount), b = Math.floor(rand()*teamCount);
+      if(a===b || !cur[a].length || !cur[b].length) continue;
+      const ia = Math.floor(rand()*cur[a].length), ib = Math.floor(rand()*cur[b].length);
       const cand = cloneTeams(cur);
-      const pa = cand[a][ia];
-      const pb = cand[b][ib];
-      cand[a][ia]=pb;
-      cand[b][ib]=pa;
-
-      // enforce role coverage if possible
-      enforceMinRolesStrict(cand, globalRoleCounts, lambdaRole);
-
-      const ev = computeObjective(cand, globalRoleCounts, lambdaRole);
+      [cand[a][ia], cand[b][ib]] = [cand[b][ib], cand[a][ia]];
+      enforceCoverageStrict(cand, globalCounts);
+      const ev = computeObjective(cand, globalCounts, teamCount);
       if(ev.objective <= curEval.objective){
-        cur = cand;
-        curEval = ev;
-        if(ev.objective < bestEval.objective){
-          bestEval = ev;
-          bestTeams = cloneTeams(cand);
-        }
+        cur = cand; curEval = ev;
+        if(ev.objective < bestEval.objective){ bestEval = ev; bestTeams = cloneTeams(cand); }
       }
     }
   }
-
-  // final strict check
-  enforceMinRolesStrict(bestTeams, {
-    F: bestTeams.flat().filter(p=>p.roles?.F).length,
-    M: bestTeams.flat().filter(p=>p.roles?.M).length,
-    D: bestTeams.flat().filter(p=>p.roles?.D).length,
-  }, 0.95);
-
+  enforceCoverageStrict(bestTeams, globalCounts);
   const totals = bestTeams.map(t=>t.reduce((s,p)=>s+p._score,0));
   const avgs = bestTeams.map((t,i)=>totals[i]/Math.max(1,t.length));
   return {teams:bestTeams, totals, avgs, eval:bestEval, seed:s};
@@ -861,330 +790,136 @@ function optimize(selected, teamCount, seed){
    Rendering
    ========================= */
 function switchTab(tab){
-  const game = $('pageGame');
-  const playersPage = $('pagePlayers');
   $('tabGame').classList.toggle('active', tab==='game');
   $('tabPlayers').classList.toggle('active', tab==='players');
-  game.classList.toggle('hidden', tab!=='game');
-  playersPage.classList.toggle('hidden', tab!=='players');
-
-  // Sticky bar always for generate (works from anywhere), but only meaningful on game tab
-  $('subtitle').textContent = (tab==='game')
+  $('pageGame').classList.toggle('hidden', tab!=='game');
+  $('pagePlayers').classList.toggle('hidden', tab!=='players');
+  $('subtitle').textContent = tab==='game'
     ? "Build tonight’s game, then generate balanced teams."
     : "Manage your master player list (saved on your device).";
-
   if(tab==='players') renderPlayersPage();
   if(tab==='game') renderChecklist();
 }
-
 function updateSticky(){
   $('selectedCount').textContent = String(selection.size);
-  $('btnGenerate').textContent = selection.size ? `Generate Teams (${selection.size})` : "Generate Teams";
+  $('btnGenerate').textContent = selection.size ? `Generate Teams (${selection.size})` : 'Generate Teams';
 }
-
+function playerMetaText(p){
+  const cap = p.captain ? ' • Captain' : '';
+  return `Overall ${p.ratings.overallSkill}${cap}`;
+}
+function appendRoleChips(el,p,full){
+  if(p.roles.F){ const c=document.createElement('span'); c.className='chip chipF'; c.textContent=full?'Forward':'F'; el.appendChild(c); }
+  if(p.roles.M){ const c=document.createElement('span'); c.className='chip chipM'; c.textContent=full?'Mid':'M'; el.appendChild(c); }
+  if(p.roles.D){ const c=document.createElement('span'); c.className='chip chipD'; c.textContent=full?'Defense':'D'; el.appendChild(c); }
+  if(p.captain){ const c=document.createElement('span'); c.className='captainPill'; c.textContent='★ Captain'; el.appendChild(c); }
+}
 function renderChecklist(){
   const q = ($('gameSearch').value||'').toLowerCase().trim();
-  const list = players.slice()
-    .sort((a,b)=>displayName(a).localeCompare(displayName(b)))
-    .filter(p=> !q || displayName(p).toLowerCase().includes(q));
-
-  const wrap = $('checklist');
-  wrap.innerHTML = '';
-
-  if(list.length===0){
-    wrap.innerHTML = `<div class="empty">${q ? 'No match.' : 'No players yet.'}</div>`;
-    return;
-  }
-
+  const list = players.slice().sort((a,b)=>displayName(a).localeCompare(displayName(b))).filter(p=>!q||displayName(p).toLowerCase().includes(q));
+  const wrap = $('checklist'); wrap.innerHTML='';
+  if(!list.length){ wrap.innerHTML = `<div class="empty">${q ? 'No match.' : 'No players yet. Import Excel or add a player.'}</div>`; return; }
   list.forEach((p, idx)=>{
     const row = document.createElement('div');
     row.className = 'row ' + (idx%2===1 ? 'alt' : '');
     if(selection.has(p.id)) row.classList.add('selected');
-
     row.addEventListener('click', ()=>{
-      if(selection.has(p.id)) selection.delete(p.id);
-      else selection.add(p.id);
-      save();
-      lastSolution=null;
-      renderResults(null);
-      renderChecklist();
-      updateSticky();
+      if(selection.has(p.id)) selection.delete(p.id); else selection.add(p.id);
+      save(); lastSolution=null; renderResults(null); renderChecklist(); updateSticky();
     });
-
-    const left = document.createElement('div');
-    left.className='left';
-
-    const nm = document.createElement('div');
-    nm.className='name';
-    nm.textContent = displayName(p);
-
-    const meta = document.createElement('div');
-    meta.className='meta';
-    meta.textContent = `Overall ${p.ratings.overallSkill}`;
-
-    const chips = document.createElement('div');
-    chips.className='roleChips';
-    if(p.roles.F){ const c=document.createElement('span'); c.className='chip chipF'; c.textContent='F'; chips.appendChild(c); }
-    if(p.roles.M){ const c=document.createElement('span'); c.className='chip chipM'; c.textContent='M'; chips.appendChild(c); }
-    if(p.roles.D){ const c=document.createElement('span'); c.className='chip chipD'; c.textContent='D'; chips.appendChild(c); }
-
-    left.appendChild(nm);
-    left.appendChild(meta);
-    left.appendChild(chips);
-
-    const badge = document.createElement('div');
-    badge.className = 'badge' + (selection.has(p.id) ? ' on' : '');
-    badge.textContent = selection.has(p.id) ? '✓' : '+';
-
-    row.appendChild(left);
-    row.appendChild(badge);
-    wrap.appendChild(row);
+    const left = document.createElement('div'); left.className='left';
+    const nm = document.createElement('div'); nm.className='name';
+    nm.innerHTML = `${displayName(p)}${p.captain ? '<span class="captainTag">★</span>' : ''}`;
+    const meta = document.createElement('div'); meta.className='meta'; meta.textContent = playerMetaText(p);
+    const chips = document.createElement('div'); chips.className='roleChips'; appendRoleChips(chips,p,false);
+    left.append(nm, meta, chips);
+    const badge = document.createElement('div'); badge.className='badge' + (selection.has(p.id) ? ' on' : ''); badge.textContent = selection.has(p.id) ? '✓' : '+';
+    row.append(left,badge); wrap.appendChild(row);
   });
 }
-
 function renderPlayersPage(){
   const q = ($('playerSearch').value||'').toLowerCase().trim();
-  const list = players.slice()
-    .sort((a,b)=>displayName(a).localeCompare(displayName(b)))
-    .filter(p=> !q || displayName(p).toLowerCase().includes(q));
-
-  const wrap = $('playersList');
-  wrap.innerHTML = '';
-
-  if(list.length===0){
-    wrap.innerHTML = `<div class="empty">${q ? 'No match.' : 'No players yet. Add one.'}</div>`;
-    return;
-  }
-
+  const list = players.slice().sort((a,b)=>displayName(a).localeCompare(displayName(b))).filter(p=>!q||displayName(p).toLowerCase().includes(q));
+  const wrap = $('playersList'); wrap.innerHTML='';
+  if(!list.length){ wrap.innerHTML = `<div class="empty">${q ? 'No match.' : 'No players yet. Import Excel or add one.'}</div>`; return; }
   list.forEach((p, idx)=>{
-    const row = document.createElement('div');
-    row.className = 'row ' + (idx%2===1 ? 'alt' : '');
-    row.addEventListener('click', ()=>openModal(p));
-
-    const left = document.createElement('div');
-    left.className='left';
-
-    const nm = document.createElement('div');
-    nm.className='name';
-    nm.textContent = displayName(p);
-
-    const meta = document.createElement('div');
-    meta.className='meta';
-    meta.textContent = `Overall ${p.ratings.overallSkill}`;
-
-    const chips = document.createElement('div');
-    chips.className='roleChips';
-    if(p.roles.F){ const c=document.createElement('span'); c.className='chip chipF'; c.textContent='Forward'; chips.appendChild(c); }
-    if(p.roles.M){ const c=document.createElement('span'); c.className='chip chipM'; c.textContent='Mid'; chips.appendChild(c); }
-    if(p.roles.D){ const c=document.createElement('span'); c.className='chip chipD'; c.textContent='Defense'; chips.appendChild(c); }
-
-    const score = computeScore(p);
-    const pct = strengthPct(score);
-    const color = strengthColor(pct);
-
-    const strength = document.createElement('div');
-    strength.className='strength';
-    strength.innerHTML = `
-      <div class="bar"><div class="fill" style="width:${pct}%;background:${color}"></div></div>
-      <div class="num">${Math.round(score)}</div>
-    `;
-
-    left.appendChild(nm);
-    left.appendChild(meta);
-    left.appendChild(chips);
-    left.appendChild(strength);
-
-    row.appendChild(left);
-    wrap.appendChild(row);
+    const row = document.createElement('div'); row.className='row ' + (idx%2===1 ? 'alt' : ''); row.addEventListener('click', ()=>openModal(p));
+    const left = document.createElement('div'); left.className='left';
+    const nm = document.createElement('div'); nm.className='name';
+    nm.innerHTML = `${displayName(p)}${p.captain ? '<span class="captainTag">★</span>' : ''}`;
+    const meta = document.createElement('div'); meta.className='meta'; meta.textContent = playerMetaText(p);
+    const chips = document.createElement('div'); chips.className='roleChips'; appendRoleChips(chips,p,true);
+    const score = computeScore(p), pct = strengthPct(score), color = strengthColor(pct);
+    const strength = document.createElement('div'); strength.className='strength'; strength.innerHTML = `<div class="bar"><div class="fill" style="width:${pct}%;background:${color}"></div></div><div class="num">${Math.round(score)}</div>`;
+    left.append(nm,meta,chips,strength); row.appendChild(left); wrap.appendChild(row);
   });
 }
-
 function renderResults(sol){
-  const wrap = $('results');
-  wrap.innerHTML = '';
-  const empty = $('resultsEmpty');
-  empty.style.display = sol ? 'none' : '';
-
+  const wrap = $('results'); wrap.innerHTML=''; $('resultsEmpty').style.display = sol ? 'none' : '';
   if(!sol) return;
-
-  const teamCount = sol.teams.length;
-  const names = teamCount===2 ? ['Red','White'] : ['Red','White','Black','Blue'];
-  const colors = teamCount===2 ? ['red','white'] : ['red','white','black','blue'];
-
-  sol.teams.forEach((team, i)=>{
-    const card = document.createElement('div');
-    card.className='teamCard';
-
-    const header = document.createElement('div');
-    header.className='teamHeader c-' + colors[i];
-
-    const title = document.createElement('div');
-    title.className='teamTitle';
-    const shirt = document.createElement('div');
-    shirt.className='shirt';
-    const tname = document.createElement('div');
-    tname.textContent = names[i];
-    title.appendChild(shirt);
-    title.appendChild(tname);
-
-    const meta = document.createElement('div');
-    meta.className='teamMeta';
-    meta.innerHTML = `Total ${sol.totals[i].toFixed(0)}<br>Avg ${sol.avgs[i].toFixed(2)}`;
-
-    header.appendChild(title);
-    header.appendChild(meta);
-    card.appendChild(header);
-
+  const names = sol.teams.length===2 ? ['Red','White'] : ['Red','White','Black','Blue'];
+  const colors = sol.teams.length===2 ? ['red','white'] : ['red','white','black','blue'];
+  sol.teams.forEach((team,i)=>{
+    const card = document.createElement('div'); card.className='teamCard';
+    const header = document.createElement('div'); header.className='teamHeader c-'+colors[i];
+    const title = document.createElement('div'); title.className='teamTitle';
+    const shirt = document.createElement('div'); shirt.className='shirt';
+    const tname = document.createElement('div'); tname.textContent = names[i];
+    title.append(shirt,tname);
+    const meta = document.createElement('div'); meta.className='teamMeta';
+    const captainCount = teamCaptainCount(team);
+    meta.innerHTML = `Total ${sol.totals[i].toFixed(0)}<br>Avg ${sol.avgs[i].toFixed(2)}${captainCount ? `<br>Capt ${captainCount}` : ''}`;
+    header.append(title,meta); card.appendChild(header);
     const body = document.createElement('div');
-
     team.slice().sort((a,b)=>displayName(a).localeCompare(displayName(b))).forEach(p=>{
-      const line = document.createElement('div');
-      line.className='playerLine';
-
-      const nm = document.createElement('div');
-      nm.className='pn';
-      nm.textContent = displayName(p);
-
-      const grid = document.createElement('div');
-      grid.className='roleGrid';
-
-      const f = document.createElement('div');
-      f.className = 'roleDot ' + (p.roles?.F ? 'dotF' : 'dotOff');
-      f.textContent = 'F';
-
-      const m = document.createElement('div');
-      m.className = 'roleDot ' + (p.roles?.M ? 'dotM' : 'dotOff');
-      m.textContent = 'M';
-
-      const d = document.createElement('div');
-      d.className = 'roleDot ' + (p.roles?.D ? 'dotD' : 'dotOff');
-      d.textContent = 'D';
-
-      grid.appendChild(f); grid.appendChild(m); grid.appendChild(d);
-
-      line.appendChild(nm);
-      line.appendChild(grid);
-      body.appendChild(line);
+      const line = document.createElement('div'); line.className='playerLine';
+      const nmWrap = document.createElement('div'); nmWrap.className='playerNameWrap pn';
+      const nm = document.createElement('div'); nm.textContent = displayName(p);
+      nmWrap.appendChild(nm);
+      if(p.captain){ const cap = document.createElement('div'); cap.className='playerCaptain'; cap.textContent='★'; cap.title='Captain'; nmWrap.appendChild(cap); }
+      const grid = document.createElement('div'); grid.className='roleGrid';
+      [['F','dotF'],['M','dotM'],['D','dotD']].forEach(([role,klass])=>{ const x=document.createElement('div'); x.className='roleDot '+(p.roles?.[role] ? klass : 'dotOff'); x.textContent=role; grid.appendChild(x); });
+      line.append(nmWrap, grid); body.appendChild(line);
     });
-
-    card.appendChild(body);
-    wrap.appendChild(card);
+    card.appendChild(body); wrap.appendChild(card);
   });
 }
 
 /* =========================
    Actions
    ========================= */
-function onTeamCountChange(){
-  lastSolution=null;
-  renderResults(null);
-}
-
-function getSelectedPlayers(){
-  return players.filter(p=>selection.has(p.id));
-}
-
+function onTeamCountChange(){ lastSolution=null; renderResults(null); }
+function getSelectedPlayers(){ return players.filter(p=>selection.has(p.id)); }
 function generateTeams(){
   const selected = getSelectedPlayers();
   const teamCount = Number($('teamCount').value);
-
-  if(selected.length < teamCount){
-    alert('Select more players first.');
-    return;
-  }
-
-  // seed changes per generate/regenerate so you get different but balanced solutions
-  const baseSeed = (lastSolution?.seed ?? Math.floor(Math.random()*1e9)) + 1337;
-  const sol = optimize(selected, teamCount, baseSeed);
-  lastSolution = sol;
-  renderResults(sol);
-
-  document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+  if(selected.length < teamCount){ alert('Select more players first.'); return; }
+  const seed = (lastSolution?.seed ?? Math.floor(Math.random()*1e9)) + 1337;
+  lastSolution = optimize(selected, teamCount, seed); renderResults(lastSolution);
+  $('results').scrollIntoView({behavior:'smooth', block:'start'});
 }
-
 function regenerate(){
   if(selection.size===0){ alert('Select players first.'); return; }
-  // new seed (different search trajectory) but same selection
-  const bump = Math.floor(Math.random()*1e9);
-  const selected = getSelectedPlayers();
-  const teamCount = Number($('teamCount').value);
-  const sol = optimize(selected, teamCount, bump);
-  lastSolution = sol;
-  renderResults(sol);
-
-  document.getElementById('results').scrollIntoView({behavior:'smooth', block:'start'});
+  lastSolution = optimize(getSelectedPlayers(), Number($('teamCount').value), Math.floor(Math.random()*1e9));
+  renderResults(lastSolution); $('results').scrollIntoView({behavior:'smooth', block:'start'});
 }
-
-function clearSelection(){
-  selection.clear();
-  save();
-  lastSolution=null;
-  renderResults(null);
-  renderChecklist();
-  updateSticky();
-}
+function clearSelection(){ selection.clear(); save(); lastSolution=null; renderResults(null); renderChecklist(); updateSticky(); }
 
 /* =========================
    Modal CRUD
    ========================= */
-function backdropClose(e){
-  if(e.target.id==='modalBackdrop') closeModal();
-}
-
-function openModal(player){
-  $('modalBackdrop').style.display='flex';
-  if(player){
-    currentEditId = player.id;
-    $('modalTitle').textContent = 'Edit Player';
-    $('btnDelete').style.display='inline-flex';
-    $('fName').value = player.name || '';
-    setRoleButtons(player.roles);
-    setRatingFields(player.ratings);
-  }else{
-    currentEditId = null;
-    $('modalTitle').textContent = 'Add Player';
-    $('btnDelete').style.display='none';
-    $('fName').value = '';
-    setRoleButtons({F:false,M:true,D:false});
-    setRatingFields(defaultRatings());
-  }
-}
-
-function closeModal(){
-  $('modalBackdrop').style.display='none';
-}
-
-function setRoleButtons(roles){
-  $('chkF').checked = !!roles.F;
-  $('chkM').checked = !!roles.M;
-  $('chkD').checked = !!roles.D;
-}
-
-function setRatingFields(r){
-  $('rOverallSkill').value = r.overallSkill;
-  $('rPassing').value = r.passing;
-  $('rShooting').value = r.shooting;
-  $('rDribbling').value = r.dribbling;
-  $('rSpeed').value = r.speed;
-  $('rVision').value = r.vision;
-  $('rOffTheBall').value = r.offTheBall;
-  $('rDefending').value = r.defending;
-  $('rWorkRate').value = r.workRate;
-  $('rMental').value = r.mental;
-  $('rFitness').value = r.fitness;
-}
-
-function readRolesFromButtons(){
-  const roles = {
-    F: $('chkF').checked,
-    M: $('chkM').checked,
-    D: $('chkD').checked,
-  };
+function backdropClose(e){ if(e.target.id==='modalBackdrop') closeModal(); }
+function setRoleChecks(roles){ $('posF').checked=!!roles.F; $('posM').checked=!!roles.M; $('posD').checked=!!roles.D; }
+function readRolesFromChecks(){
+  const roles = {F:$('posF').checked, M:$('posM').checked, D:$('posD').checked};
   if(!roles.F && !roles.M && !roles.D) roles.M = true;
-  setRoleButtons(roles);
   return roles;
 }
-
+function setRatingFields(r){
+  $('rOverallSkill').value = r.overallSkill; $('rPassing').value = r.passing; $('rShooting').value = r.shooting; $('rDribbling').value = r.dribbling;
+  $('rSpeed').value = r.speed; $('rVision').value = r.vision; $('rOffTheBall').value = r.offTheBall; $('rDefending').value = r.defending;
+  $('rWorkRate').value = r.workRate; $('rMental').value = r.mental; $('rFitness').value = r.fitness;
+}
 function readRatings(){
   const r = {
     overallSkill: clampInt($('rOverallSkill').value,1,10),
@@ -1202,133 +937,74 @@ function readRatings(){
   setRatingFields(r);
   return r;
 }
-
-function saveCurrent(){
-  const name = ($('fName').value||'').trim();
-  if(!name){ alert('Name is required.'); return; }
-  const roles = readRolesFromButtons();
-  const ratings = readRatings();
-
-  if(currentEditId){
-    const i = players.findIndex(p=>p.id===currentEditId);
-    if(i>=0){
-      players[i] = { ...players[i], name, roles, ratings };
-    }
+function openModal(player){
+  $('modalBackdrop').style.display='flex';
+  if(player){
+    currentEditId = player.id; $('modalTitle').textContent='Edit Player'; $('btnDelete').style.display='inline-flex';
+    $('fName').value = player.name || ''; setRoleChecks(player.roles); $('isCaptain').checked = !!player.captain; setRatingFields(player.ratings);
   }else{
-    const p = { id: uid(), name, roles, ratings };
-    players.push(p);
+    currentEditId = null; $('modalTitle').textContent='Add Player'; $('btnDelete').style.display='none';
+    $('fName').value=''; setRoleChecks({F:false,M:true,D:false}); $('isCaptain').checked = false; setRatingFields(defaultRatings());
   }
-  save();
-  renderPlayersPage();
-  renderChecklist();
-  updateSticky();
-  closeModal();
 }
-
+function closeModal(){ $('modalBackdrop').style.display='none'; }
+function saveCurrent(){
+  const name = ($('fName').value||'').trim(); if(!name){ alert('Name is required.'); return; }
+  const data = { name, roles: readRolesFromChecks(), captain: $('isCaptain').checked, ratings: readRatings() };
+  if(currentEditId){ const i = players.findIndex(p=>p.id===currentEditId); if(i>=0) players[i] = {...players[i], ...data}; }
+  else players.push({ id: uid(), ...data });
+  save(); renderPlayersPage(); renderChecklist(); updateSticky(); closeModal();
+}
 function deleteCurrent(){
-  if(!currentEditId) return;
-  if(!confirm('Delete this player?')) return;
-  players = players.filter(p=>p.id!==currentEditId);
-  selection.delete(currentEditId);
-  save();
-  lastSolution=null;
-  renderResults(null);
-  renderPlayersPage();
-  renderChecklist();
-  updateSticky();
-  closeModal();
+  if(!currentEditId || !confirm('Delete this player?')) return;
+  players = players.filter(p=>p.id!==currentEditId); selection.delete(currentEditId);
+  save(); lastSolution=null; renderResults(null); renderPlayersPage(); renderChecklist(); updateSticky(); closeModal();
 }
 
 /* =========================
-   Excel Import
+   Import Excel
    ========================= */
-function normalizeHeader(value){
-  return String(value || '').toLowerCase().replace(/[^a-z]/g,'');
-}
-
-function parsePositionString(value){
-  const raw = String(value || '').toUpperCase();
-  return {
-    F: /F/.test(raw),
-    M: /M/.test(raw),
-    D: /D/.test(raw),
-  };
-}
-
 function importExcel(){
+  if(typeof XLSX === 'undefined'){ alert('Excel import library did not load. Check your internet connection and try again.'); return; }
   const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.xlsx,.xls';
-  input.onchange = async (e) => {
-    const file = e.target.files && e.target.files[0];
-    if(!file) return;
-    if(typeof XLSX === 'undefined'){
-      alert('Excel import is unavailable. Please check your connection and try again.');
-      return;
-    }
-    try{
-      const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data, {type:'array'});
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet, {header:1, raw:true, defval:''});
-      if(!rows.length) throw new Error('No rows found.');
-      const header = rows[0].map(normalizeHeader);
-      const idx = {
-        name: header.indexOf('name'),
-        overall: header.indexOf('overallskill'),
-        passing: header.indexOf('passing'),
-        shooting: header.indexOf('shooting'),
-        dribbling: header.indexOf('dribbling'),
-        speed: header.indexOf('speed'),
-        vision: header.indexOf('vision'),
-        offtheball: header.indexOf('offtheball'),
-        defending: header.indexOf('defending'),
-        workrate: header.indexOf('workrate'),
-        mental: header.indexOf('mental'),
-        fitness: header.indexOf('fitness'),
-        position: header.indexOf('position')
-      };
-      const required = ['name','overall','passing','shooting','dribbling','speed','vision','offtheball','defending','workrate','mental','fitness','position'];
-      const missing = required.filter(k => idx[k] === -1);
-      if(missing.length) throw new Error('Missing columns: ' + missing.join(', '));
-      const imported = [];
-      for(let i=1;i<rows.length;i++){
-        const row = rows[i] || [];
-        const name = String(row[idx.name] || '').trim();
-        if(!name) continue;
-        const roles = parsePositionString(row[idx.position]);
-        if(!roles.F && !roles.M && !roles.D) roles.M = true;
-        const ratings = {
-          overallSkill: clampInt(row[idx.overall],1,10),
-          passing: clampInt(row[idx.passing],1,10),
-          shooting: clampInt(row[idx.shooting],1,10),
-          dribbling: clampInt(row[idx.dribbling],1,10),
-          speed: clampInt(row[idx.speed],1,10),
-          vision: clampInt(row[idx.vision],1,10),
-          offTheBall: clampInt(row[idx.offtheball],1,10),
-          defending: clampInt(row[idx.defending],1,10),
-          workRate: clampInt(row[idx.workrate],1,10),
-          mental: clampInt(row[idx.mental],1,10),
-          fitness: clampInt(row[idx.fitness],1,10),
-        };
-        imported.push({id: uid(), name, roles, ratings});
-      }
-      if(!imported.length) throw new Error('No valid players found.');
-      players = imported;
-      selection = new Set();
-      save();
-      lastSolution = null;
-      renderResults(null);
-      renderPlayersPage();
-      renderChecklist();
-      updateSticky();
-      alert(`Imported ${imported.length} players.`);
-    }catch(err){
-      alert('Excel import failed: ' + err.message);
-    }
+  input.type='file'; input.accept='.xlsx,.xls';
+  input.onchange = (e)=>{
+    const file = e.target.files?.[0]; if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt)=>{
+      try{
+        const wb = XLSX.read(evt.target.result, {type:'array'});
+        const ws = wb.Sheets[wb.SheetNames[0]];
+        const rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+        const imported = rows.map(row=>({
+          id: uid(),
+          name: String(row['Name'] ?? '').trim(),
+          roles: parsePositions(row['Position']),
+          captain: parseBoolish(row['Captain']),
+          ratings: {
+            overallSkill: clampInt(row['Overall Skill'] ?? 5,1,10),
+            passing: clampInt(row['Passing'] ?? 5,1,10),
+            shooting: clampInt(row['Shooting'] ?? 5,1,10),
+            dribbling: clampInt(row['Dribbling'] ?? 5,1,10),
+            speed: clampInt(row['Speed'] ?? 5,1,10),
+            vision: clampInt(row['Vision'] ?? 5,1,10),
+            offTheBall: clampInt(row['off the ball'] ?? 5,1,10),
+            defending: clampInt(row['Defending'] ?? 5,1,10),
+            workRate: clampInt(row['WorkRate'] ?? 5,1,10),
+            mental: clampInt(row['Mental'] ?? 5,1,10),
+            fitness: clampInt(row['Fitness'] ?? 5,1,10),
+          }
+        })).filter(p=>p.name);
+        if(!imported.length){ alert('No valid players were found. Expected columns: ' + EXCEL_HEADERS.join(', ')); return; }
+        players = imported; selection = new Set(); save(); lastSolution = null; renderResults(null); renderPlayersPage(); renderChecklist(); updateSticky();
+        alert(`Imported ${imported.length} players.`);
+      }catch(err){ alert('Import failed: ' + err.message); }
+    };
+    reader.readAsArrayBuffer(file);
   };
   input.click();
 }
+
 
 /* =========================
    Init
