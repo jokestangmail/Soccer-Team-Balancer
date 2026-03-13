@@ -271,7 +271,7 @@ select,input[type="text"]{
 .roleGrid{
   display:grid;
   grid-template-columns: 42px 42px 42px;
-  column-gap:14px;
+  column-gap:8px;
   align-items:center;
   justify-content:start; /* not right-justified */
   flex:0 0 auto;
@@ -328,17 +328,16 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
   border:1px solid var(--border);
   font-weight:800;
 }
-.roleToggle{display:flex; gap:8px; flex-wrap:wrap; margin-top:6px}
-.roleToggle button{
-  border:1px solid var(--border);
-  background:#fff;
-  padding:10px 12px;
-  border-radius:999px;
-  font-weight:900;
-}
-.roleToggle button.onF{background:#FEE2E2;color:#991B1B;border-color:#FECACA}
-.roleToggle button.onM{background:#DCFCE7;color:#166534;border-color:#BBF7D0}
-.roleToggle button.onD{background:#DBEAFE;color:#1D4ED8;border-color:#BFDBFE}
+.roleChecks{display:grid;grid-template-columns:1fr;gap:10px;margin-top:6px}
+.roleCheck{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;font-weight:900;background:#fff}
+.roleCheck input{width:18px;height:18px;margin:0}
+.roleCheck.roleF{background:#FFF5F5}
+.roleCheck.roleM{background:#F1FFF5}
+.roleCheck.roleD{background:#F4F8FF}
+.roleKey{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:999px;font-size:12px;font-weight:900;border:1px solid rgba(0,0,0,0.10)}
+.roleKeyF{background:#FEE2E2;color:#991B1B}
+.roleKeyM{background:#DCFCE7;color:#166534}
+.roleKeyD{background:#DBEAFE;color:#1D4ED8}
 .modalActions{display:flex; gap:10px; margin-top:12px}
 .modalActions .primary{flex:1}
 .modalActions .secondary{flex:1}
@@ -414,12 +413,9 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
       </div>
       <div class="btnRow">
         <button class="secondary" onclick="openModal(null)">Add Player</button>
-        <button class="secondary" onclick="exportJSON()">Export JSON</button>
+        <button class="primary" onclick="importExcel()">Import Excel</button>
       </div>
-      <div class="btnRow">
-        <button class="secondary" onclick="importJSON()">Import JSON</button>
-        <button class="danger secondary" onclick="randomizeDemo()">Randomize Demo</button>
-      </div>
+      <div class="small" style="margin-top:8px;">Expected Excel columns: Name, Overall Skill, Passing, Shooting, Dribbling, Speed, Vision, off the ball, Defending, WorkRate, Mental, Fitness, Position</div>
       <div id="playersList" style="margin-top:12px;"></div>
     </div>
   </div>
@@ -446,13 +442,13 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
     </div>
 
     <div class="field" style="margin-top:10px;">
-      <label>Roles</label>
-      <div class="roleToggle">
-        <button id="btnF" onclick="toggleRole('F')">Forward</button>
-        <button id="btnM" onclick="toggleRole('M')">Mid</button>
-        <button id="btnD" onclick="toggleRole('D')">Defense</button>
+      <label>Positions</label>
+      <div class="roleChecks">
+        <label class="roleCheck roleF"><input type="checkbox" id="chkF"><span class="roleKey roleKeyF">F</span><span>Forward</span></label>
+        <label class="roleCheck roleM"><input type="checkbox" id="chkM"><span class="roleKey roleKeyM">M</span><span>Mid</span></label>
+        <label class="roleCheck roleD"><input type="checkbox" id="chkD"><span class="roleKey roleKeyD">D</span><span>Defense</span></label>
       </div>
-      <div class="small">Tap to toggle roles. Players can have 1–3 roles.</div>
+      <div class="small">Select one or more positions.</div>
     </div>
 
     <div class="card" style="margin-top:12px; box-shadow:none;">
@@ -479,6 +475,7 @@ label{font-size:12px; font-weight:800; color:var(--muted); display:block; margin
   </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
 /* =========================
    Storage + Preload
@@ -1148,21 +1145,9 @@ function closeModal(){
 }
 
 function setRoleButtons(roles){
-  $('btnF').className = roles.F ? 'onF' : '';
-  $('btnM').className = roles.M ? 'onM' : '';
-  $('btnD').className = roles.D ? 'onD' : '';
-}
-
-function toggleRole(r){
-  const roles = {
-    F: $('btnF').classList.contains('onF'),
-    M: $('btnM').classList.contains('onM'),
-    D: $('btnD').classList.contains('onD'),
-  };
-  roles[r] = !roles[r];
-  // require at least one role
-  if(!roles.F && !roles.M && !roles.D) roles.M = true;
-  setRoleButtons(roles);
+  $('chkF').checked = !!roles.F;
+  $('chkM').checked = !!roles.M;
+  $('chkD').checked = !!roles.D;
 }
 
 function setRatingFields(r){
@@ -1179,11 +1164,14 @@ function setRatingFields(r){
 }
 
 function readRolesFromButtons(){
-  return {
-    F: $('btnF').classList.contains('onF'),
-    M: $('btnM').classList.contains('onM'),
-    D: $('btnD').classList.contains('onD'),
+  const roles = {
+    F: $('chkF').checked,
+    M: $('chkM').checked,
+    D: $('chkD').checked,
   };
+  if(!roles.F && !roles.M && !roles.D) roles.M = true;
+  setRoleButtons(roles);
+  return roles;
 }
 
 function readRatings(){
@@ -1241,87 +1229,91 @@ function deleteCurrent(){
 }
 
 /* =========================
-   Import / Export / Demo
+   Excel Import
    ========================= */
-function exportJSON(){
-  const data = JSON.stringify(players, null, 2);
-  const blob = new Blob([data], {type:'application/json'});
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(blob);
-  a.download = 'team-balancer-players.json';
-  a.click();
-  URL.revokeObjectURL(a.href);
+function normalizeHeader(value){
+  return String(value || '').toLowerCase().replace(/[^a-z]/g,'');
 }
 
-function importJSON(){
+function parsePositionString(value){
+  const raw = String(value || '').toUpperCase();
+  return {
+    F: /F/.test(raw),
+    M: /M/.test(raw),
+    D: /D/.test(raw),
+  };
+}
+
+function importExcel(){
   const input = document.createElement('input');
-  input.type='file';
-  input.accept='application/json';
-  input.onchange = (e)=>{
-    const file = e.target.files[0];
+  input.type = 'file';
+  input.accept = '.xlsx,.xls';
+  input.onchange = async (e) => {
+    const file = e.target.files && e.target.files[0];
     if(!file) return;
-    const reader = new FileReader();
-    reader.onload = ()=>{
-      try{
-        const arr = JSON.parse(reader.result);
-        if(!Array.isArray(arr)) throw new Error('JSON must be an array');
-        players = arr.map(p=>({
-          id: p.id || uid(),
-          name: (p.name||'').toString(),
-          roles: {F:!!p.roles?.F, M:!!p.roles?.M, D:!!p.roles?.D},
-          ratings: {
-            overall: clampInt(p.ratings?.overall ?? 6,1,10),
-            passing: clampInt(p.ratings?.passing ?? 6,1,10),
-            dribbling: clampInt(p.ratings?.dribbling ?? 6,1,10),
-            finishing: clampInt(p.ratings?.finishing ?? 6,1,10),
-            defense: clampInt(p.ratings?.defense ?? 6,1,10),
-            speed: clampInt(p.ratings?.speed ?? 6,1,10),
-            stamina: clampInt(p.ratings?.stamina ?? 6,1,10),
-            clutch: clampInt(p.ratings?.clutch ?? 3,1,5),
-            consistency: clampInt(p.ratings?.consistency ?? 3,1,5),
-            leadership: clampInt(p.ratings?.leadership ?? 3,1,5),
-          }
-        }));
-        // clear selection if ids don't match
-        selection = new Set();
-        save();
-        lastSolution=null;
-        renderResults(null);
-        renderPlayersPage();
-        renderChecklist();
-        updateSticky();
-        alert('Imported.');
-      }catch(err){
-        alert('Import failed: ' + err.message);
+    if(typeof XLSX === 'undefined'){
+      alert('Excel import is unavailable. Please check your connection and try again.');
+      return;
+    }
+    try{
+      const data = await file.arrayBuffer();
+      const workbook = XLSX.read(data, {type:'array'});
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, {header:1, raw:true, defval:''});
+      if(!rows.length) throw new Error('No rows found.');
+      const header = rows[0].map(normalizeHeader);
+      const idx = {
+        name: header.indexOf('name'),
+        overall: header.indexOf('overallskill'),
+        passing: header.indexOf('passing'),
+        shooting: header.indexOf('shooting'),
+        dribbling: header.indexOf('dribbling'),
+        speed: header.indexOf('speed'),
+        vision: header.indexOf('vision'),
+        offtheball: header.indexOf('offtheball'),
+        defending: header.indexOf('defending'),
+        workrate: header.indexOf('workrate'),
+        mental: header.indexOf('mental'),
+        fitness: header.indexOf('fitness'),
+        position: header.indexOf('position')
+      };
+      const required = ['name','overall','passing','shooting','dribbling','speed','vision','offtheball','defending','workrate','mental','fitness','position'];
+      const missing = required.filter(k => idx[k] === -1);
+      if(missing.length) throw new Error('Missing columns: ' + missing.join(', '));
+      const imported = [];
+      for(let i=1;i<rows.length;i++){
+        const row = rows[i] || [];
+        const name = String(row[idx.name] || '').trim();
+        if(!name) continue;
+        const roles = parsePositionString(row[idx.position]);
+        if(!roles.F && !roles.M && !roles.D) roles.M = true;
+        const overall = clampInt(row[idx.overall],1,10);
+        const passing = clampInt(row[idx.passing],1,10);
+        const dribbling = clampInt(row[idx.dribbling],1,10);
+        const finishing = clampInt(row[idx.shooting],1,10);
+        const defense = clampInt(row[idx.defending],1,10);
+        const speed = clampInt(row[idx.speed],1,10);
+        const stamina = clampInt((Number(row[idx.fitness]) + Number(row[idx.workrate] || 0))/2,1,10);
+        const clutch = clampInt((Number(row[idx.mental]) + Number(row[idx.vision] || 0))/4,1,5);
+        const consistency = clampInt((Number(row[idx.workrate]) + Number(row[idx.offtheball] || 0))/4,1,5);
+        const leadership = clampInt((Number(row[idx.mental]) + Number(row[idx.vision] || 0))/4,1,5);
+        imported.push({id: uid(), name, roles, ratings: {overall, passing, dribbling, finishing, defense, speed, stamina, clutch, consistency, leadership}});
       }
-    };
-    reader.readAsText(file);
+      if(!imported.length) throw new Error('No valid players found.');
+      players = imported;
+      selection = new Set();
+      save();
+      lastSolution = null;
+      renderResults(null);
+      renderPlayersPage();
+      renderChecklist();
+      updateSticky();
+      alert(`Imported ${imported.length} players.`);
+    }catch(err){
+      alert('Excel import failed: ' + err.message);
+    }
   };
   input.click();
-}
-
-function randomizeDemo(){
-  // Randomize ratings + roles so you can quickly test balancing + role constraints.
-  if(!confirm('Randomize demo data (ratings + roles) for all players?')) return;
-  players = players.map((p,i)=>{
-    const r = defaultRatings();
-    // more distinct roles distribution
-    const roll = Math.random();
-    let roles;
-    if(roll<0.20) roles={F:true,M:false,D:false};
-    else if(roll<0.40) roles={F:false,M:true,D:false};
-    else if(roll<0.60) roles={F:false,M:false,D:true};
-    else if(roll<0.78) roles={F:true,M:true,D:false};
-    else if(roll<0.92) roles={F:false,M:true,D:true};
-    else roles={F:true,M:true,D:true};
-    return {...p, roles, ratings:r};
-  });
-  save();
-  lastSolution=null;
-  renderResults(null);
-  renderPlayersPage();
-  renderChecklist();
-  updateSticky();
 }
 
 /* =========================
