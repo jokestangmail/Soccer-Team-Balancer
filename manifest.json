@@ -2,8 +2,9 @@
   "name": "Soccer Team Balancer",
   "short_name": "TeamBalancer",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0f172a",
+  "background_color": "#f3f4f6",
   "theme_color": "#ef4444",
   "icons": [
     {

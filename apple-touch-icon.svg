@@ -1,5 +1,5 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-<rect width="512" height="512" rx="80" fill="#ef4444"/>
-<circle cx="256" cy="256" r="150" fill="white"/>
-<text x="256" y="285" font-size="140" text-anchor="middle" fill="#ef4444" font-family="Arial, Helvetica, sans-serif">⚽</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <rect width="180" height="180" rx="36" fill="#ef4444"/>
+  <circle cx="90" cy="90" r="52" fill="white"/>
+  <path d="M90 48l18 13-7 22H79l-7-22 18-13zm-29 41h18l6 19-15 11-18-13 9-17zm58 0h-18l-6 19 15 11 18-13-9-17zm-43 35l14 10v18H71l-6-18 11-10zm28 0l11 10-6 18H90v-18l14-10z" fill="#111827"/>
 </svg>
