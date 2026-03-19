@@ -4,887 +4,639 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 <title>Team Balancer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#F6F7FB;
-  --card:#FFFFFF;
-  --border:#E5E7EF;
-  --text:#0B1220;
-  --muted:#667085;
-  --blue:#0A84FF;
-  --shadow: 0 10px 30px rgba(10, 20, 40, 0.08);
-  --r:18px;
+:root {
+  --bg:        #F2F3F7;
+  --surface:   #FFFFFF;
+  --surface2:  #F7F8FC;
+  --border:    rgba(13,15,26,0.09);
+  --border-md: rgba(13,15,26,0.14);
+  --text:      #0D0F1A;
+  --muted:     #5C6070;
+  --hint:      #9AA0B4;
+  --green:     #16A34A;
+  --green-bg:  #DCFCE7;
+  --amber:     #B45309;
+  --amber-bg:  #FEF3C7;
+  --red:       #DC2626;
+  --red-bg:    #FEE2E2;
+  --blue:      #1D4ED8;
+  --blue-bg:   #DBEAFE;
+  --r:         16px;
+  --r-lg:      22px;
+  --font-d:    'Bebas Neue', sans-serif;
+  --font-b:    'DM Sans', sans-serif;
+  --nav-h:     68px;
+  --sh-sm:     0 1px 3px rgba(13,15,26,0.07),0 1px 2px rgba(13,15,26,0.05);
+  --sh-md:     0 4px 12px rgba(13,15,26,0.08),0 1px 3px rgba(13,15,26,0.06);
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:var(--bg);color:var(--text)}
-.app{max-width:440px;margin:0 auto;padding:14px 14px 110px}
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.brand{display:flex;align-items:center;gap:10px}
-.logo{width:34px;height:34px;border-radius:12px;background:linear-gradient(135deg,#0A84FF,#34C759);box-shadow:var(--shadow);position:relative}
-.logo:after{content:"TB";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:13px;letter-spacing:0.6px}
-h1{margin:0;font-size:18px;font-weight:900;letter-spacing:0.2px}
-.tabs{display:flex;gap:8px;background:rgba(255,255,255,0.7);border:1px solid var(--border);padding:6px;border-radius:999px;position:sticky;top:10px;z-index:10;backdrop-filter:blur(10px)}
-.tab{flex:1;padding:10px 12px;border-radius:999px;border:0;background:transparent;font-weight:900;color:var(--muted)}
-.tab.active{background:var(--card);color:var(--text);box-shadow:0 8px 18px rgba(10,20,40,0.08)}
-.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);box-shadow:0 1px 0 rgba(10,20,40,0.03);padding:14px;margin-top:12px}
-.row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:12px;border:1px solid var(--border);border-radius:16px;background:#fff;margin-bottom:10px;cursor:pointer}
-.row.alt{background:#FBFCFF}
-.row.selected{border-color:rgba(10,132,255,0.45);background:#EAF2FF}
-.left{min-width:0;flex:1}
-.name{font-size:16px;font-weight:900;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.meta{font-size:12px;color:var(--muted);margin-top:4px}
-.metricWrap{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
-.metricChip{padding:5px 9px;border-radius:999px;font-size:11px;font-weight:900;letter-spacing:0.12px;border:1px solid rgba(0,0,0,0.05);background:#F3F6FB;color:#344054}
-.strength{margin-top:10px;display:flex;align-items:center;gap:10px}
-.bar{flex:1;height:10px;border-radius:999px;background:#EEF1F7;overflow:hidden}
-.fill{height:100%}
-.num{min-width:40px;text-align:right;font-size:12px;font-weight:900;color:var(--muted)}
-.badge{width:30px;height:30px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;color:var(--blue);background:rgba(10,132,255,0.10);border:1px solid rgba(10,132,255,0.18);flex:0 0 auto;margin-top:2px}
-.badge.on{color:#fff;background:var(--blue);border-color:rgba(10,132,255,0.65)}
-.controls{display:flex;gap:10px;flex-wrap:wrap}
-select,input[type="text"]{width:100%;padding:12px 12px;border-radius:14px;border:1px solid var(--border);background:#fff;font-weight:700;outline:none}
-.small{font-size:12px;color:var(--muted);margin-top:8px}
-.stickyBar{position:fixed;left:0;right:0;bottom:0;padding:12px 14px calc(12px + env(safe-area-inset-bottom));background:rgba(255,255,255,0.88);border-top:1px solid var(--border);backdrop-filter:blur(12px)}
-.stickyInner{max-width:440px;margin:0 auto;display:flex;gap:10px;align-items:center}
-.primary{flex:1;border:0;background:var(--blue);color:#fff;padding:14px 14px;border-radius:16px;font-weight:900;font-size:15px}
-.secondary{border:1px solid var(--border);background:#fff;color:var(--text);padding:14px 14px;border-radius:16px;font-weight:900;font-size:15px}
-.secondary.smallBtn{padding:12px 12px;font-size:14px}
-.btnRow{display:flex;gap:10px;margin-top:10px}
-.btnRow .secondary,.btnRow .primary{flex:1}
-.teamCard{border-radius:20px;overflow:hidden;border:1px solid var(--border);background:#fff;margin-top:12px}
-.teamHeader{padding:12px 12px;color:#fff;display:flex;align-items:center;justify-content:space-between;gap:10px;font-weight:900}
-.teamTitle{display:flex;align-items:center;gap:10px}
-.shirt{width:22px;height:18px;border-radius:4px 4px 8px 8px;background:rgba(255,255,255,0.25);border:1px solid rgba(255,255,255,0.35)}
-.teamMeta{font-size:12px;opacity:0.92;text-align:right;line-height:1.2}
-.teamSubmeta{font-size:11px;opacity:0.9;margin-top:2px}
-.c-red{background:#EB5757}.c-white{background:#E5E7EB;color:#111}.c-black{background:#111}.c-blue{background:#2563EB}
-.playerLine{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #F0F2F6;gap:12px;touch-action:manipulation;background:#fff}
-.playerLine:last-child{border-bottom:none}
-.playerMain{display:flex;align-items:center;gap:10px;min-width:0;flex:1}
-.dragHandle{width:24px;height:32px;border:0;background:transparent;color:#98A2B3;display:flex;align-items:center;justify-content:center;flex:0 0 auto;cursor:grab;padding:0}
-.dragHandle:active{cursor:grabbing;color:#667085}
-.handleDots{display:grid;grid-template-columns:repeat(2,4px);gap:3px}
-.handleDots span{width:4px;height:4px;border-radius:999px;background:currentColor;display:block}
-.pn{font-weight:900;min-width:0;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.captainMark{display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:999px;background:#FEF3C7;color:#B45309;font-size:14px;font-weight:900;margin-left:8px;vertical-align:middle;border:1.5px solid #EAB308;box-shadow:0 1px 0 rgba(180,83,9,0.12)}
-.roleGrid{display:flex;align-items:center;gap:6px;flex:0 0 auto}
-.roleDot{min-width:24px;height:24px;padding:0 6px;border-radius:999px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;border:1px solid rgba(0,0,0,0.08)}
-.dotF{background:#FEE2E2;color:#991B1B}
-.dotM{background:#DCFCE7;color:#166534}
-.dotD{background:#DBEAFE;color:#1D4ED8}
-.dotOff{background:#F3F4F6;color:#9CA3AF}
-.lineScore{font-size:12px;font-weight:900;color:var(--muted);white-space:nowrap}
-.teamBody.dragOver{outline:2px dashed rgba(10,132,255,0.35);outline-offset:-6px;background:#F8FBFF}
-.dropHint{padding:10px 12px;font-size:12px;color:var(--muted)}
-.playerLine.armed{background:#EFF6FF}
-.dragHandle.armed{color:var(--blue)}
-.moveBanner{margin:10px 0 0;padding:10px 12px;border-radius:14px;background:#EFF6FF;color:#1D4ED8;font-size:12px;font-weight:800;border:1px solid rgba(29,78,216,0.14)}
-.roleChecks{display:grid;grid-template-columns:1fr;gap:10px;margin-top:6px}
-.roleCheck{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;font-weight:900;background:#fff}
-.roleCheck input{width:18px;height:18px;margin:0}
-.roleCheck.roleF{background:#FFF5F5}
-.roleCheck.roleM{background:#F1FFF5}
-.roleCheck.roleD{background:#F4F8FF}
-.roleKey{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:999px;font-size:12px;font-weight:900;border:1px solid rgba(0,0,0,0.10)}
-.roleKeyF{background:#FEE2E2;color:#991B1B}
-.roleKeyM{background:#DCFCE7;color:#166534}
-.roleKeyD{background:#DBEAFE;color:#1D4ED8}
-.captainToggle{display:flex;align-items:center;gap:10px;padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:#FFFBEA;font-weight:900;margin-top:10px}
-.captainToggle input{width:18px;height:18px;margin:0}
-.modalBackdrop{position:fixed;inset:0;background:rgba(8,14,25,0.45);display:none;align-items:flex-end;justify-content:center;padding:12px 12px calc(12px + env(safe-area-inset-bottom));z-index:50}
-.modal{width:100%;max-width:440px;background:#fff;border-radius:22px;border:1px solid var(--border);box-shadow:var(--shadow);padding:14px;max-height:92vh;overflow:auto}
-.modalHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
-.modalHeader h3{margin:0;font-size:16px;font-weight:900}
-.modalGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-label{font-size:12px;font-weight:800;color:var(--muted);display:block;margin-bottom:6px}
-.field input[type="number"],.field input[type="text"]{width:100%;padding:12px 12px;border-radius:14px;border:1px solid var(--border);font-weight:800}
-.modalActions{display:flex;gap:10px;margin-top:12px}
-.modalActions .primary,.modalActions .secondary{flex:1}
-.danger{background:#fff;border:1px solid #FCA5A5;color:#991B1B}
-.hidden{display:none}
-.empty{color:var(--muted);font-weight:800;font-size:13px;padding:10px 6px}
-.helperBox{margin-top:10px;padding:12px;border-radius:14px;background:#F8FAFC;border:1px dashed #D0D5DD}
-.templateList{margin-top:6px;font-size:12px;color:var(--muted);line-height:1.55}
-#checklist{max-height:52vh;overflow:auto;-webkit-overflow-scrolling:touch;padding-right:2px}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{font-family:var(--font-b);background:var(--bg);color:var(--text);overscroll-behavior:none;-webkit-font-smoothing:antialiased;position:fixed;width:100%}
+.app{max-width:430px;margin:0 auto;height:100%;position:relative}
+.page{position:absolute;top:0;left:0;right:0;bottom:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 16px calc(var(--nav-h) + env(safe-area-inset-bottom,0px) + 80px)}
+.page.hidden{display:none}
+::-webkit-scrollbar{width:0}
+
+/* Topbar */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:calc(18px + env(safe-area-inset-top,0px)) 16px 14px;position:sticky;top:0;z-index:20;background:var(--bg)}
+.brand-name{font-family:var(--font-d);font-size:30px;letter-spacing:2.5px;color:var(--text);line-height:1}
+.brand-sub{font-size:10px;font-weight:700;color:var(--hint);letter-spacing:1.8px;text-transform:uppercase;margin-top:2px}
+
+/* Section heading */
+.section-label{font-family:var(--font-d);font-size:20px;letter-spacing:1.8px;color:var(--text);margin:22px 0 10px;text-transform:uppercase;display:flex;align-items:baseline;gap:8px}
+.slc{font-family:var(--font-b);font-size:12px;font-weight:700;color:var(--hint);letter-spacing:0}
+
+/* Buttons */
+button{font-family:var(--font-b);cursor:pointer}
+.btn-primary{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:17px 20px;border-radius:var(--r);border:none;background:var(--text);color:#fff;font-size:15px;font-weight:900;letter-spacing:.2px;box-shadow:var(--sh-md);transition:transform .12s,opacity .12s}
+.btn-primary:active{transform:scale(.97);opacity:.88}
+.btn-secondary{display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 18px;border-radius:var(--r);border:1.5px solid var(--border-md);background:var(--surface);color:var(--text);font-size:14px;font-weight:700;box-shadow:var(--sh-sm);transition:background .12s}
+.btn-secondary:active{background:var(--surface2)}
+.btn-danger{border-color:rgba(220,38,38,.25);color:var(--red);background:#FFF5F5}
+.btn-icon{width:44px;height:44px;border-radius:12px;border:1.5px solid var(--border-md);background:var(--surface);color:var(--text);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:var(--sh-sm);transition:background .12s}
+.btn-icon:active{background:var(--surface2)}
+.btn-row{display:flex;gap:10px}
+.btn-row .btn-secondary,.btn-row .btn-primary{flex:1}
+
+/* Select */
+.select-wrap{position:relative;flex:1}
+.select-wrap::after{content:"▾";position:absolute;right:14px;top:50%;transform:translateY(-50%);color:var(--hint);pointer-events:none;font-size:13px}
+select{width:100%;padding:15px 36px 15px 15px;border-radius:var(--r);border:1.5px solid var(--border-md);background:var(--surface);color:var(--text);font-family:var(--font-b);font-weight:700;font-size:15px;appearance:none;-webkit-appearance:none;outline:none;box-shadow:var(--sh-sm)}
+select:focus{border-color:var(--text)}
+
+/* Search */
+.search-wrap{position:relative;margin-bottom:10px}
+.search-wrap svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--hint);pointer-events:none}
+.search-input{width:100%;padding:14px 16px 14px 44px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--surface);color:var(--text);font-family:var(--font-b);font-weight:500;font-size:15px;outline:none;box-shadow:var(--sh-sm);transition:border-color .15s}
+.search-input::placeholder{color:var(--hint)}
+.search-input:focus{border-color:var(--border-md)}
+
+/* Pills */
+.pill{display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:800;letter-spacing:.3px}
+.pill.pos-F{background:var(--red-bg);color:var(--red)}
+.pill.pos-M{background:var(--green-bg);color:var(--green)}
+.pill.pos-D{background:var(--blue-bg);color:var(--blue)}
+.pill.captain{background:var(--amber-bg);color:var(--amber)}
+
+/* Player card */
+.player-card{display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--surface);margin-bottom:8px;cursor:pointer;box-shadow:var(--sh-sm);transition:border-color .15s,box-shadow .15s;user-select:none;-webkit-user-select:none}
+.player-card:active{background:var(--surface2);box-shadow:none}
+.player-card.selected{border-color:var(--text);box-shadow:0 0 0 1px var(--text),var(--sh-sm)}
+.player-avatar{width:46px;height:46px;border-radius:12px;background:var(--bg);border:1.5px solid var(--border-md);display:flex;align-items:center;justify-content:center;font-family:var(--font-d);font-size:18px;letter-spacing:.5px;color:var(--muted);flex-shrink:0}
+.player-card.selected .player-avatar{background:var(--text);color:#fff;border-color:var(--text)}
+.player-info{flex:1;min-width:0}
+.player-name{font-size:15px;font-weight:900;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2}
+.player-meta{font-size:11px;color:var(--muted);font-weight:600;margin-top:3px}
+.player-pills{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
+.check-circle{width:26px;height:26px;border-radius:50%;border:2px solid var(--border-md);background:transparent;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s}
+.player-card.selected .check-circle{background:var(--text);border-color:var(--text)}
+
+/* Strength bar */
+.sbw{display:flex;align-items:center;gap:8px;margin-top:8px}
+.sb{flex:1;height:4px;background:var(--bg);border-radius:999px;overflow:hidden}
+.sf{height:100%;border-radius:999px}
+.sn{font-size:11px;font-weight:800;color:var(--hint);min-width:28px;text-align:right}
+
+/* Game controls */
+.game-controls{background:var(--surface);border-radius:var(--r);border:1.5px solid var(--border);padding:14px;margin-top:14px;box-shadow:var(--sh-sm)}
+.gc-row{display:flex;align-items:center;gap:10px}
+.sel-badge{display:flex;align-items:baseline;gap:6px;margin-top:12px;font-size:13px;font-weight:600;color:var(--muted)}
+.cnt-num{font-family:var(--font-d);font-size:26px;letter-spacing:1px;color:var(--text);line-height:1}
+
+/* Team card */
+.team-card{border-radius:var(--r-lg);overflow:hidden;border:1.5px solid var(--border);background:var(--surface);margin-bottom:14px;box-shadow:var(--sh-md)}
+.team-accent{height:4px}
+.acc-red{background:#EF4444}.acc-dark{background:var(--text)}.acc-slate{background:#64748B}.acc-blue{background:#3B82F6}
+.team-header{padding:16px 16px 14px;display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.team-name{font-family:var(--font-d);font-size:38px;letter-spacing:3px;line-height:1;color:var(--text)}
+.team-size{font-size:11px;font-weight:700;color:var(--hint);letter-spacing:.5px;text-transform:uppercase;margin-top:4px}
+.team-stats{text-align:right}
+.tsm{font-family:var(--font-d);font-size:26px;letter-spacing:1px;color:var(--text);line-height:1}
+.tsl{font-size:10px;font-weight:700;color:var(--hint);letter-spacing:.5px;text-transform:uppercase;margin-top:3px}
+.tss{font-size:11px;color:var(--muted);font-weight:700;margin-top:6px}
+
+/* Player line in team */
+.team-player{display:flex;align-items:center;gap:10px;padding:13px 16px;border-top:1px solid var(--border);background:var(--surface);touch-action:manipulation}
+.drag-handle{width:30px;height:42px;display:flex;align-items:center;justify-content:center;border:none;background:transparent;cursor:grab;color:var(--border-md);flex-shrink:0;padding:0;border-radius:8px;transition:color .15s,background .15s}
+.drag-handle:active{cursor:grabbing}
+.drag-handle.armed{color:var(--text);background:var(--bg)}
+.drag-dots{display:grid;grid-template-columns:repeat(2,5px);gap:3px}
+.drag-dots span{width:5px;height:5px;border-radius:50%;background:currentColor;display:block}
+.tpn{flex:1;font-size:14px;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cap-star{display:inline-flex;align-items:center;justify-content:center;width:19px;height:19px;border-radius:50%;background:var(--amber-bg);color:var(--amber);font-size:10px;margin-left:5px;vertical-align:middle;border:1px solid rgba(180,83,9,.2)}
+.pos-dots{display:flex;align-items:center;gap:3px}
+.pd{min-width:21px;height:21px;padding:0 4px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:900}
+.pd-F{background:var(--red-bg);color:var(--red)}.pd-M{background:var(--green-bg);color:var(--green)}.pd-D{background:var(--blue-bg);color:var(--blue)}.pd-off{background:var(--bg);color:var(--hint)}
+.team-body.drag-over{outline:2px dashed rgba(13,15,26,.2);outline-offset:-4px}
+.team-player.armed{background:var(--surface2)}
+.move-banner{padding:12px 16px;background:#EEF2FF;border-top:1px solid rgba(29,78,216,.12);color:#1D4ED8;font-size:12px;font-weight:700}
+.drop-hint{padding:10px 16px;font-size:11px;color:var(--hint);font-weight:600;text-align:center;border-top:1px solid var(--border)}
+
+/* DB player card */
+.db-card{display:flex;align-items:center;gap:12px;padding:14px;border-radius:var(--r);border:1.5px solid var(--border);background:var(--surface);margin-bottom:8px;cursor:pointer;box-shadow:var(--sh-sm);transition:background .12s}
+.db-card:active{background:var(--surface2)}
+.db-score{text-align:right;flex-shrink:0}
+.db-sn{font-family:var(--font-d);font-size:22px;letter-spacing:1px;color:var(--text);line-height:1}
+.db-sl{font-size:10px;font-weight:700;color:var(--hint);letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
+.chev{color:var(--border-md);flex-shrink:0}
+
+/* Nav */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));background:var(--surface);border-top:1px solid var(--border);display:flex;align-items:flex-start;justify-content:center;padding-top:8px;z-index:30;max-width:430px;margin:0 auto;box-shadow:0 -4px 16px rgba(13,15,26,.06)}
+.nav-items{display:flex;width:100%;padding:0 8px}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:8px 4px;border:none;background:transparent;color:var(--hint);font-family:var(--font-b);font-size:11px;font-weight:700;letter-spacing:.2px;border-radius:12px;transition:color .15s}
+.nav-item.active{color:var(--text)}
+.nav-item svg{transition:transform .15s}
+.nav-item.active svg{transform:scale(1.08)}
+
+/* Generate bar */
+.generate-bar{position:fixed;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom,0px));left:0;right:0;padding:10px 16px;background:linear-gradient(to top,var(--bg) 55%,rgba(242,243,247,0));z-index:25;max-width:430px;margin:0 auto}
+
+/* Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(13,15,26,.45);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.modal-backdrop.open{display:flex}
+.modal{width:100%;max-width:430px;background:var(--surface);border-radius:26px 26px 0 0;border:1.5px solid var(--border);border-bottom:none;padding:6px 20px calc(24px + env(safe-area-inset-bottom,0px));max-height:92dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 -8px 40px rgba(13,15,26,.12)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-backdrop.open .modal{animation:slideUp .24s cubic-bezier(.32,.72,0,1)}
+.modal-handle{width:36px;height:4px;background:var(--border-md);border-radius:999px;margin:12px auto 18px}
+.modal-title{font-family:var(--font-d);font-size:26px;letter-spacing:1.5px;color:var(--text);margin:0 0 18px;text-transform:uppercase}
+
+/* Form */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:10px;font-weight:800;color:var(--hint);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:7px}
+.field input[type="text"],.field input[type="number"]{width:100%;padding:14px 15px;border-radius:var(--r);border:1.5px solid var(--border-md);background:var(--surface);color:var(--text);font-family:var(--font-b);font-size:16px;font-weight:700;outline:none;transition:border-color .15s;box-shadow:var(--sh-sm)}
+.field input:focus{border-color:var(--text)}
+
+/* Position tiles */
+.pos-checks{display:flex;gap:10px;margin-bottom:14px}
+.pcl{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;padding:15px 10px;border-radius:var(--r);border:1.5px solid var(--border-md);background:var(--surface);cursor:pointer;transition:all .15s;font-size:11px;font-weight:800;color:var(--hint);letter-spacing:.3px;box-shadow:var(--sh-sm)}
+.pcl input{display:none}
+.pcl:has(input:checked).check-F{border-color:#EF4444;background:#FFF5F5;color:var(--red)}
+.pcl:has(input:checked).check-M{border-color:#16A34A;background:#F0FDF4;color:var(--green)}
+.pcl:has(input:checked).check-D{border-color:#1D4ED8;background:#EFF6FF;color:var(--blue)}
+.pos-letter{font-family:var(--font-d);font-size:30px;letter-spacing:1px;line-height:1;color:inherit}
+
+/* Captain */
+.cap-label{display:flex;align-items:center;gap:13px;padding:14px;border-radius:var(--r);border:1.5px solid var(--border-md);background:var(--surface);cursor:pointer;margin-bottom:14px;transition:all .15s;box-shadow:var(--sh-sm)}
+.cap-label:has(input:checked){border-color:rgba(180,83,9,.4);background:#FFFBEB}
+.cap-label input{display:none}
+.cap-icon{width:34px;height:34px;border-radius:10px;background:var(--amber-bg);color:var(--amber);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+.cap-txt{flex:1}
+.cap-name{font-size:14px;font-weight:800;color:var(--text)}
+.cap-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.cap-cb{width:22px;height:22px;border-radius:7px;border:2px solid var(--border-md);background:transparent;display:flex;align-items:center;justify-content:center;transition:all .15s;flex-shrink:0}
+.cap-label:has(input:checked) .cap-cb{background:var(--amber);border-color:var(--amber)}
+
+/* Ratings */
+.rhead{font-size:10px;font-weight:800;color:var(--hint);letter-spacing:1.2px;text-transform:uppercase;margin:2px 0 12px}
+.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.rfield label{margin-bottom:6px}
+.modal-actions{display:flex;gap:10px}
+.modal-actions .btn-primary,.modal-actions .btn-secondary{flex:1}
+
+/* Helper / empty */
+.helper-box{padding:13px 14px;border-radius:var(--r);background:var(--surface2);border:1.5px dashed var(--border-md);margin-bottom:12px}
+.helper-title{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:5px}
+.helper-text{font-size:11px;color:var(--hint);line-height:1.65;font-weight:500}
+.empty-state{display:flex;flex-direction:column;align-items:center;text-align:center;padding:44px 24px;gap:10px}
+.empty-icon{font-size:44px;opacity:.18}
+.empty-title{font-family:var(--font-d);font-size:22px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+.empty-sub{font-size:13px;color:var(--hint);font-weight:500;max-width:200px;line-height:1.55}
+
+.hidden{display:none!important}
+#resultsEmpty{color:var(--hint);font-size:13px;font-weight:600;padding:6px 2px}
 </style>
 <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 <div class="app">
-  <div class="topbar">
-    <div class="brand">
-      <div class="logo"></div>
+
+  <!-- PAGE: Game Builder -->
+  <div class="page" id="pageGame">
+    <div class="topbar">
       <div>
-        <h1>Team Balancer</h1>
-        <div class="small" id="subtitle">Import player ratings, then generate balanced teams.</div>
+        <div class="brand-name">TEAM BALANCER</div>
+        <div class="brand-sub">Soccer · Squad Splitter</div>
       </div>
     </div>
-  </div>
 
-  <div class="tabs" role="tablist" aria-label="Main tabs">
-    <button class="tab active" id="tabGame" onclick="switchTab('game')" role="tab">Game Builder</button>
-    <button class="tab" id="tabPlayers" onclick="switchTab('players')" role="tab">Players</button>
-  </div>
-
-  <div id="pageGame">
-    <div class="card">
-      <div class="controls">
-        <label for="teamCount">Number of games</label>
-        <select id="teamCount" onchange="onTeamCountChange()">
-          <option value="2">1 game (2 teams)</option>
-          <option value="4">2 games (4 teams)</option>
-        </select>
+    <div class="game-controls">
+      <div class="gc-row">
+        <div class="select-wrap">
+          <select id="teamCount" onchange="onTeamCountChange()">
+            <option value="2">1 Game · 2 Teams</option>
+            <option value="4">2 Games · 4 Teams</option>
+          </select>
+        </div>
+        <button class="btn-icon" onclick="regenerate()" title="Regenerate">
+          <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
+        <button class="btn-icon" onclick="clearSelection()" title="Clear">
+          <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
       </div>
-      <div class="small"><span id="selectedCount">0</span> selected</div>
-      <div class="btnRow">
-        <button class="secondary" onclick="clearSelection()">Clear</button>
-        <button class="secondary" onclick="regenerate()">Regenerate</button>
-      </div>
+      <div class="sel-badge"><span class="cnt-num" id="selectedCount">0</span><span>players selected tonight</span></div>
     </div>
 
     <div id="results"></div>
-    <div id="resultsEmpty" class="empty">Import players or add them manually, select the active group, then tap “Generate Teams”.</div>
+    <div id="resultsEmpty" class="hidden"></div>
 
-    <div class="card">
-      <label for="gameSearch">Tonight’s players</label>
-      <input id="gameSearch" type="text" placeholder="Search players…" oninput="renderChecklist()"/>
-      <div id="checklist" style="margin-top:12px;"></div>
+    <div class="section-label">Tonight's Squad</div>
+    <div class="search-wrap">
+      <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="gameSearch" type="text" placeholder="Search players…" oninput="renderChecklist()"/>
     </div>
+    <div id="checklist"></div>
   </div>
 
-  <div id="pagePlayers" class="hidden">
-    <div class="card">
-      <div class="controls">
-        <label for="playerSearch">Players database</label>
-        <input id="playerSearch" type="text" placeholder="Search players…" oninput="renderPlayersPage()"/>
+  <!-- PAGE: Players -->
+  <div class="page hidden" id="pagePlayers">
+    <div class="topbar">
+      <div>
+        <div class="brand-name">SQUAD</div>
+        <div class="brand-sub">Player Database</div>
       </div>
-      <div class="btnRow">
-        <button class="secondary" onclick="openModal(null)">Add Player</button>
-        <button class="secondary" onclick="exportExcel()">Export Excel</button>
-      </div>
-      <div class="btnRow">
-        <button class="primary" onclick="importExcel()">Import Excel</button>
-      </div>
-      <div class="helperBox">
-        <div style="font-weight:900;font-size:13px;">Excel columns expected</div>
-        <div class="templateList">Name, Overall Skill, Passing, Shooting, Dribbling, Speed, Vision, off the ball, Defending, WorkRate, Mental, Fitness, Position, Captain</div>
-      </div>
-      <div id="playersList" style="margin-top:12px;"></div>
+      <button class="btn-icon" onclick="openModal(null)">
+        <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      </button>
     </div>
+
+    <div class="btn-row" style="margin-top:16px;margin-bottom:10px">
+      <button class="btn-secondary" onclick="importExcel()">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+        Import Excel
+      </button>
+      <button class="btn-secondary" onclick="exportExcel()">
+        <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        Export Excel
+      </button>
+    </div>
+
+    <div class="helper-box">
+      <div class="helper-title">Expected Excel Columns</div>
+      <div class="helper-text">Name · Overall Skill · Passing · Shooting · Dribbling · Speed · Vision · off the ball · Defending · WorkRate · Mental · Fitness · Position · Captain</div>
+    </div>
+
+    <div class="section-label">Roster <span class="slc" id="rosterCount"></span></div>
+
+    <div class="search-wrap">
+      <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path stroke-linecap="round" d="m21 21-4.35-4.35"/></svg>
+      <input class="search-input" id="playerSearch" type="text" placeholder="Search roster…" oninput="renderPlayersPage()"/>
+    </div>
+    <div id="playersList"></div>
   </div>
+
+  <!-- Generate bar -->
+  <div class="generate-bar" id="generateBar">
+    <button class="btn-primary" id="btnGenerate" onclick="generateTeams()">
+      <svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      Generate Teams
+    </button>
+  </div>
+
+  <!-- Bottom nav -->
+  <nav class="bottom-nav">
+    <div class="nav-items">
+      <button class="nav-item active" id="navGame" onclick="switchTab('game')">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        Game Builder
+      </button>
+      <button class="nav-item" id="navPlayers" onclick="switchTab('players')">
+        <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        Players
+      </button>
+    </div>
+  </nav>
 </div>
 
-<div class="stickyBar">
-  <div class="stickyInner">
-    <button class="primary" id="btnGenerate" onclick="generateTeams()">Generate Teams</button>
-  </div>
-</div>
-
-<div class="modalBackdrop" id="modalBackdrop" onclick="backdropClose(event)">
+<!-- Modal -->
+<div class="modal-backdrop" id="modalBackdrop" onclick="backdropClose(event)">
   <div class="modal" onclick="event.stopPropagation()">
-    <div class="modalHeader">
-      <h3 id="modalTitle">Player</h3>
-      <button class="secondary smallBtn" onclick="closeModal()">Done</button>
-    </div>
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="modalTitle">Add Player</div>
 
     <div class="field">
-      <label>Name</label>
-      <input type="text" id="fName" placeholder="Player name"/>
+      <label>Player Name</label>
+      <input type="text" id="fName" placeholder="Enter name…"/>
     </div>
 
-    <div class="card" style="margin-top:12px;box-shadow:none;">
-      <div class="small" style="margin-bottom:8px;font-weight:900;color:var(--text)">Positions</div>
-      <div class="roleChecks">
-        <label class="roleCheck roleF"><input type="checkbox" id="posF"><span class="roleKey roleKeyF">F</span><span>Forward</span></label>
-        <label class="roleCheck roleM"><input type="checkbox" id="posM"><span class="roleKey roleKeyM">M</span><span>Mid</span></label>
-        <label class="roleCheck roleD"><input type="checkbox" id="posD"><span class="roleKey roleKeyD">D</span><span>Defense</span></label>
+    <div class="rhead">Positions</div>
+    <div class="pos-checks">
+      <label class="pcl check-F"><input type="checkbox" id="posF"><div class="pos-letter">F</div><span>Forward</span></label>
+      <label class="pcl check-M"><input type="checkbox" id="posM"><div class="pos-letter">M</div><span>Mid</span></label>
+      <label class="pcl check-D"><input type="checkbox" id="posD"><div class="pos-letter">D</div><span>Defense</span></label>
+    </div>
+
+    <label class="cap-label">
+      <input type="checkbox" id="isCaptain">
+      <div class="cap-icon">★</div>
+      <div class="cap-txt">
+        <div class="cap-name">Captain</div>
+        <div class="cap-sub">Team leader designation</div>
       </div>
-      <label class="captainToggle"><input type="checkbox" id="isCaptain"><span>Captain</span></label>
-      <div class="small">Select any combination that applies.</div>
-    </div>
+      <div class="cap-cb">
+        <svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      </div>
+    </label>
 
-    <div class="card" style="margin-top:12px;box-shadow:none;">
-      <div class="small" style="margin-bottom:8px;font-weight:900;color:var(--text)">Ratings (1–5)</div>
-      <div class="modalGrid" id="ratingsGrid"></div>
-      <div class="small">These fields now mirror the uploaded Excel structure.</div>
-    </div>
+    <div class="rhead">Ratings (1–5)</div>
+    <div class="rgrid" id="ratingsGrid"></div>
 
-    <div class="modalActions">
-      <button class="danger secondary" id="btnDelete" onclick="deleteCurrent()">Delete</button>
-      <button class="primary" onclick="saveCurrent()">Save</button>
+    <div class="modal-actions">
+      <button class="btn-secondary btn-danger hidden" id="btnDelete" onclick="deleteCurrent()">Delete</button>
+      <button class="btn-primary" onclick="saveCurrent()">Save Player</button>
     </div>
   </div>
 </div>
 
 <script>
-const LS_PLAYERS = 'tb_players_v2_excel';
-const LS_SELECTION = 'tb_selection_v2_excel';
-
-const RATING_FIELDS = [
-  { key:'overallSkill', label:'Overall Skill', weight:2.8 },
-  { key:'passing', label:'Passing', weight:1.0 },
-  { key:'shooting', label:'Shooting', weight:1.0 },
-  { key:'dribbling', label:'Dribbling', weight:1.0 },
-  { key:'speed', label:'Speed', weight:0.9 },
-  { key:'vision', label:'Vision', weight:0.95 },
-  { key:'offTheBall', label:'off the ball', weight:0.95 },
-  { key:'defending', label:'Defending', weight:1.0 },
-  { key:'workRate', label:'WorkRate', weight:0.85 },
-  { key:'mental', label:'Mental', weight:0.9 },
-  { key:'fitness', label:'Fitness', weight:0.85 },
+const LS_P='tb_players_v2_excel', LS_S='tb_selection_v2_excel';
+const RATING_FIELDS=[
+  {key:'overallSkill',label:'Overall Skill',weight:2.8},
+  {key:'passing',label:'Passing',weight:1.0},
+  {key:'shooting',label:'Shooting',weight:1.0},
+  {key:'dribbling',label:'Dribbling',weight:1.0},
+  {key:'speed',label:'Speed',weight:0.9},
+  {key:'vision',label:'Vision',weight:0.95},
+  {key:'offTheBall',label:'off the ball',weight:0.95},
+  {key:'defending',label:'Defending',weight:1.0},
+  {key:'workRate',label:'WorkRate',weight:0.85},
+  {key:'mental',label:'Mental',weight:0.9},
+  {key:'fitness',label:'Fitness',weight:0.85},
 ];
-const IMPORT_EXPORT_HEADERS = ['Name', ...RATING_FIELDS.map(f => f.label), 'Position', 'Captain'];
+const IEH=['Name',...RATING_FIELDS.map(f=>f.label),'Position','Captain'];
+const HA={name:'name',position:'position',positions:'position',captain:'captain',overallskill:'overallSkill',passing:'passing',shooting:'shooting',dribbling:'dribbling',speed:'speed',vision:'vision',offtheball:'offTheBall',defending:'defending',workrate:'workRate',mental:'mental',fitness:'fitness'};
 
-const HEADER_ALIASES = {
-  name: 'name',
-  position: 'position',
-  positions: 'position',
-  captain: 'captain',
-  overallskill: 'overallSkill',
-  passing: 'passing',
-  shooting: 'shooting',
-  dribbling: 'dribbling',
-  speed: 'speed',
-  vision: 'vision',
-  offtheball: 'offTheBall',
-  defending: 'defending',
-  workrate: 'workRate',
-  mental: 'mental',
-  fitness: 'fitness'
-};
+let players=[],selection=new Set(),currentEditId=null,lastSolution=null,armedMove=null;
 
-let players = [];
-let selection = new Set();
-let currentEditId = null;
-let lastSolution = null;
-let armedMove = null;
+const uid=()=>(crypto&&crypto.randomUUID)?crypto.randomUUID():String(Date.now())+Math.random().toString(16).slice(2);
+const $=id=>document.getElementById(id);
+const dn=p=>(p&&p.name&&String(p.name).trim())?String(p.name).trim():'(No name)';
+const ini=p=>{const n=dn(p),pts=n.split(' ');return pts.length>=2?(pts[0][0]+pts[pts.length-1][0]).toUpperCase():n.slice(0,2).toUpperCase();};
+const nh=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
+const cr=v=>{const n=Number(v);return Number.isFinite(n)?Math.max(1,Math.min(5,Math.round(n))):1;};
+const er=()=>{const o={};RATING_FIELDS.forEach(f=>o[f.key]=3);return o;};
+const sr=i=>{const o={};RATING_FIELDS.forEach(f=>o[f.key]=cr(i?.[f.key]??3));return o;};
+const np=v=>{const c=String(v||'').toUpperCase().replace(/[^FMD]/g,'');return[...new Set(c.split('').filter(Boolean))].sort((a,b)=>'FMD'.indexOf(a)-'FMD'.indexOf(b)).join('');};
+const pp=pos=>{const n=np(pos);return{F:n.includes('F'),M:n.includes('M'),D:n.includes('D')};};
+const tc=v=>['1','Y','YES','TRUE','CAPTAIN','C'].includes(String(v??'').trim().toUpperCase());
+const sp=i=>{const pos=np(i?.position||i?.positions||'');return{id:i?.id||uid(),name:(i?.name||'').toString(),position:pos,roles:pp(pos),captain:!!i?.captain,ratings:sr(i?.ratings||i||{})};};
+const cs=p=>RATING_FIELDS.reduce((s,f)=>s+((p.ratings?.[f.key]||1)*f.weight),0);
+const pct=score=>{const mn=RATING_FIELDS.reduce((s,f)=>s+f.weight,0),mx=RATING_FIELDS.reduce((s,f)=>s+5*f.weight,0);return Math.max(0,Math.min(100,((score-mn)/Math.max(1,mx-mn))*100));};
+const scol=p=>p>=75?'#16A34A':p>=55?'#D97706':'#DC2626';
+const eh=s=>String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 
-function uid(){ return (crypto && crypto.randomUUID) ? crypto.randomUUID() : String(Date.now()) + Math.random().toString(16).slice(2); }
-function $(id){ return document.getElementById(id); }
-function displayName(p){ return (p && p.name && String(p.name).trim()) ? String(p.name).trim() : '(No name)'; }
-function normalizeHeader(s){ return String(s || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
-function clampRating(v){
-  const n = Number(v);
-  if(!Number.isFinite(n)) return 1;
-  return Math.max(1, Math.min(5, Math.round(n)));
-}
-function emptyRatings(){
-  const out = {};
-  RATING_FIELDS.forEach(f => out[f.key] = 3);
-  return out;
-}
-function sanitizeRatings(input){
-  const out = {};
-  RATING_FIELDS.forEach(f => out[f.key] = clampRating(input?.[f.key] ?? 3));
-  return out;
-}
-function normalizePosition(value){
-  const cleaned = String(value || '').toUpperCase().replace(/[^FMD]/g, '');
-  return [...new Set(cleaned.split('').filter(Boolean))].sort((a,b)=>'FMD'.indexOf(a)-'FMD'.indexOf(b)).join('');
-}
-function parsePositions(pos){
-  const norm = normalizePosition(pos);
-  return { F: norm.includes('F'), M: norm.includes('M'), D: norm.includes('D') };
-}
-function truthyCaptain(v){
-  return ['1','Y','YES','TRUE','CAPTAIN','C'].includes(String(v ?? '').trim().toUpperCase());
-}
-function sanitizePlayer(input){
-  const position = normalizePosition(input?.position || input?.positions || '');
-  return {
-    id: input?.id || uid(),
-    name: (input?.name || '').toString(),
-    position,
-    roles: parsePositions(position),
-    captain: !!input?.captain,
-    ratings: sanitizeRatings(input?.ratings || input || {})
-  };
-}
-function renderRatingsGrid(){
-  const grid = $('ratingsGrid');
-  grid.innerHTML = '';
-  RATING_FIELDS.forEach(f => {
-    const wrap = document.createElement('div');
-    wrap.className = 'field';
-    wrap.innerHTML = `<label>${f.label}</label><input id="r_${f.key}" type="number" min="1" max="5">`;
-    grid.appendChild(wrap);
-  });
-}
-function setRatingFields(r){
-  RATING_FIELDS.forEach(f => { $('r_' + f.key).value = r[f.key]; });
-}
-function readRatings(){
-  const out = {};
-  RATING_FIELDS.forEach(f => out[f.key] = clampRating($('r_' + f.key).value));
-  setRatingFields(out);
-  return out;
-}
-function save(){
-  localStorage.setItem(LS_PLAYERS, JSON.stringify(players));
-  localStorage.setItem(LS_SELECTION, JSON.stringify([...selection]));
-}
+const save=()=>{localStorage.setItem(LS_P,JSON.stringify(players));localStorage.setItem(LS_S,JSON.stringify([...selection]));};
 function load(){
-  const raw = localStorage.getItem(LS_PLAYERS);
-  if(raw){
-    try{
-      const arr = JSON.parse(raw);
-      players = Array.isArray(arr) ? arr.map(p => sanitizePlayer(p)) : [];
-    }catch(e){ players = []; }
-  }
-  const selRaw = localStorage.getItem(LS_SELECTION);
-  if(selRaw){
-    try{
-      const ids = JSON.parse(selRaw);
-      if(Array.isArray(ids)) selection = new Set(ids.filter(id => players.some(p => p.id === id)));
-    }catch(e){}
-  }
+  try{const a=JSON.parse(localStorage.getItem(LS_P)||'[]');players=Array.isArray(a)?a.map(p=>sp(p)):[];}catch(e){players=[];}
+  try{const ids=JSON.parse(localStorage.getItem(LS_S)||'[]');if(Array.isArray(ids))selection=new Set(ids.filter(id=>players.some(p=>p.id===id)));}catch(e){}
   save();
 }
 
-function computeScore(p){
-  return RATING_FIELDS.reduce((sum, f) => sum + ((p.ratings?.[f.key] || 1) * f.weight), 0);
-}
-function strengthPct(score){
-  const min = RATING_FIELDS.reduce((s,f)=>s + 1*f.weight, 0);
-  const max = RATING_FIELDS.reduce((s,f)=>s + 5*f.weight, 0);
-  const pct = ((score - min) / Math.max(1, max - min)) * 100;
-  return Math.max(0, Math.min(100, pct));
-}
-function strengthColor(pct){
-  if(pct >= 75) return '#34C759';
-  if(pct >= 55) return '#FF9F0A';
-  return '#FF453A';
-}
-function std(arr){
-  const n = arr.length;
-  if(n <= 1) return 0;
-  const mean = arr.reduce((s,x)=>s+x,0) / n;
-  const v = arr.reduce((s,x)=>s+(x-mean)*(x-mean),0) / n;
-  return Math.sqrt(v);
-}
-function cloneTeams(teams){ return teams.map(t=>t.slice()); }
-
-function computeObjective(teams){
-  const totals = teams.map(t => t.reduce((s,p)=>s+p._score,0));
-  const avgScores = teams.map((t,i)=>totals[i] / Math.max(1, t.length));
-  let objective = std(avgScores) * 2.6;
-  const breakdown = {};
-  RATING_FIELDS.forEach(f => {
-    const teamAverages = teams.map(team => {
-      if(!team.length) return 0;
-      return team.reduce((s,p)=>s+(p.ratings?.[f.key] || 1),0) / team.length;
-    });
-    const penalty = std(teamAverages) * f.weight;
-    breakdown[f.key] = penalty;
-    objective += penalty;
-  });
-  ['F','M','D'].forEach(role => {
-    const counts = teams.map(team => team.reduce((s,p)=>s + (p.roles?.[role] ? 1 : 0), 0));
-    const penalty = std(counts) * 2.0;
-    breakdown['role' + role] = penalty;
-    objective += penalty;
-    const totalRole = counts.reduce((a,b)=>a+b,0);
-    if(totalRole >= teams.length){ objective += counts.filter(c=>c===0).length * 4.5; }
-  });
-  const captainCounts = teams.map(team => team.reduce((s,p)=>s + (p.captain ? 1 : 0), 0));
-  const captainPenalty = std(captainCounts) * 3.5;
-  breakdown.captains = captainPenalty;
-  objective += captainPenalty;
-  const totalCaptains = captainCounts.reduce((a,b)=>a+b,0);
-  if(totalCaptains >= teams.length){ objective += captainCounts.filter(c=>c===0).length * 6; }
-  const sizeSpread = Math.max(...teams.map(t=>t.length)) - Math.min(...teams.map(t=>t.length));
-  objective += sizeSpread * 2.25;
-  return { objective, avgScoreSpread: std(avgScores), breakdown, sizeSpread };
+function buildPills(p){
+  const r=p.roles||pp(p.position||'');
+  const pos=['F','M','D'].filter(k=>r[k]).map(k=>`<span class="pill pos-${k}">${k}</span>`);
+  return[...pos,p.captain?`<span class="pill captain">★ Captain</span>`:``].filter(Boolean).join('');
 }
 
-function greedySeed(arr, teamCount, rand){
-  const teams = Array.from({length:teamCount},()=>[]);
-  const totals = Array.from({length:teamCount},()=>0);
-  const sizes = Array.from({length:teamCount},()=>0);
-  const sorted = arr.slice().sort((a,b)=>b._score-a._score);
-  for(const p of sorted){
-    let best = 0;
-    let bestVal = Infinity;
-    for(let i=0;i<teamCount;i++){
-      const projectedSize = sizes[i] + 1;
-      const v = (totals[i] + p._score) / projectedSize + sizes[i] * 0.002;
-      if(v < bestVal){ bestVal = v; best = i; }
-    }
-    teams[best].push(p);
-    totals[best] += p._score;
-    sizes[best] += 1;
-  }
-  return teams;
+function renderRatingsGrid(){
+  const g=$('ratingsGrid');g.innerHTML='';
+  RATING_FIELDS.forEach(f=>{const w=document.createElement('div');w.className='rfield field';w.innerHTML=`<label>${f.label}</label><input id="r_${f.key}" type="number" min="1" max="5" placeholder="3">`;g.appendChild(w);});
 }
-function randomSeed(arr, teamCount, rand){
-  const pool = arr.slice();
-  for(let i=pool.length-1;i>0;i--){
-    const j = Math.floor(rand() * (i + 1));
-    [pool[i], pool[j]] = [pool[j], pool[i]];
-  }
-  const teams = Array.from({length:teamCount},()=>[]);
-  for(let i=0;i<pool.length;i++) teams[i % teamCount].push(pool[i]);
-  return teams;
-}
-function optimize(selected, teamCount, seed){
-  let s = seed || Math.floor(Math.random() * 1e9);
-  const rand = ()=> (s = (s * 1664525 + 1013904223) >>> 0) / 4294967296;
-  const arr = selected.map(p => ({ ...p, _score: computeScore(p) }));
-  const n = arr.length;
-  const restarts = n <= 20 ? 20 : (n <= 32 ? 12 : 8);
-  const attempts = n <= 20 ? 3600 : (n <= 32 ? 2600 : 1800);
-  let bestTeams = null;
-  let bestEval = { objective: Infinity };
+const setRF=r=>RATING_FIELDS.forEach(f=>{$('r_'+f.key).value=r[f.key];});
+function readRatings(){const o={};RATING_FIELDS.forEach(f=>o[f.key]=cr($('r_'+f.key).value));setRF(o);return o;}
 
-  for(let r=0;r<restarts;r++){
-    let cur = (r % 2 === 0) ? greedySeed(arr, teamCount, rand) : randomSeed(arr, teamCount, rand);
-    let curEval = computeObjective(cur);
-    if(curEval.objective < bestEval.objective){ bestEval = curEval; bestTeams = cloneTeams(cur); }
-
-    for(let t=0;t<attempts;t++){
-      const a = Math.floor(rand() * teamCount);
-      const b = Math.floor(rand() * teamCount);
-      if(a === b || !cur[a].length || !cur[b].length) continue;
-      const ia = Math.floor(rand() * cur[a].length);
-      const ib = Math.floor(rand() * cur[b].length);
-      const cand = cloneTeams(cur);
-      const pa = cand[a][ia];
-      cand[a][ia] = cand[b][ib];
-      cand[b][ib] = pa;
-      const ev = computeObjective(cand);
-      if(ev.objective <= curEval.objective){
-        cur = cand;
-        curEval = ev;
-        if(ev.objective < bestEval.objective){ bestEval = ev; bestTeams = cloneTeams(cand); }
-      }
-    }
-  }
-
-  const totals = bestTeams.map(t=>t.reduce((s,p)=>s+p._score,0));
-  const avgs = bestTeams.map((t,i)=>totals[i] / Math.max(1, t.length));
-  return { teams: bestTeams, totals, avgs, eval: bestEval, seed: s };
-}
-
-function switchTab(tab){
-  $('tabGame').classList.toggle('active', tab === 'game');
-  $('tabPlayers').classList.toggle('active', tab === 'players');
-  $('pageGame').classList.toggle('hidden', tab !== 'game');
-  $('pagePlayers').classList.toggle('hidden', tab !== 'players');
-  $('subtitle').textContent = tab === 'game'
-    ? 'Import player ratings, then generate balanced teams.'
-    : 'Manage your player database using the Excel-based rating structure.';
-  if(tab === 'players') renderPlayersPage();
-  if(tab === 'game') renderChecklist();
-}
-function updateSticky(){
-  $('selectedCount').textContent = String(selection.size);
-  $('btnGenerate').textContent = selection.size ? `Generate Teams (${selection.size})` : 'Generate Teams';
-}
-function buildMetricChips(p){
-  const top = RATING_FIELDS.slice().sort((a,b)=>(p.ratings?.[b.key] || 1) - (p.ratings?.[a.key] || 1)).slice(0,3);
-  const roles = p.roles || parsePositions(p.position || '');
-  const positionBadges = ['F','M','D'].filter(k => roles[k]).map(k => `<span class="metricChip">Pos ${k}</span>`);
-  return [...positionBadges, p.captain ? `<span class="metricChip">Captain</span>` : '', ...top.map(f => `<span class="metricChip">${f.label}: ${p.ratings[f.key]}</span>`)].filter(Boolean).join('');
-}
 function renderChecklist(){
-  const q = ($('gameSearch').value || '').toLowerCase().trim();
-  const list = players.slice().sort((a,b)=>displayName(a).localeCompare(displayName(b))).filter(p => !q || displayName(p).toLowerCase().includes(q));
-  const wrap = $('checklist');
-  wrap.innerHTML = '';
-  if(list.length === 0){
-    wrap.innerHTML = `<div class="empty">${q ? 'No match.' : 'No players yet. Import Excel or add a player.'}</div>`;
-    return;
-  }
-  list.forEach((p, idx) => {
-    const row = document.createElement('div');
-    row.className = 'row ' + (idx % 2 === 1 ? 'alt' : '');
-    if(selection.has(p.id)) row.classList.add('selected');
-    row.addEventListener('click', () => {
-      if(selection.has(p.id)) selection.delete(p.id); else selection.add(p.id);
-      save();
-      lastSolution = null;
-      renderResults(null);
-      renderChecklist();
-      updateSticky();
-    });
-    const score = computeScore(p);
-    const pct = strengthPct(score);
-    const color = strengthColor(pct);
-    row.innerHTML = `
-      <div class="left">
-        <div class="name">${escapeHtml(displayName(p))}</div>
-        <div class="meta">Overall Skill ${p.ratings.overallSkill} · Composite ${score.toFixed(1)}</div>
-        <div class="metricWrap">${buildMetricChips(p)}</div>
-      </div>
-      <div class="badge ${selection.has(p.id) ? 'on' : ''}">${selection.has(p.id) ? '✓' : '+'}</div>
-    `;
-    wrap.appendChild(row);
-  });
-}
-function renderPlayersPage(){
-  const q = ($('playerSearch').value || '').toLowerCase().trim();
-  const list = players.slice().sort((a,b)=>displayName(a).localeCompare(displayName(b))).filter(p => !q || displayName(p).toLowerCase().includes(q));
-  const wrap = $('playersList');
-  wrap.innerHTML = '';
-  if(list.length === 0){
-    wrap.innerHTML = `<div class="empty">${q ? 'No match.' : 'No players yet. Import Excel or add one.'}</div>`;
-    return;
-  }
-  list.forEach((p, idx) => {
-    const row = document.createElement('div');
-    row.className = 'row ' + (idx % 2 === 1 ? 'alt' : '');
-    row.addEventListener('click', ()=>openModal(p));
-    const score = computeScore(p);
-    const pct = strengthPct(score);
-    const color = strengthColor(pct);
-    row.innerHTML = `
-      <div class="left">
-        <div class="name">${escapeHtml(displayName(p))}</div>
-        <div class="meta">Overall Skill ${p.ratings.overallSkill} · Composite ${score.toFixed(1)}</div>
-        <div class="metricWrap">${buildMetricChips(p)}</div>
-        <div class="strength">
-          <div class="bar"><div class="fill" style="width:${pct}%;background:${color}"></div></div>
-          <div class="num">${Math.round(score)}</div>
-        </div>
-      </div>
-    `;
-    wrap.appendChild(row);
-  });
-}
-function recalcSolution(sol){
-  if(!sol) return;
-  sol.totals = sol.teams.map(t => t.reduce((sum,p)=>sum+computeScore(p),0));
-  sol.avgs = sol.teams.map((t,i)=> sol.totals[i] / Math.max(1, t.length));
-}
-
-function teamPlayerHtml(p, teamIdx){
-  const roles = p.roles || parsePositions(p.position || '');
-  const captain = p.captain ? `<span class="captainMark" title="Captain">★</span>` : ``;
-  return `<div class="playerMain">
-      <button class="dragHandle" type="button" aria-label="Move ${escapeHtml(displayName(p))}" data-team="${teamIdx}" data-player="${escapeHtml(p.id)}">
-        <span class="handleDots"><span></span><span></span><span></span><span></span><span></span><span></span></span>
-      </button>
-      <div class="pn">${escapeHtml(displayName(p))}${captain}</div>
-    </div>
-    <div class="roleGrid">
-      <div class="roleDot ${roles.F ? 'dotF' : 'dotOff'}">F</div>
-      <div class="roleDot ${roles.M ? 'dotM' : 'dotOff'}">M</div>
-      <div class="roleDot ${roles.D ? 'dotD' : 'dotOff'}">D</div>
-    </div>`;
-}
-
-function clearArmedMove(){
-  armedMove = null;
-  document.querySelectorAll('.dragHandle').forEach(el => el.classList.remove('armed'));
-  document.querySelectorAll('.playerLine').forEach(el => el.classList.remove('armed'));
-  document.querySelectorAll('.moveBanner').forEach(el => el.remove());
-}
-
-function movePlayerBetweenTeams(sol, fromTeamIdx, toTeamIdx, playerId){
-  if(fromTeamIdx === toTeamIdx || !Number.isInteger(fromTeamIdx)) return;
-  const fromTeam = sol.teams[fromTeamIdx];
-  const toTeam = sol.teams[toTeamIdx];
-  const idx = fromTeam.findIndex(p => p.id === playerId);
-  if(idx < 0) return;
-  const [moved] = fromTeam.splice(idx, 1);
-  toTeam.push(moved);
-  recalcSolution(sol);
-  lastSolution = sol;
-  clearArmedMove();
-  renderResults(sol);
-}
-
-function armMove(sol, fromTeamIdx, playerId){
-  armedMove = {fromTeamIdx, playerId};
-  document.querySelectorAll('.dragHandle').forEach(el => el.classList.toggle('armed', el.dataset.team === String(fromTeamIdx) && el.dataset.player === playerId));
-  document.querySelectorAll('.playerLine').forEach(el => el.classList.toggle('armed', el.dataset.team === String(fromTeamIdx) && el.dataset.player === playerId));
-  document.querySelectorAll('.teamBody').forEach((body, idx) => {
-    body.querySelectorAll('.moveBanner').forEach(el => el.remove());
-    if(idx !== fromTeamIdx){
-      const banner = document.createElement('div');
-      banner.className = 'moveBanner';
-      banner.textContent = 'Tap here to move selected player into this team.';
-      body.insertBefore(banner, body.firstChild);
-    }
-  });
-}
-
-function attachDragHandlers(line, sol, fromTeamIdx, playerId){
-  line.dataset.team = String(fromTeamIdx);
-  line.dataset.player = playerId;
-  const handle = line.querySelector('.dragHandle');
-  if(!handle) return;
-  line.draggable = true;
-  handle.draggable = true;
-  const startDrag = (e) => {
-    line.classList.add('dragging');
-    if(e.dataTransfer){
-      e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/plain', JSON.stringify({fromTeamIdx, playerId}));
-    }
-  };
-  line.addEventListener('dragstart', startDrag);
-  handle.addEventListener('dragstart', startDrag);
-  const endDrag = () => {
-    line.classList.remove('dragging');
-    document.querySelectorAll('.teamBody').forEach(el => el.classList.remove('dragOver'));
-  };
-  line.addEventListener('dragend', endDrag);
-  handle.addEventListener('dragend', endDrag);
-  handle.addEventListener('click', (e) => {
-    e.stopPropagation();
-    if(armedMove && armedMove.fromTeamIdx === fromTeamIdx && armedMove.playerId === playerId) clearArmedMove();
-    else armMove(sol, fromTeamIdx, playerId);
-  });
-}
-
-function attachTeamDropHandlers(body, sol, toTeamIdx){
-  body.addEventListener('click', () => {
-    if(armedMove) movePlayerBetweenTeams(sol, armedMove.fromTeamIdx, toTeamIdx, armedMove.playerId);
-  });
-  body.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    body.classList.add('dragOver');
-    if(e.dataTransfer) e.dataTransfer.dropEffect = 'move';
-  });
-  body.addEventListener('dragleave', () => body.classList.remove('dragOver'));
-  body.addEventListener('drop', (e) => {
-    e.preventDefault();
-    body.classList.remove('dragOver');
-    try{
-      const data = JSON.parse(e.dataTransfer.getData('text/plain') || '{}');
-      movePlayerBetweenTeams(sol, Number(data.fromTeamIdx), toTeamIdx, data.playerId);
-    }catch(err){}
-  });
-}
-
-function renderResults(sol){
-  const wrap = $('results');
-  wrap.innerHTML = '';
-  $('resultsEmpty').style.display = sol ? 'none' : '';
-  if(!sol) return;
-  recalcSolution(sol);
-  const teamCount = sol.teams.length;
-  const names = teamCount === 2 ? ['Red','White'] : ['Red','White','Black','Blue'];
-  const colors = teamCount === 2 ? ['red','white'] : ['red','white','black','blue'];
-  sol.teams.forEach((team, i) => {
-    const card = document.createElement('div');
-    card.className = 'teamCard';
-    const overallAvg = team.length && team[0].ratings && team[0].ratings.overallSkill !== undefined
-      ? (team.reduce((s,p)=>s+Number(p.ratings?.overallSkill || 0),0) / team.length).toFixed(2)
-      : '0.00';
-    card.innerHTML = `
-      <div class="teamHeader c-${colors[i]}">
-        <div class="teamTitle"><div class="shirt"></div><div>${names[i]}</div></div>
-        <div class="teamMeta">Total ${sol.totals[i].toFixed(1)}<br>Avg ${sol.avgs[i].toFixed(2)}<div class="teamSubmeta">Overall ${overallAvg}<br>Capt ${team.filter(p => p.captain).length}</div></div>
-      </div>
-    `;
-    const body = document.createElement('div');
-    body.className = 'teamBody';
-    attachTeamDropHandlers(body, sol, i);
-    team.slice().sort((a,b)=>displayName(a).localeCompare(displayName(b))).forEach(p => {
-      const line = document.createElement('div');
-      line.className = 'playerLine';
-      line.innerHTML = teamPlayerHtml(p, i);
-      attachDragHandlers(line, sol, i, p.id);
-      body.appendChild(line);
-    });
-    const hint = document.createElement('div');
-    hint.className = 'dropHint';
-    hint.textContent = armedMove ? 'Tap a team to move the selected player, or drag by the handle.' : 'Drag by the handle or tap the handle, then tap a team.';
-    body.appendChild(hint);
-    card.appendChild(body);
+  const q=($('gameSearch').value||'').toLowerCase().trim();
+  const list=players.slice().sort((a,b)=>dn(a).localeCompare(dn(b))).filter(p=>!q||dn(p).toLowerCase().includes(q));
+  const wrap=$('checklist');wrap.innerHTML='';
+  if(!list.length){wrap.innerHTML=`<div class="empty-state"><div class="empty-icon">⚽</div><div class="empty-title">${q?'No Match':'No Players'}</div><div class="empty-sub">${q?'Try a different name.':'Go to Players tab to build your roster.'}</div></div>`;return;}
+  list.forEach(p=>{
+    const sel=selection.has(p.id),sc=cs(p),pt=pct(sc),cl=scol(pt);
+    const card=document.createElement('div');card.className='player-card'+(sel?' selected':'');
+    card.innerHTML=`<div class="player-avatar">${ini(p)}</div><div class="player-info"><div class="player-name">${eh(dn(p))}</div><div class="player-meta">Skill ${p.ratings.overallSkill} · Score ${sc.toFixed(1)}</div><div class="player-pills">${buildPills(p)}</div><div class="sbw"><div class="sb"><div class="sf" style="width:${pt}%;background:${cl}"></div></div><div class="sn">${Math.round(pt)}%</div></div></div><div class="check-circle">${sel?`<svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="3.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`:''}</div>`;
+    card.addEventListener('click',()=>{if(selection.has(p.id))selection.delete(p.id);else selection.add(p.id);save();lastSolution=null;renderResults(null);renderChecklist();updateSticky();});
     wrap.appendChild(card);
   });
 }
 
-function onTeamCountChange(){ lastSolution = null; renderResults(null); }
-function getSelectedPlayers(){ return players.filter(p => selection.has(p.id)); }
+function renderPlayersPage(){
+  const q=($('playerSearch').value||'').toLowerCase().trim();
+  const list=players.slice().sort((a,b)=>dn(a).localeCompare(dn(b))).filter(p=>!q||dn(p).toLowerCase().includes(q));
+  const wrap=$('playersList');wrap.innerHTML='';
+  $('rosterCount').textContent=players.length?`(${players.length})`:'';
+  if(!list.length){wrap.innerHTML=`<div class="empty-state"><div class="empty-icon">👤</div><div class="empty-title">${q?'No Match':'Empty Roster'}</div><div class="empty-sub">${q?'Try a different name.':'Tap + or import Excel to add players.'}</div></div>`;return;}
+  list.forEach(p=>{
+    const sc=cs(p),pt=pct(sc),cl=scol(pt);
+    const card=document.createElement('div');card.className='db-card';
+    card.innerHTML=`<div class="player-avatar" style="width:46px;height:46px">${ini(p)}</div><div class="player-info" style="flex:1;min-width:0"><div class="player-name">${eh(dn(p))}</div><div class="player-meta">Skill ${p.ratings.overallSkill} · ${p.position||'—'}</div><div class="player-pills" style="margin-top:6px">${buildPills(p)}</div><div class="sbw" style="margin-top:8px"><div class="sb"><div class="sf" style="width:${pt}%;background:${cl}"></div></div></div></div><div class="db-score"><div class="db-sn">${Math.round(sc)}</div><div class="db-sl">Score</div></div><svg class="chev" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>`;
+    card.addEventListener('click',()=>openModal(p));
+    wrap.appendChild(card);
+  });
+}
+
+/* Algorithm */
+const std=arr=>{const n=arr.length;if(n<=1)return 0;const m=arr.reduce((s,x)=>s+x,0)/n;return Math.sqrt(arr.reduce((s,x)=>s+(x-m)*(x-m),0)/n);};
+const ct=t=>t.map(x=>x.slice());
+function computeObj(teams){
+  const tots=teams.map(t=>t.reduce((s,p)=>s+p._sc,0));
+  const avgs=teams.map((t,i)=>tots[i]/Math.max(1,t.length));
+  let obj=std(avgs)*2.6;
+  RATING_FIELDS.forEach(f=>{const ta=teams.map(t=>t.length?t.reduce((s,p)=>s+(p.ratings?.[f.key]||1),0)/t.length:0);obj+=std(ta)*f.weight;});
+  ['F','M','D'].forEach(role=>{const cnts=teams.map(t=>t.reduce((s,p)=>s+(p.roles?.[role]?1:0),0));obj+=std(cnts)*2.0;if(cnts.reduce((a,b)=>a+b,0)>=teams.length)obj+=cnts.filter(c=>c===0).length*4.5;});
+  const cc=teams.map(t=>t.reduce((s,p)=>s+(p.captain?1:0),0));
+  obj+=std(cc)*3.5;if(cc.reduce((a,b)=>a+b,0)>=teams.length)obj+=cc.filter(c=>c===0).length*6;
+  obj+=(Math.max(...teams.map(t=>t.length))-Math.min(...teams.map(t=>t.length)))*2.25;
+  return{objective:obj,avgSpread:std(avgs)};
+}
+function greedySeed(arr,tc,rand){const teams=Array.from({length:tc},()=>[]),tots=Array.from({length:tc},()=>0),szs=Array.from({length:tc},()=>0);arr.slice().sort((a,b)=>b._sc-a._sc).forEach(p=>{let best=0,bv=Infinity;for(let i=0;i<tc;i++){const v=(tots[i]+p._sc)/(szs[i]+1)+szs[i]*0.002;if(v<bv){bv=v;best=i;}}teams[best].push(p);tots[best]+=p._sc;szs[best]++;});return teams;}
+function randomSeed(arr,tc,rand){const pool=arr.slice();for(let i=pool.length-1;i>0;i--){const j=Math.floor(rand()*(i+1));[pool[i],pool[j]]=[pool[j],pool[i]];}const teams=Array.from({length:tc},()=>[]);for(let i=0;i<pool.length;i++)teams[i%tc].push(pool[i]);return teams;}
+function optimize(sel,tc,seed){
+  let s=seed||Math.floor(Math.random()*1e9);
+  const rand=()=>(s=(s*1664525+1013904223)>>>0)/4294967296;
+  const arr=sel.map(p=>({...p,_sc:cs(p)}));
+  const n=arr.length,restarts=n<=20?20:n<=32?12:8,attempts=n<=20?3600:n<=32?2600:1800;
+  let bTeams=null,bEval={objective:Infinity};
+  for(let r=0;r<restarts;r++){
+    let cur=(r%2===0)?greedySeed(arr,tc,rand):randomSeed(arr,tc,rand);
+    let ce=computeObj(cur);if(ce.objective<bEval.objective){bEval=ce;bTeams=ct(cur);}
+    for(let t=0;t<attempts;t++){
+      const a=Math.floor(rand()*tc),b=Math.floor(rand()*tc);
+      if(a===b||!cur[a].length||!cur[b].length)continue;
+      const ia=Math.floor(rand()*cur[a].length),ib=Math.floor(rand()*cur[b].length);
+      const cand=ct(cur);[cand[a][ia],cand[b][ib]]=[cand[b][ib],cand[a][ia]];
+      const ev=computeObj(cand);if(ev.objective<=ce.objective){cur=cand;ce=ev;if(ev.objective<bEval.objective){bEval=ev;bTeams=ct(cand);}}
+    }
+  }
+  const tots=bTeams.map(t=>t.reduce((s,p)=>s+p._sc,0));
+  return{teams:bTeams,totals:tots,avgs:bTeams.map((t,i)=>tots[i]/Math.max(1,t.length)),eval:bEval,seed:s};
+}
+function recalc(sol){if(!sol)return;sol.totals=sol.teams.map(t=>t.reduce((s,p)=>s+cs(p),0));sol.avgs=sol.teams.map((t,i)=>sol.totals[i]/Math.max(1,t.length));}
+
+/* Results */
+const TN2=['RED','WHITE'],TN4=['RED','WHITE','BLACK','BLUE'];
+const TA2=['acc-red','acc-dark'],TA4=['acc-red','acc-dark','acc-slate','acc-blue'];
+
+function renderResults(sol){
+  const wrap=$('results');wrap.innerHTML='';
+  $('resultsEmpty').classList.add('hidden');
+  if(!sol){if(!players.length||!selection.size)$('resultsEmpty').classList.remove('hidden');return;}
+  recalc(sol);
+  const tc=sol.teams.length,names=tc===2?TN2:TN4,accs=tc===2?TA2:TA4;
+  const h=document.createElement('div');h.className='section-label';h.textContent='Balanced Teams';wrap.appendChild(h);
+  sol.teams.forEach((team,i)=>{
+    const card=document.createElement('div');card.className='team-card';
+    const oa=team.length?(team.reduce((s,p)=>s+Number(p.ratings?.overallSkill||0),0)/team.length).toFixed(1):'0';
+    card.innerHTML=`<div class="team-accent ${accs[i]}"></div><div class="team-header"><div><div class="team-name">${names[i]}</div><div class="team-size">${team.length} PLAYERS</div></div><div class="team-stats"><div class="tsm">${sol.totals[i].toFixed(0)}</div><div class="tsl">Total Score</div><div class="tss">Avg ${sol.avgs[i].toFixed(1)} · Skill ${oa}</div></div></div>`;
+    const body=document.createElement('div');body.className='team-body';
+    attachTD(body,sol,i);
+    team.slice().sort((a,b)=>dn(a).localeCompare(dn(b))).forEach(p=>{
+      const r=p.roles||pp(p.position||'');
+      const line=document.createElement('div');line.className='team-player';
+      line.innerHTML=`<button class="drag-handle" type="button" data-team="${i}" data-player="${eh(p.id)}"><div class="drag-dots"><span></span><span></span><span></span><span></span><span></span><span></span></div></button><div class="tpn">${eh(dn(p))}${p.captain?`<span class="cap-star">★</span>`:''}</div><div class="pos-dots"><div class="pd ${r.F?'pd-F':'pd-off'}">F</div><div class="pd ${r.M?'pd-M':'pd-off'}">M</div><div class="pd ${r.D?'pd-D':'pd-off'}">D</div></div>`;
+      attachDH(line,sol,i,p.id);body.appendChild(line);
+    });
+    const hint=document.createElement('div');hint.className='drop-hint';hint.textContent='Drag handle or tap handle · tap team to drop';body.appendChild(hint);
+    card.appendChild(body);wrap.appendChild(card);
+  });
+}
+
+/* Drag */
+function clearArmed(){armedMove=null;document.querySelectorAll('.drag-handle').forEach(e=>e.classList.remove('armed'));document.querySelectorAll('.team-player').forEach(e=>e.classList.remove('armed'));document.querySelectorAll('.move-banner').forEach(e=>e.remove());}
+function movePBT(sol,from,to,pid){
+  if(from===to||!Number.isInteger(from))return;
+  const idx=sol.teams[from].findIndex(p=>p.id===pid);if(idx<0)return;
+  const[moved]=sol.teams[from].splice(idx,1);sol.teams[to].push(moved);
+  recalc(sol);lastSolution=sol;clearArmed();renderResults(sol);
+}
+function armMove(sol,from,pid){
+  armedMove={fromTeamIdx:from,playerId:pid};
+  document.querySelectorAll('.drag-handle').forEach(e=>e.classList.toggle('armed',e.dataset.team===String(from)&&e.dataset.player===pid));
+  document.querySelectorAll('.team-player').forEach(e=>e.classList.toggle('armed',e.dataset.team===String(from)&&e.dataset.player===pid));
+  document.querySelectorAll('.team-body').forEach((body,idx)=>{body.querySelectorAll('.move-banner').forEach(e=>e.remove());if(idx!==from){const b=document.createElement('div');b.className='move-banner';b.textContent='▸ Tap here to move player into this team';body.insertBefore(b,body.firstChild);}});
+}
+function attachDH(line,sol,from,pid){
+  line.dataset.team=String(from);line.dataset.player=pid;
+  const h=line.querySelector('.drag-handle');if(!h)return;
+  line.draggable=true;h.draggable=true;
+  const sd=e=>{if(e.dataTransfer){e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',JSON.stringify({fromTeamIdx:from,playerId:pid}));}};
+  line.addEventListener('dragstart',sd);h.addEventListener('dragstart',sd);
+  const ed=()=>document.querySelectorAll('.team-body').forEach(e=>e.classList.remove('drag-over'));
+  line.addEventListener('dragend',ed);h.addEventListener('dragend',ed);
+  h.addEventListener('click',e=>{e.stopPropagation();if(armedMove&&armedMove.fromTeamIdx===from&&armedMove.playerId===pid)clearArmed();else armMove(sol,from,pid);});
+}
+function attachTD(body,sol,to){
+  body.addEventListener('click',()=>{if(armedMove)movePBT(sol,armedMove.fromTeamIdx,to,armedMove.playerId);});
+  body.addEventListener('dragover',e=>{e.preventDefault();body.classList.add('drag-over');if(e.dataTransfer)e.dataTransfer.dropEffect='move';});
+  body.addEventListener('dragleave',()=>body.classList.remove('drag-over'));
+  body.addEventListener('drop',e=>{e.preventDefault();body.classList.remove('drag-over');try{const d=JSON.parse(e.dataTransfer.getData('text/plain')||'{}');movePBT(sol,Number(d.fromTeamIdx),to,d.playerId);}catch(err){}});
+}
+
+/* Nav */
+function switchTab(tab){
+  $('pageGame').classList.toggle('hidden',tab!=='game');
+  $('pagePlayers').classList.toggle('hidden',tab!=='players');
+  $('generateBar').classList.toggle('hidden',tab!=='game');
+  $('navGame').classList.toggle('active',tab==='game');
+  $('navPlayers').classList.toggle('active',tab==='players');
+  if(tab==='players')renderPlayersPage();
+  if(tab==='game'){renderChecklist();updateSticky();}
+}
+function updateSticky(){
+  const c=selection.size;$('selectedCount').textContent=String(c);
+  $('btnGenerate').innerHTML=`<svg width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>${c?`Generate Teams (${c})`:'Generate Teams'}`;
+}
+
+/* Generate */
+const onTeamCountChange=()=>{lastSolution=null;renderResults(null);};
+const getSelP=()=>players.filter(p=>selection.has(p.id));
 function generateTeams(){
-  const selected = getSelectedPlayers();
-  const teamCount = Number($('teamCount').value);
-  if(selected.length < teamCount){ alert('Select more players first.'); return; }
-  const baseSeed = (lastSolution?.seed ?? Math.floor(Math.random()*1e9)) + 1337;
-  const sol = optimize(selected, teamCount, baseSeed);
-  lastSolution = sol;
-  renderResults(sol);
-  $('results').scrollIntoView({behavior:'smooth', block:'start'});
+  const sel=getSelP(),tc=Number($('teamCount').value);
+  if(sel.length<tc){alert('Select more players first.');return;}
+  const sol=optimize(sel,tc,(lastSolution?.seed??Math.floor(Math.random()*1e9))+1337);
+  lastSolution=sol;renderResults(sol);$('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 function regenerate(){
-  if(selection.size === 0){ alert('Select players first.'); return; }
-  const bump = Math.floor(Math.random()*1e9);
-  const selected = getSelectedPlayers();
-  const teamCount = Number($('teamCount').value);
-  const sol = optimize(selected, teamCount, bump);
-  lastSolution = sol;
-  renderResults(sol);
-  $('results').scrollIntoView({behavior:'smooth', block:'start'});
+  if(!selection.size){alert('Select players first.');return;}
+  const sol=optimize(getSelP(),Number($('teamCount').value),Math.floor(Math.random()*1e9));
+  lastSolution=sol;renderResults(sol);$('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
-function clearSelection(){
-  selection.clear();
-  save();
-  lastSolution = null;
-  renderResults(null);
-  renderChecklist();
-  updateSticky();
-}
+const clearSelection=()=>{selection.clear();save();lastSolution=null;renderResults(null);renderChecklist();updateSticky();};
 
-function backdropClose(e){ if(e.target.id === 'modalBackdrop') closeModal(); }
+/* Modal */
+const backdropClose=e=>{if(e.target.id==='modalBackdrop')closeModal();};
 function openModal(player){
-  $('modalBackdrop').style.display = 'flex';
+  $('modalBackdrop').classList.add('open');
   if(player){
-    currentEditId = player.id;
-    $('modalTitle').textContent = 'Edit Player';
-    $('btnDelete').style.display = 'inline-flex';
-    $('fName').value = player.name || '';
-    const roles = player.roles || parsePositions(player.position || '');
-    $('posF').checked = !!roles.F;
-    $('posM').checked = !!roles.M;
-    $('posD').checked = !!roles.D;
-    $('isCaptain').checked = !!player.captain;
-    setRatingFields(player.ratings || emptyRatings());
+    currentEditId=player.id;$('modalTitle').textContent='Edit Player';$('btnDelete').classList.remove('hidden');
+    $('fName').value=player.name||'';
+    const r=player.roles||pp(player.position||'');
+    $('posF').checked=!!r.F;$('posM').checked=!!r.M;$('posD').checked=!!r.D;
+    $('isCaptain').checked=!!player.captain;setRF(player.ratings||er());
   }else{
-    currentEditId = null;
-    $('modalTitle').textContent = 'Add Player';
-    $('btnDelete').style.display = 'none';
-    $('fName').value = '';
-    $('posF').checked = false;
-    $('posM').checked = false;
-    $('posD').checked = false;
-    $('isCaptain').checked = false;
-    setRatingFields(emptyRatings());
+    currentEditId=null;$('modalTitle').textContent='Add Player';$('btnDelete').classList.add('hidden');
+    $('fName').value='';$('posF').checked=false;$('posM').checked=false;$('posD').checked=false;$('isCaptain').checked=false;setRF(er());
   }
 }
-function closeModal(){ $('modalBackdrop').style.display = 'none'; }
+const closeModal=()=>$('modalBackdrop').classList.remove('open');
 function saveCurrent(){
-  const name = ($('fName').value || '').trim();
-  if(!name){ alert('Name is required.'); return; }
-  const position = normalizePosition(($('posF').checked ? 'F' : '') + ($('posM').checked ? 'M' : '') + ($('posD').checked ? 'D' : ''));
-  if(!position){ alert('Select at least one position.'); return; }
-  const captain = $('isCaptain').checked;
-  const ratings = readRatings();
-  const payload = sanitizePlayer({ id: currentEditId || uid(), name, position, captain, ratings });
-  if(currentEditId){
-    const i = players.findIndex(p=>p.id===currentEditId);
-    if(i >= 0) players[i] = payload;
-  }else{
-    players.push(payload);
-  }
-  save();
-  renderPlayersPage();
-  renderChecklist();
-  updateSticky();
-  closeModal();
+  const name=($('fName').value||'').trim();if(!name){alert('Name is required.');return;}
+  const pos=np(($('posF').checked?'F':'')+($('posM').checked?'M':'')+($('posD').checked?'D':''));
+  if(!pos){alert('Select at least one position.');return;}
+  const payload=sp({id:currentEditId||uid(),name,position:pos,captain:$('isCaptain').checked,ratings:readRatings()});
+  if(currentEditId){const i=players.findIndex(p=>p.id===currentEditId);if(i>=0)players[i]=payload;}else players.push(payload);
+  save();renderPlayersPage();renderChecklist();updateSticky();closeModal();
 }
 function deleteCurrent(){
-  if(!currentEditId) return;
-  if(!confirm('Delete this player?')) return;
-  players = players.filter(p=>p.id!==currentEditId);
-  selection.delete(currentEditId);
-  save();
-  lastSolution = null;
-  renderResults(null);
-  renderPlayersPage();
-  renderChecklist();
-  updateSticky();
-  closeModal();
+  if(!currentEditId||!confirm('Delete this player?'))return;
+  players=players.filter(p=>p.id!==currentEditId);selection.delete(currentEditId);save();lastSolution=null;
+  renderResults(null);renderPlayersPage();renderChecklist();updateSticky();closeModal();
 }
 
+/* Excel */
 function exportExcel(){
-  if(typeof XLSX === 'undefined'){
-    alert('Excel export library did not load. Check your internet connection and try again.');
-    return;
-  }
-  const rows = players.slice().sort((a,b)=>displayName(a).localeCompare(displayName(b))).map(p => ({
-    'Name': displayName(p),
-    'Overall Skill': p.ratings?.overallSkill ?? 3,
-    'Passing': p.ratings?.passing ?? 3,
-    'Shooting': p.ratings?.shooting ?? 3,
-    'Dribbling': p.ratings?.dribbling ?? 3,
-    'Speed': p.ratings?.speed ?? 3,
-    'Vision': p.ratings?.vision ?? 3,
-    'off the ball': p.ratings?.offTheBall ?? 3,
-    'Defending': p.ratings?.defending ?? 3,
-    'WorkRate': p.ratings?.workRate ?? 3,
-    'Mental': p.ratings?.mental ?? 3,
-    'Fitness': p.ratings?.fitness ?? 3,
-    'Position': p.position || '',
-    'Captain': p.captain ? 'Yes' : ''
-  }));
-  const ws = XLSX.utils.json_to_sheet(rows, { header: IMPORT_EXPORT_HEADERS });
-  XLSX.utils.sheet_add_aoa(ws, [IMPORT_EXPORT_HEADERS], { origin: 'A1' });
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Players');
-  XLSX.writeFile(wb, 'player_ratings_export.xlsx');
+  if(typeof XLSX==='undefined'){alert('Excel library did not load.');return;}
+  const rows=players.slice().sort((a,b)=>dn(a).localeCompare(dn(b))).map(p=>({'Name':dn(p),'Overall Skill':p.ratings?.overallSkill??3,'Passing':p.ratings?.passing??3,'Shooting':p.ratings?.shooting??3,'Dribbling':p.ratings?.dribbling??3,'Speed':p.ratings?.speed??3,'Vision':p.ratings?.vision??3,'off the ball':p.ratings?.offTheBall??3,'Defending':p.ratings?.defending??3,'WorkRate':p.ratings?.workRate??3,'Mental':p.ratings?.mental??3,'Fitness':p.ratings?.fitness??3,'Position':p.position||'','Captain':p.captain?'Yes':''}));
+  const ws=XLSX.utils.json_to_sheet(rows,{header:IEH});XLSX.utils.sheet_add_aoa(ws,[IEH],{origin:'A1'});
+  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Players');XLSX.writeFile(wb,'player_ratings_export.xlsx');
 }
 function parseExcelRows(rows){
-  if(!rows.length) throw new Error('No rows found.');
-  const headerRow = rows[0] || [];
-  const mapped = headerRow.map(h => HEADER_ALIASES[normalizeHeader(h)] || null);
-  const missing = ['name', ...RATING_FIELDS.map(f=>f.key), 'position', 'captain'].filter(key => !mapped.includes(key));
-  if(missing.length){
-    throw new Error('Missing columns: ' + missing.join(', '));
-  }
-  const imported = [];
+  if(!rows.length)throw new Error('No rows found.');
+  const mapped=(rows[0]||[]).map(h=>HA[nh(h)]||null);
+  const missing=['name',...RATING_FIELDS.map(f=>f.key),'position','captain'].filter(k=>!mapped.includes(k));
+  if(missing.length)throw new Error('Missing columns: '+missing.join(', '));
+  const imported=[];
   for(let i=1;i<rows.length;i++){
-    const row = rows[i] || [];
-    const temp = { id: uid(), name:'', position:'', captain:false, ratings:{} };
-    mapped.forEach((key, idx) => {
-      if(!key) return;
-      const value = row[idx];
-      if(key === 'name') temp.name = String(value || '').trim();
-      else if(key === 'position') temp.position = normalizePosition(value);
-      else if(key === 'captain') temp.captain = truthyCaptain(value);
-      else temp.ratings[key] = clampRating(value);
-    });
-    if(temp.name) imported.push(sanitizePlayer(temp));
+    const row=rows[i]||[],temp={id:uid(),name:'',position:'',captain:false,ratings:{}};
+    mapped.forEach((key,idx)=>{if(!key)return;const val=row[idx];if(key==='name')temp.name=String(val||'').trim();else if(key==='position')temp.position=np(val);else if(key==='captain')temp.captain=tc(val);else temp.ratings[key]=cr(val);});
+    if(temp.name)imported.push(sp(temp));
   }
-  if(!imported.length) throw new Error('No valid player rows found.');
+  if(!imported.length)throw new Error('No valid rows found.');
   return imported;
 }
 function importExcel(){
-  const input = document.createElement('input');
-  input.type = 'file';
-  input.accept = '.xlsx,.xls';
-  input.onchange = async (e) => {
-    const file = e.target.files?.[0];
-    if(!file) return;
-    if(typeof XLSX === 'undefined'){
-      alert('Excel import library did not load. Check your internet connection and try again.');
-      return;
-    }
+  const input=document.createElement('input');input.type='file';input.accept='.xlsx,.xls';
+  input.onchange=async e=>{
+    const file=e.target.files?.[0];if(!file)return;
+    if(typeof XLSX==='undefined'){alert('Excel library did not load.');return;}
     try{
-      const data = await file.arrayBuffer();
-      const workbook = XLSX.read(data, { type:'array' });
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
-      const rows = XLSX.utils.sheet_to_json(sheet, { header:1, raw:true, defval:'' });
-      const imported = parseExcelRows(rows);
-      players = imported;
-      selection = new Set();
-      save();
-      lastSolution = null;
-      renderResults(null);
-      renderPlayersPage();
-      renderChecklist();
-      updateSticky();
-      alert(`Imported ${imported.length} players from ${sheetName}.`);
-    }catch(err){
-      alert('Excel import failed: ' + err.message);
-    }
+      const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});
+      const sn=wb.SheetNames[0];
+      const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});
+      const imported=parseExcelRows(rows);
+      players=imported;selection=new Set();save();lastSolution=null;
+      renderResults(null);renderPlayersPage();renderChecklist();updateSticky();
+      alert(`✓ Imported ${imported.length} players.`);
+    }catch(err){alert('Import failed: '+err.message);}
   };
   input.click();
 }
-function escapeHtml(s){
-  return String(s).replace(/[&<>'"]/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[ch]));
-}
 
-renderRatingsGrid();
-load();
-switchTab('game');
-renderChecklist();
-renderPlayersPage();
-updateSticky();
+/* Init */
+renderRatingsGrid();load();switchTab('game');renderChecklist();renderPlayersPage();updateSticky();
 </script>
 </body>
 </html>
