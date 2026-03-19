@@ -368,7 +368,24 @@ const RATING_FIELDS=[
   {key:'fitness',label:'Fitness',weight:0.85},
 ];
 const IEH=['Name',...RATING_FIELDS.map(f=>f.label),'Position','Captain'];
-const HA={name:'name',position:'position',positions:'position',captain:'captain',overallskill:'overallSkill',passing:'passing',shooting:'shooting',dribbling:'dribbling',speed:'speed',vision:'vision',offtheball:'offTheBall',defending:'defending',workrate:'workRate',mental:'mental',fitness:'fitness'};
+
+// Header alias map — normalised (lowercase, alphanumeric only) → internal key
+const HA={
+  name:'name', playername:'name',
+  position:'position', positions:'position', pos:'position',
+  captain:'captain', cap:'captain', iscaptain:'captain',
+  overallskill:'overallSkill', overall:'overallSkill', skill:'overallSkill', overallrating:'overallSkill',
+  passing:'passing', pass:'passing',
+  shooting:'shooting', shoot:'shooting',
+  dribbling:'dribbling', dribble:'dribbling',
+  speed:'speed', pace:'speed',
+  vision:'vision',
+  offtheball:'offTheBall', offball:'offTheBall', movement:'offTheBall',
+  defending:'defending', defense:'defending', defence:'defending',
+  workrate:'workRate', work:'workRate', workethic:'workRate',
+  mental:'mental', mentality:'mental',
+  fitness:'fitness', stamina:'fitness',
+};
 
 let players=[],selection=new Set(),currentEditId=null,lastSolution=null,armedMove=null;
 
@@ -382,7 +399,8 @@ const er=()=>{const o={};RATING_FIELDS.forEach(f=>o[f.key]=3);return o;};
 const sr=i=>{const o={};RATING_FIELDS.forEach(f=>o[f.key]=cr(i?.[f.key]??3));return o;};
 const np=v=>{const c=String(v||'').toUpperCase().replace(/[^FMD]/g,'');return[...new Set(c.split('').filter(Boolean))].sort((a,b)=>'FMD'.indexOf(a)-'FMD'.indexOf(b)).join('');};
 const pp=pos=>{const n=np(pos);return{F:n.includes('F'),M:n.includes('M'),D:n.includes('D')};};
-const tc=v=>['1','Y','YES','TRUE','CAPTAIN','C'].includes(String(v??'').trim().toUpperCase());
+// NOTE: named isCaptainVal to avoid collision with any outer 'tc' (teamCount) variable
+const isCaptainVal=v=>['1','Y','YES','TRUE','CAPTAIN','C'].includes(String(v??'').trim().toUpperCase());
 const sp=i=>{const pos=np(i?.position||i?.positions||'');return{id:i?.id||uid(),name:(i?.name||'').toString(),position:pos,roles:pp(pos),captain:!!i?.captain,ratings:sr(i?.ratings||i||{})};};
 const cs=p=>RATING_FIELDS.reduce((s,f)=>s+((p.ratings?.[f.key]||1)*f.weight),0);
 const pct=score=>{const mn=RATING_FIELDS.reduce((s,f)=>s+f.weight,0),mx=RATING_FIELDS.reduce((s,f)=>s+5*f.weight,0);return Math.max(0,Math.min(100,((score-mn)/Math.max(1,mx-mn))*100));};
@@ -604,17 +622,31 @@ function exportExcel(){
   const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Players');XLSX.writeFile(wb,'player_ratings_export.xlsx');
 }
 function parseExcelRows(rows){
-  if(!rows.length)throw new Error('No rows found.');
-  const mapped=(rows[0]||[]).map(h=>HA[nh(h)]||null);
-  const missing=['name',...RATING_FIELDS.map(f=>f.key),'position','captain'].filter(k=>!mapped.includes(k));
-  if(missing.length)throw new Error('Missing columns: '+missing.join(', '));
-  const imported=[];
-  for(let i=1;i<rows.length;i++){
-    const row=rows[i]||[],temp={id:uid(),name:'',position:'',captain:false,ratings:{}};
-    mapped.forEach((key,idx)=>{if(!key)return;const val=row[idx];if(key==='name')temp.name=String(val||'').trim();else if(key==='position')temp.position=np(val);else if(key==='captain')temp.captain=tc(val);else temp.ratings[key]=cr(val);});
-    if(temp.name)imported.push(sp(temp));
+  if(!rows.length) throw new Error('No rows found.');
+  // Scan first 5 rows for the header — tolerates title rows above data
+  let hIdx=0;
+  for(let r=0;r<Math.min(5,rows.length);r++){
+    if((rows[r]||[]).some(h=>HA[nh(h)]==='name')){hIdx=r;break;}
   }
-  if(!imported.length)throw new Error('No valid rows found.');
+  const mapped=(rows[hIdx]||[]).map(h=>HA[nh(h)]||null);
+  // Only Name is strictly required; all ratings default to 3 if column absent
+  if(!mapped.includes('name')) throw new Error('No "Name" column found. Check your Excel headers match the expected format (see hint below import button).');
+  const imported=[];
+  for(let i=hIdx+1;i<rows.length;i++){
+    const row=rows[i]||[];
+    // Start with default ratings so any missing column simply keeps its default
+    const temp={id:uid(),name:'',position:'',captain:false,ratings:er()};
+    mapped.forEach((key,idx)=>{
+      if(!key) return;
+      const val=row[idx];
+      if(key==='name')            temp.name=String(val||'').trim();
+      else if(key==='position')   temp.position=np(val);
+      else if(key==='captain')    temp.captain=isCaptainVal(val);
+      else if(key in temp.ratings) temp.ratings[key]=cr(val);
+    });
+    if(temp.name) imported.push(sp(temp));
+  }
+  if(!imported.length) throw new Error('No valid player rows found. Make sure data rows follow directly after the header row.');
   return imported;
 }
 function importExcel(){
