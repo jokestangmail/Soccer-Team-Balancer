@@ -617,9 +617,29 @@ function deleteCurrent(){
 /* Excel */
 function exportExcel(){
   if(typeof XLSX==='undefined'){alert('Excel library did not load.');return;}
-  const rows=players.slice().sort((a,b)=>dn(a).localeCompare(dn(b))).map(p=>({'Name':dn(p),'Overall Skill':p.ratings?.overallSkill??3,'Passing':p.ratings?.passing??3,'Shooting':p.ratings?.shooting??3,'Dribbling':p.ratings?.dribbling??3,'Speed':p.ratings?.speed??3,'Vision':p.ratings?.vision??3,'off the ball':p.ratings?.offTheBall??3,'Defending':p.ratings?.defending??3,'WorkRate':p.ratings?.workRate??3,'Mental':p.ratings?.mental??3,'Fitness':p.ratings?.fitness??3,'Position':p.position||'','Captain':p.captain?'Yes':''}));
-  const ws=XLSX.utils.json_to_sheet(rows,{header:IEH});XLSX.utils.sheet_add_aoa(ws,[IEH],{origin:'A1'});
-  const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Players');XLSX.writeFile(wb,'player_ratings_export.xlsx');
+  // Build as array-of-arrays so column order is guaranteed to match IEH exactly
+  const dataRows=players.slice().sort((a,b)=>dn(a).localeCompare(dn(b))).map(p=>[
+    dn(p),
+    p.ratings?.overallSkill??3,
+    p.ratings?.passing??3,
+    p.ratings?.shooting??3,
+    p.ratings?.dribbling??3,
+    p.ratings?.speed??3,
+    p.ratings?.vision??3,
+    p.ratings?.offTheBall??3,
+    p.ratings?.defending??3,
+    p.ratings?.workRate??3,
+    p.ratings?.mental??3,
+    p.ratings?.fitness??3,
+    p.position||'',
+    p.captain?'Yes':''
+  ]);
+  // IEH = ['Name','Overall Skill','Passing','Shooting','Dribbling','Speed','Vision','off the ball','Defending','WorkRate','Mental','Fitness','Position','Captain']
+  const aoa=[IEH,...dataRows];
+  const ws=XLSX.utils.aoa_to_sheet(aoa);
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'Players');
+  XLSX.writeFile(wb,'player_ratings_export.xlsx');
 }
 function parseExcelRows(rows){
   if(!rows.length) throw new Error('No rows found.');
@@ -630,7 +650,10 @@ function parseExcelRows(rows){
   }
   const mapped=(rows[hIdx]||[]).map(h=>HA[nh(h)]||null);
   // Only Name is strictly required; all ratings default to 3 if column absent
-  if(!mapped.includes('name')) throw new Error('No "Name" column found. Check your Excel headers match the expected format (see hint below import button).');
+  if(!mapped.includes('name')){
+    const seen=(rows[hIdx]||[]).slice(0,5).map(h=>String(h||'').trim()).filter(Boolean).join(', ');
+    throw new Error('No "Name" column found. First columns detected: ['+(seen||'empty')+']\n\nExpected first column to be named "Name". Check your Excel file matches the format shown in the hint.');
+  }
   const imported=[];
   for(let i=hIdx+1;i<rows.length;i++){
     const row=rows[i]||[];
