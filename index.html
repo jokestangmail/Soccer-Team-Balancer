@@ -650,20 +650,34 @@ function parseExcelRows(rows){
   return imported;
 }
 function importExcel(){
-  const input=document.createElement('input');input.type='file';input.accept='.xlsx,.xls';
+  const input=document.createElement('input');
+  input.type='file';
+  // Include MIME types alongside extensions — Android Chrome needs MIME types
+  // to correctly filter and display Excel files in the file picker
+  input.accept='.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/octet-stream';
+  // Append to DOM — required on Android WebView/Chrome for the picker to open reliably
+  input.style.cssText='position:fixed;top:-100px;left:-100px;opacity:0;';
+  document.body.appendChild(input);
   input.onchange=async e=>{
-    const file=e.target.files?.[0];if(!file)return;
-    if(typeof XLSX==='undefined'){alert('Excel library did not load.');return;}
+    const file=e.target.files?.[0];
+    document.body.removeChild(input);
+    if(!file)return;
+    if(typeof XLSX==='undefined'){alert('Excel library did not load. Check your internet connection.');return;}
     try{
-      const wb=XLSX.read(await file.arrayBuffer(),{type:'array'});
+      const data=await file.arrayBuffer();
+      const wb=XLSX.read(data,{type:'array'});
       const sn=wb.SheetNames[0];
       const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});
       const imported=parseExcelRows(rows);
       players=imported;selection=new Set();save();lastSolution=null;
       renderResults(null);renderPlayersPage();renderChecklist();updateSticky();
-      alert(`✓ Imported ${imported.length} players.`);
-    }catch(err){alert('Import failed: '+err.message);}
+      alert('✓ Imported '+imported.length+' players successfully.');
+    }catch(err){
+      alert('Import failed: '+err.message);
+    }
   };
+  // Also handle cancel — clean up DOM if user dismisses picker
+  input.addEventListener('cancel',()=>{ try{document.body.removeChild(input);}catch(e){} });
   input.click();
 }
 
