@@ -342,7 +342,7 @@ select:focus{border-color:var(--text)}
       </div>
     </label>
 
-    <div class="rhead">Ratings (1–5)</div>
+    <div class="rhead">Ratings (1–10)</div>
     <div class="rgrid" id="ratingsGrid"></div>
 
     <div class="modal-actions">
@@ -394,16 +394,21 @@ const $=id=>document.getElementById(id);
 const dn=p=>(p&&p.name&&String(p.name).trim())?String(p.name).trim():'(No name)';
 const ini=p=>{const n=dn(p),pts=n.split(' ');return pts.length>=2?(pts[0][0]+pts[pts.length-1][0]).toUpperCase():n.slice(0,2).toUpperCase();};
 const nh=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
-const cr=v=>{const n=Number(v);return Number.isFinite(n)?Math.max(1,Math.min(5,Math.round(n))):1;};
-const er=()=>{const o={};RATING_FIELDS.forEach(f=>o[f.key]=3);return o;};
-const sr=i=>{const o={};RATING_FIELDS.forEach(f=>o[f.key]=cr(i?.[f.key]??3));return o;};
+const cr=v=>{const n=Number(v);return Number.isFinite(n)?Math.max(1,Math.min(10,n)):1;};
+const er=()=>{const o={};RATING_FIELDS.forEach(f=>o[f.key]=5);return o;};
+const sr=(input)=>{
+  const src=input&&typeof input==='object'&&input.ratings&&typeof input.ratings==='object'
+    ?input.ratings
+    :(input&&typeof input==='object'?input:{});
+  const o={};RATING_FIELDS.forEach(f=>o[f.key]=cr(src?.[f.key]??5));return o;
+};
 const np=v=>{const c=String(v||'').toUpperCase().replace(/[^FMD]/g,'');return[...new Set(c.split('').filter(Boolean))].sort((a,b)=>'FMD'.indexOf(a)-'FMD'.indexOf(b)).join('');};
 const pp=pos=>{const n=np(pos);return{F:n.includes('F'),M:n.includes('M'),D:n.includes('D')};};
 // NOTE: named isCaptainVal to avoid collision with any outer 'tc' (teamCount) variable
 const isCaptainVal=v=>['1','Y','YES','TRUE','CAPTAIN','C'].includes(String(v??'').trim().toUpperCase());
-const sp=i=>{const pos=np(i?.position||i?.positions||'');return{id:i?.id||uid(),name:(i?.name||'').toString(),position:pos,roles:pp(pos),captain:!!i?.captain,ratings:sr(i?.ratings||i||{})};};
+const sp=(i)=>{const pos=np(i?.position||i?.positions||'');return{id:i?.id||uid(),name:(i?.name||'').toString(),position:pos,roles:pp(pos),captain:!!i?.captain,ratings:sr(i?.ratings??i??{})};};
 const cs=p=>RATING_FIELDS.reduce((s,f)=>s+((p.ratings?.[f.key]||1)*f.weight),0);
-const pct=score=>{const mn=RATING_FIELDS.reduce((s,f)=>s+f.weight,0),mx=RATING_FIELDS.reduce((s,f)=>s+5*f.weight,0);return Math.max(0,Math.min(100,((score-mn)/Math.max(1,mx-mn))*100));};
+const pct=score=>{const mn=RATING_FIELDS.reduce((s,f)=>s+1*f.weight,0),mx=RATING_FIELDS.reduce((s,f)=>s+10*f.weight,0);return Math.max(0,Math.min(100,((score-mn)/Math.max(1,mx-mn))*100));};
 const scol=p=>p>=75?'#16A34A':p>=55?'#D97706':'#DC2626';
 const eh=s=>String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
 
@@ -422,7 +427,7 @@ function buildPills(p){
 
 function renderRatingsGrid(){
   const g=$('ratingsGrid');g.innerHTML='';
-  RATING_FIELDS.forEach(f=>{const w=document.createElement('div');w.className='rfield field';w.innerHTML=`<label>${f.label}</label><input id="r_${f.key}" type="number" min="1" max="5" placeholder="3">`;g.appendChild(w);});
+  RATING_FIELDS.forEach(f=>{const w=document.createElement('div');w.className='rfield field';w.innerHTML=`<label>${f.label}</label><input id="r_${f.key}" type="number" min="1" max="10" step="0.1" placeholder="5">`;g.appendChild(w);});
 }
 const setRF=r=>RATING_FIELDS.forEach(f=>{$('r_'+f.key).value=r[f.key];});
 function readRatings(){const o={};RATING_FIELDS.forEach(f=>o[f.key]=cr($('r_'+f.key).value));setRF(o);return o;}
@@ -620,17 +625,17 @@ function exportExcel(){
   // Build as array-of-arrays so column order is guaranteed to match IEH exactly
   const dataRows=players.slice().sort((a,b)=>dn(a).localeCompare(dn(b))).map(p=>[
     dn(p),
-    p.ratings?.overallSkill??3,
-    p.ratings?.passing??3,
-    p.ratings?.shooting??3,
-    p.ratings?.dribbling??3,
-    p.ratings?.speed??3,
-    p.ratings?.vision??3,
-    p.ratings?.offTheBall??3,
-    p.ratings?.defending??3,
-    p.ratings?.workRate??3,
-    p.ratings?.mental??3,
-    p.ratings?.fitness??3,
+    p.ratings?.overallSkill??5,
+    p.ratings?.passing??5,
+    p.ratings?.shooting??5,
+    p.ratings?.dribbling??5,
+    p.ratings?.speed??5,
+    p.ratings?.vision??5,
+    p.ratings?.offTheBall??5,
+    p.ratings?.defending??5,
+    p.ratings?.workRate??5,
+    p.ratings?.mental??5,
+    p.ratings?.fitness??5,
     p.position||'',
     p.captain?'Yes':''
   ]);
@@ -672,11 +677,28 @@ function parseExcelRows(rows){
   if(!imported.length) throw new Error('No valid player rows found. Make sure data rows follow directly after the header row.');
   return imported;
 }
+function mergePlayers(existing,imported){
+  const byName=new Map(existing.map(p=>[dn(p).trim().toLowerCase(),p]));
+  imported.forEach(ip=>{
+    const key=ip.name.trim().toLowerCase();
+    const match=byName.get(key);
+    if(match){
+      // Update existing player's data but keep their id and selection state
+      match.position=ip.position;
+      match.roles=ip.roles;
+      match.captain=ip.captain;
+      match.ratings=ip.ratings;
+    } else {
+      existing.push(ip);
+    }
+  });
+  return existing;
+}
+
 function importExcel(){
   const input=document.createElement('input');
   input.type='file';
   // Include MIME types alongside extensions — Android Chrome needs MIME types
-  // to correctly filter and display Excel files in the file picker
   input.accept='.xlsx,.xls,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,application/octet-stream';
   // Append to DOM — required on Android WebView/Chrome for the picker to open reliably
   input.style.cssText='position:fixed;top:-100px;left:-100px;opacity:0;';
@@ -692,14 +714,17 @@ function importExcel(){
       const sn=wb.SheetNames[0];
       const rows=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,raw:true,defval:''});
       const imported=parseExcelRows(rows);
-      players=imported;selection=new Set();save();lastSolution=null;
+      // Merge: update existing players by name, add new ones — never wipes the list
+      players=mergePlayers(players,imported);
+      // Remove stale selection IDs that no longer exist
+      selection=new Set([...selection].filter(id=>players.some(p=>p.id===id)));
+      save();lastSolution=null;
       renderResults(null);renderPlayersPage();renderChecklist();updateSticky();
-      alert('✓ Imported '+imported.length+' players successfully.');
+      alert('✓ Imported '+imported.length+' players (existing players updated, new players added).');
     }catch(err){
       alert('Import failed: '+err.message);
     }
   };
-  // Also handle cancel — clean up DOM if user dismisses picker
   input.addEventListener('cancel',()=>{ try{document.body.removeChild(input);}catch(e){} });
   input.click();
 }
